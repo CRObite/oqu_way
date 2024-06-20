@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 /// An enum that holds names for our custom exceptions.
-enum _ExceptionType {
+enum ExceptionType {
   /// The exception for an expired bearer token.
   TokenExpiredException,
 
@@ -46,13 +46,13 @@ class CustomException implements Exception {
   final String name, message;
   final String? code;
   final int? statusCode;
-  final _ExceptionType exceptionType;
+  final ExceptionType exceptionType;
 
   CustomException({
     this.code,
     int? statusCode,
     required this.message,
-    this.exceptionType = _ExceptionType.ApiException,
+    this.exceptionType = ExceptionType.ApiException,
   })  : statusCode = statusCode ?? 500,
         name = exceptionType.name;
 
@@ -63,41 +63,41 @@ class CustomException implements Exception {
         switch (error.type) {
           case DioExceptionType.cancel:
             return CustomException(
-              exceptionType: _ExceptionType.CancelException,
+              exceptionType: ExceptionType.CancelException,
               statusCode: error.response?.statusCode,
               message: 'Request cancelled prematurely',
             );
           case DioExceptionType.connectionTimeout:
             return CustomException(
-              exceptionType: _ExceptionType.ConnectTimeoutException,
+              exceptionType: ExceptionType.ConnectTimeoutException,
               statusCode: error.response?.statusCode,
               message: 'Connection not established',
             );
           case DioExceptionType.sendTimeout:
             return CustomException(
-              exceptionType: _ExceptionType.SendTimeoutException,
+              exceptionType: ExceptionType.SendTimeoutException,
               statusCode: error.response?.statusCode,
               message: 'Failed to send',
             );
           case DioExceptionType.receiveTimeout:
             return CustomException(
-              exceptionType: _ExceptionType.ReceiveTimeoutException,
+              exceptionType: ExceptionType.ReceiveTimeoutException,
               statusCode: error.response?.statusCode,
               message: 'Failed to receive',
             );
 
           case DioExceptionType.connectionError:
             return CustomException(
-              exceptionType: _ExceptionType.ConnectionErrorException,
+              exceptionType: ExceptionType.ConnectionErrorException,
               statusCode: error.response?.statusCode,
               message: 'Connection not established',
             );
           case DioExceptionType.badResponse:
           case DioExceptionType.badCertificate:
           case DioExceptionType.unknown:
-            if (error.message!.contains(_ExceptionType.SocketException.name)) {
+            if (error.message!.contains(ExceptionType.SocketException.name)) {
               return CustomException(
-                exceptionType: _ExceptionType.FetchDataException,
+                exceptionType: ExceptionType.FetchDataException,
                 statusCode: error.response?.statusCode,
                 message: 'No internet connectivity',
               );
@@ -119,9 +119,9 @@ class CustomException implements Exception {
 
             final String name = '$errorCode';
             final String message = '$errorMessage';
-            if (name == _ExceptionType.TokenExpiredException.name) {
+            if (name == ExceptionType.TokenExpiredException.name) {
               return CustomException(
-                exceptionType: _ExceptionType.TokenExpiredException,
+                exceptionType: ExceptionType.TokenExpiredException,
                 code: name,
                 statusCode: error.response?.statusCode,
                 message: message,
@@ -135,18 +135,18 @@ class CustomException implements Exception {
         }
       } else {
         return CustomException(
-          exceptionType: _ExceptionType.UnrecognizedException,
+          exceptionType: ExceptionType.UnrecognizedException,
           message: 'Error unrecognized',
         );
       }
     } on FormatException catch (e) {
       return CustomException(
-        exceptionType: _ExceptionType.FormatException,
+        exceptionType: ExceptionType.FormatException,
         message: e.message,
       );
     } on Exception catch (_) {
       return CustomException(
-        exceptionType: _ExceptionType.UnrecognizedException,
+        exceptionType: ExceptionType.UnrecognizedException,
         message: 'Error unrecognized',
       );
     }
@@ -155,7 +155,7 @@ class CustomException implements Exception {
   factory CustomException.fromParsingException(Exception error) {
     debugPrint('$error');
     return CustomException(
-      exceptionType: _ExceptionType.SerializationException,
+      exceptionType: ExceptionType.SerializationException,
       message: 'Failed to parse network response to model or vice versa',
     );
   }
