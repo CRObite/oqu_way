@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_image.dart';
 import 'package:oqu_way/config/app_text.dart';
+import 'package:oqu_way/presentation/blocs/navigation_screen/navigation_page_cubit/navigation_page_cubit.dart';
 
 import '../../common/widgets/comment_view_check_row.dart';
 
-class NewsDetails extends StatelessWidget {
+class NewsDetails extends StatefulWidget {
   const NewsDetails({super.key, required this.displayBottomCommentsCallback});
 
   final Function(BuildContext) displayBottomCommentsCallback;
 
+  @override
+  State<NewsDetails> createState() => _NewsDetailsState();
+}
+
+class _NewsDetailsState extends State<NewsDetails> {
+
+  @override
+  void initState() {
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    final navigationPageCubit = BlocProvider.of<NavigationPageCubit>(context);
+
     return Container(
       color: Colors.white,
       child: SafeArea(
@@ -45,7 +61,7 @@ class NewsDetails extends StatelessWidget {
                   children: [
                     CommentViewCheckRow(iconSize: 18, fontSize: 12,
                       onCommentsTap: () {
-                        displayBottomCommentsCallback(context);
+                        navigationPageCubit.openComments(1);
                       },
                     ),
 
@@ -66,7 +82,6 @@ class NewsDetails extends StatelessWidget {
       ),
     );
   }
-
 
   Future _displayBottomComments(BuildContext context){
     return showModalBottomSheet(

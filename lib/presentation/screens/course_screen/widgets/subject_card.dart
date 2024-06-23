@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_shadow.dart';
+import '../../../common/card_container_decoration.dart';
 import 'common_progress_indicatore.dart';
 
 class SubjectCard extends StatefulWidget {
@@ -65,11 +66,7 @@ class _SubjectCardState extends State<SubjectCard> with SingleTickerProviderStat
         onTap: _handleTap,
         child: Container(
           margin: const EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: AppShadow.cardShadow
-          ),
+          decoration: CardContainerDecoration.decoration,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(

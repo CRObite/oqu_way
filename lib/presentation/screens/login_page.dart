@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_colors.dart';
 import 'package:oqu_way/config/app_text.dart';
 import 'package:oqu_way/presentation/common/widgets/common_button.dart';
@@ -30,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -46,11 +48,11 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 20,),
             CustomTextField(title:  AppText.enterPassword , controller: passwordController, type: TextInputType.visiblePassword, hint:AppText.password),
             TextButton(
-                onPressed: (){},
+                onPressed: (){context.go('/news');},
                 child: Text(AppText.forgotPassword, style: TextStyle(fontSize: 10, color: AppColors.blueColor),)
             ),
             const SizedBox(height: 20,),
-            CommonButton(title: AppText.cont, onClick: (){}),
+            CommonButton(title: AppText.cont, onClick: (){context.go('/news');}),
             const SizedBox(height: 20,),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -83,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
 
             GestureDetector(
               onTap: (){
-
+                context.go('/news');
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -125,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.only(left: 20,right: 20, bottom: 42),
           surfaceTintColor: Colors.transparent,
           height: 95,
-          child: CommonButton(title: AppText.register, onClick: (){})
+          child: CommonButton(title: AppText.register, onClick: (){context.go('/registrationPage');})
         )
     );
   }

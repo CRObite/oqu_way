@@ -7,6 +7,7 @@ import 'package:oqu_way/presentation/screens/course_screen/widgets/test_deadline
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_shadow.dart';
 import '../../../../config/app_text.dart';
+import '../../../common/card_container_decoration.dart';
 import '../../../common/widgets/common_button.dart';
 
 class SubjectNestedList extends StatefulWidget {
@@ -44,11 +45,7 @@ class _SubjectNestedListState extends State<SubjectNestedList> {
 
               padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
               margin: const EdgeInsets.only(bottom: 15),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(5),
-                  boxShadow: AppShadow.cardShadow
-              ),
+              decoration: CardContainerDecoration.decoration,
               child: Column(
                 children: [
                   Text(AppText.attandance, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),),
@@ -59,23 +56,38 @@ class _SubjectNestedListState extends State<SubjectNestedList> {
           ],
         ),
 
-        SizedBox(height: widget.opened ?  26: 0,),
-
-
-        widget.opened ? Column(
-          children: [
-            SubjectNameCard(buttonName: AppText.video),
-            const SizedBox(height: 5,),
-            SubjectNameCard(buttonName: AppText.attend),
-            const SizedBox(height: 17,),
-            const TestDeadlineInfoCard(),
-            const SizedBox(height: 6,),
-            const TestDeadlineInfoCard(),
 
 
 
-          ],
-        ): const SizedBox(),
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: SizeTransition(
+                sizeFactor: animation,
+                axis: Axis.vertical,
+                child: child,
+              ),
+            );
+          },
+          child: widget.opened ? Column(
+            key: ValueKey<bool>(widget.opened),
+            children: [
+              const SizedBox(height: 26),
+              SubjectNameCard(buttonName: AppText.video, withDate: false,),
+              const SizedBox(height: 5,),
+              SubjectNameCard(buttonName: AppText.attend, withDate: false,),
+              const SizedBox(height: 17,),
+              const TestDeadlineInfoCard(),
+              const SizedBox(height: 6,),
+              const TestDeadlineInfoCard(),
+              const SizedBox(height: 17,),
+              SubjectNameCard(buttonName: AppText.attend, withDate: true,),
+              const SizedBox(height: 26),
+            ],
+          ) : const SizedBox(key: ValueKey<bool>(false)),
+        ),
 
 
 

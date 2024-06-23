@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:oqu_way/config/app_colors.dart';
 import 'package:oqu_way/config/app_text.dart';
+import 'package:oqu_way/presentation/common/widgets/date_time_row.dart';
 
 class SubjectNameCard extends StatelessWidget {
-  const SubjectNameCard({super.key, required this.buttonName});
+  const SubjectNameCard({super.key, required this.buttonName, required this.withDate});
 
   final String buttonName;
+  final bool withDate;
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +48,17 @@ class SubjectNameCard extends StatelessWidget {
                   ),
                 ),
 
+                const SizedBox(height: 8,),
+
+
+
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: withDate ? MainAxisAlignment.start: MainAxisAlignment.end,
                   children: [
-                    SizedBox(
+
+                    withDate ? DateTimeRow(color: AppColors.greyColor,):
+
+                    withDate ? const SizedBox():SizedBox(
                         height: 30,
                         child:ElevatedButton(
                           style: ElevatedButton.styleFrom(

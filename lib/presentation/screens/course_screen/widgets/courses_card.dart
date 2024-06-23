@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../config/app_shadow.dart';
+import '../../../common/card_container_decoration.dart';
 import 'common_progress_indicatore.dart';
 
 class CoursesCard extends StatelessWidget {
@@ -11,11 +12,7 @@ class CoursesCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: AppShadow.cardShadow
-      ),
+      decoration: CardContainerDecoration.decoration,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
         child: Row(

@@ -26,4 +26,14 @@ class AppShadow {
       offset: Offset(0, 0),
     ),
   ];
+
+  static List<BoxShadow> litherShadow =  [
+    const BoxShadow(
+      color: Color.fromRGBO(0, 0, 0, 0.25),
+      blurRadius: 3.0,
+      spreadRadius: 0.0,
+      offset: Offset(0, 0), // changes position of shadow
+    ),
+  ];
+
 }

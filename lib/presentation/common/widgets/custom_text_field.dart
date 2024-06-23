@@ -41,7 +41,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               )
           ),
           child: Padding(
-            padding: const EdgeInsets.only(top: 4,bottom: 4, left: 16),
+            padding: const EdgeInsets.only(top: 2,bottom: 2, left: 16),
             child: TextFormField(
               obscureText: widget.type == TextInputType.visiblePassword ? _obscureText : false,
               maxLines: widget.maxLines,

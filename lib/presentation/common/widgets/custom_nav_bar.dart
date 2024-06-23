@@ -17,6 +17,8 @@ class CustomNavBar extends StatefulWidget {
 class _CustomNavBarState extends State<CustomNavBar> {
 
   int selectedIndex = 0;
+  List<String> icons= ['assets/icons/ic_news.svg','assets/icons/ic_course.svg','assets/icons/ic_play.svg','assets/icons/ic_test.svg','assets/icons/ic_shop.svg',];
+
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
       ),
       child: ListView.builder(
           itemCount: 5,
+          physics: const NeverScrollableScrollPhysics(),
           scrollDirection: Axis.horizontal,
           padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.01),
           itemBuilder: (context, index) => InkWell(
@@ -87,7 +90,7 @@ class _CustomNavBarState extends State<CustomNavBar> {
                           ),
 
                           SvgPicture.asset(
-                            'assets/icons/ic_play.svg',
+                            icons[index],
                             colorFilter: ColorFilter.mode(
                               index == selectedIndex ? AppColors.blueColor : Colors.white,
                               BlendMode.srcIn,

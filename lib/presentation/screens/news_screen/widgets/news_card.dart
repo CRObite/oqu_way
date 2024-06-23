@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:oqu_way/presentation/common/card_container_decoration.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_image.dart';
@@ -15,11 +16,7 @@ class NewsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: AppShadow.cardShadow
-      ),
+      decoration: CardContainerDecoration.decoration,
       child: Column(
         children: [
           Container(

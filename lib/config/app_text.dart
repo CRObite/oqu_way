@@ -20,4 +20,53 @@ class AppText{
   static String test = 'Тест';
   static String deadline = 'Дедлайн';
   static String doIt = 'Орындау';
+  static String onlineTests = 'Онлайн тесттер';
+  static String professional  = 'Кәсіби';
+  static String pass  = 'Тапсыру';
+  static String startTest  = 'Тестті бастау';
+  static String firstSubject  = 'Бірінші пән';
+  static String secondSubject  = 'Екінші пән';
+  static String endTest  = 'Тестті аяқтау';
+  static String end  = 'Аяқтау';
+  static String start  = 'Бастау';
+  static String next  = 'Келесі';
+  static String exit  = 'Шығу';
+  static String sendResponse  = 'Жауап жазу';
+  static String seeResponse  = 'Жауаптарды көру';
+  static String yourQuestion  = 'Сіздің сұрағыңыз...';
+  static String coins  = 'coins';
+  static String getGiftsByCoin  = 'Жиналған койнстарға әр түрлі заттар сатып ал!';
+  static String skip  = 'Өткізу';
+  static String preparingToExam  = 'Емтихандарға дайындал';
+  static String withOquway = 'Oquway-мен бірге өзіңді тексер';
+  static String enter = 'Кіру';
+
+  static String data = 'Деректер';
+  static String rating = 'Рейтинг';
+  static String attends = 'Оқу үлгерімі';
+  static String homeworks = 'Тапсырмалар';
+  static String schedule = 'Сабақ кестесі';
+  static String plan = 'Дайындық жоспары';
+  static String universities = 'ЖОО';
+  static String analysis = 'Анализ';
+  static String questions = 'Сұрақ-жауап';
+
+  static String name = 'Аты';
+  static String surname = 'Жөні';
+  static String lastname = 'Тегі (маңызды емес)';
+  static String telephone = 'Телефон';
+  static String save = 'Сақтау';
+
+  static String profile = 'Профиль';
+  static String studentsRating = 'Оқушылар рейтингі';
+  static String search = 'Іздеу';
+
+  static String myAttend = 'Менің үлгерімім';
+  static String scoreChart = 'ҰБТ бойынша байқау тест баллдарының графигі';
+
+  static String perWeek = 'Апталар бойынша';
+  static String perMonth = 'Айлар бойынша';
+  static String perYear = 'Жыл бойынша';
+
+  static String scoresBySubject = 'Сабақтар бойынша бағалар';
 }
