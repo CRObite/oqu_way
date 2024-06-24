@@ -40,7 +40,8 @@ class _SubjectPickerDropDownState extends State<SubjectPickerDropDown> {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-        child: DropdownButtonHideUnderline(
+        child:
+        DropdownButtonHideUnderline(
           child: DropdownButton2<String>(
             hint: Text(widget.hint, style: TextStyle(color: AppColors.greyColor.withOpacity(0.5)),),
             value: selected.isNotEmpty ? selected : null,

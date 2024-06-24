@@ -24,8 +24,12 @@ class _NavigationPageState extends State<NavigationPage> {
   TextEditingController commentController = TextEditingController();
   NavigationPageCubit navigationPageCubit = NavigationPageCubit();
 
+  int currentPage = 0;
 
   void _goToBranch( int index) {
+
+    currentPage = index;
+
     widget.navigationShell.goBranch(
         index,
         initialLocation: index == widget.navigationShell.currentIndex
@@ -160,12 +164,12 @@ class _NavigationPageState extends State<NavigationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: CustomAppBar(
+      appBar: currentPage != 2 ? CustomAppBar(
         onBellPressed: (){},
         title: 'Алуа Алпысбаева',
         imageId: '',
         setDot: true,
-      ),
+      ): null,
       body: BlocProvider(
         create: (context) => navigationPageCubit,
         child: BlocListener<NavigationPageCubit,NavigationPageState>(

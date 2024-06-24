@@ -10,14 +10,14 @@ import '../../../../config/app_colors.dart';
 import '../../../../config/app_text.dart';
 import '../../../common/widgets/rounded_circular_progress_indicator.dart';
 
-class ProfileAnalytic extends StatefulWidget {
-  const ProfileAnalytic({super.key});
+class ProfileAttends extends StatefulWidget {
+  const ProfileAttends({super.key});
 
   @override
-  State<ProfileAnalytic> createState() => _ProfileAnalyticState();
+  State<ProfileAttends> createState() => _ProfileAttendsState();
 }
 
-class _ProfileAnalyticState extends State<ProfileAnalytic> with SingleTickerProviderStateMixin {
+class _ProfileAttendsState extends State<ProfileAttends> with SingleTickerProviderStateMixin {
   List<int> chartData = [];
   int current = 0;
 

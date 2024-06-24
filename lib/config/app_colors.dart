@@ -9,6 +9,7 @@ class AppColors{
   static Color testCardColor3 = const Color(0xFFFFCC59);
   static Color testCircleGreenColor = const Color(0xFF8DCAB0);
   static Color darkBlueColor = const Color(0xFF001ED0);
+  static Color moreDarkerBlueColor = const Color(0xFF00127C);
   static Color chartYellowColor = const Color(0xFFF6C77D);
   static Color chartGreenColor = const Color(0xFF16A34A);
 }

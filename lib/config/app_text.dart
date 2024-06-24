@@ -69,4 +69,7 @@ class AppText{
   static String perYear = 'Жыл бойынша';
 
   static String scoresBySubject = 'Сабақтар бойынша бағалар';
+  static String selectSubjects = 'Пәндерді таңдау';
+  static String selectSpecialization = 'Мамандықты таңдау';
+  static String villageQuota = 'Ауыл квотасы';
 }
