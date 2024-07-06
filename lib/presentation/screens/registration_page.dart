@@ -16,7 +16,7 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  TextEditingController emailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -24,7 +24,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   void dispose() {
-    emailController.dispose();
+    phoneController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
     nameController.dispose();
@@ -88,10 +88,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ),
                 const SizedBox(height: 20,),
                 CustomTextField(
-                  title: AppText.enterEmail,
-                  controller: emailController,
-                  type: TextInputType.emailAddress,
-                  hint:AppText.email,),
+                  title: AppText.enterPhone,
+                  controller: phoneController,
+                  type: TextInputType.phone,
+                  hint:AppText.number,),
                 const SizedBox(height: 20,),
                 CustomTextField(
                     title:  AppText.enterPassword ,

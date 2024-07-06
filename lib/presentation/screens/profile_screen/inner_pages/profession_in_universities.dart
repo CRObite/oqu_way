@@ -48,7 +48,7 @@ class _ProfessionInUniversitiesState extends State<ProfessionInUniversities> {
                         context.pop();
                         context.pop();
                         context.pop();
-                        context.push('/profilePage/profileUniversity/profileUniversityDetails');
+                        context.push('/profileUniversityDetails');
                       },
                       child: const UniversityCard()
                     );

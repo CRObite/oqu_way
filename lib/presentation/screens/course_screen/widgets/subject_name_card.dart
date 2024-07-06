@@ -5,10 +5,11 @@ import 'package:oqu_way/config/app_text.dart';
 import 'package:oqu_way/presentation/common/widgets/date_time_row.dart';
 
 class SubjectNameCard extends StatelessWidget {
-  const SubjectNameCard({super.key, required this.buttonName, required this.withDate});
+  const SubjectNameCard({super.key, required this.buttonName, required this.withDate, required this.onButtonPressed});
 
   final String buttonName;
   final bool withDate;
+  final VoidCallback onButtonPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +71,7 @@ class SubjectNameCard extends StatelessWidget {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 14),
                           ),
-                          onPressed: (){},
+                          onPressed: onButtonPressed,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

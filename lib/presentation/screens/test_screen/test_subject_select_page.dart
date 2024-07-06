@@ -36,7 +36,9 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                Text('${AppText.onlineTests} > ҰБТ байқау тесті', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                GestureDetector(
+                    onTap: (){context.pop();},
+                    child: Text('${AppText.onlineTests} > ҰБТ байқау тесті', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
                 const SizedBox(height:46,),
                 Column(
                   mainAxisSize: MainAxisSize.min,
@@ -55,7 +57,7 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
                       ),
                     ),
                     const SizedBox(height: 33,),
-                                
+
                     SubjectPickerDropDown(
                       valuesWithExtra: valuesWithExtra,
                       selectedValue: selectedFirst,
@@ -64,9 +66,9 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
                       },
                       hint: AppText.firstSubject,
                     ),
-                                
+
                     const SizedBox(height: 20,),
-                                
+
                     SubjectPickerDropDown(
                       valuesWithExtra: valuesWithExtra,
                       selectedValue: selectedSecond,
@@ -75,10 +77,10 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
                       },
                       hint: AppText.secondSubject,
                     ),
-                                
+
                     const SizedBox(height: 40,),
-                                
-                                
+
+
                     SizedBox(
                         width: 140,
                         child: CommonButton(
@@ -91,8 +93,8 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
                           horizontalPadding: 24,
                         )
                     )
-                                
-                                
+
+
                   ],
                 ),
 

@@ -90,7 +90,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                 children: [
                   GestureDetector(
                     onTap: (){
-                      context.push('/profilePage/profileUniversity/profileUniversityDetails/profileUniversityProfession/professionDetails/professionInUniversities');
+                      context.push('/profileUniversityDetails/profileUniversityProfession/professionDetails/professionInUniversities');
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -116,7 +116,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
 
                   GestureDetector(
                     onTap: (){
-                      context.push('/profilePage/profileUniversity/profileComments');
+                      context.push('/profileComments');
                     },
                     child: Container(
                       decoration: BoxDecoration(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:oqu_way/config/app_shadow.dart';
 
 import '../../../config/app_colors.dart';
@@ -19,6 +20,12 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   bool _obscureText = true;
+
+  static MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
+    mask: '+7 (###) ### - ## - ##',
+    filter: { "#": RegExp(r'[0-9]') },
+  );
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +55,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
               controller: widget.controller,
               enabled: widget.editable,
               keyboardType: widget.type,
+              inputFormatters: widget.type == TextInputType.phone ? [maskFormatter]: null,
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 12,
                 fontWeight: FontWeight.normal,
               ),
               decoration: InputDecoration(
+                contentPadding: EdgeInsets.only(top: widget.type == TextInputType.visiblePassword?  15: 0),
                 border: InputBorder.none,
                 hintText: widget.hint,
                 suffixIcon: widget.type == TextInputType.visiblePassword ? IconButton(

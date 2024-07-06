@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../config/app_colors.dart';
 import '../../../config/app_shadow.dart';
+import '../../common/widgets/common_button.dart';
 import '../test_screen/widgets/answer_card.dart';
 
 class GameTestScreen extends StatefulWidget {
@@ -18,6 +19,95 @@ class _GameTestScreenState extends State<GameTestScreen> {
   int? selectedAns;
   int currentQuestion = 1;
 
+
+
+  void _displayGameEndSource() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.35,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 54,
+                  child: Center(
+                    child: Container(
+                      width: 50,
+                      height: 6,
+                      decoration: BoxDecoration(
+                          color: AppColors.greyColor,
+                          borderRadius: const BorderRadius.all(Radius.circular(50))
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(color: AppColors.greyColor),
+
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      const Text('Ойыннан шығуға сенімдісізбе?',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                      const SizedBox(height: 25,),
+                      GestureDetector(
+                        onTap: (){context.pop();},
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1,
+                                color: AppColors.blueColor
+                            ),
+                            color: AppColors.blueColor.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                          child: Row(
+                            children: [
+                              Text('Жалғастыру',style: TextStyle(fontSize: 14,color: AppColors.blueColor,fontWeight: FontWeight.bold),)
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 8,),
+
+                      GestureDetector(
+                        onTap: (){
+                          context.pop();
+                          context.pop();
+                          },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: AppColors.blueColor,
+                              borderRadius: BorderRadius.circular(5),
+                              boxShadow: AppShadow.cardShadow
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                          child: const Row(
+                            children: [
+                              Text('Шығу',style: TextStyle(fontSize: 14,color: Colors.white),)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+
+              ],
+            ),
+          ),
+        );
+      },
+    ).whenComplete(() {
+
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,6 +251,14 @@ class _GameTestScreenState extends State<GameTestScreen> {
           ],
         ),
       ),
+
+        bottomNavigationBar: BottomAppBar(
+            padding: const EdgeInsets.only(left: 20,right: 20, bottom: 30),
+            surfaceTintColor: Colors.transparent,
+            height: 85,
+            child: CommonButton(title: 'Ойынды аяқтау', onClick: (){_displayGameEndSource();})
+        )
+
     );
   }
 }

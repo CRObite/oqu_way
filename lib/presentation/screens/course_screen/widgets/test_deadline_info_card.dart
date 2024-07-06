@@ -6,7 +6,10 @@ import 'package:oqu_way/presentation/common/widgets/date_time_row.dart';
 import '../../../../config/app_colors.dart';
 
 class TestDeadlineInfoCard extends StatelessWidget {
-  const TestDeadlineInfoCard({super.key});
+  const TestDeadlineInfoCard({super.key, required this.isTest, required this.onPressed});
+
+  final bool isTest;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +40,28 @@ class TestDeadlineInfoCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(AppText.test, style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
+                Text(isTest? AppText.test: AppText.homeworks, style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
                 const SizedBox(height: 6,),
-                Text('${AppText.deadline}:', style: TextStyle(fontSize: 13, color: AppColors.greyColor)),
+                Text(isTest?'${AppText.time}:': '${AppText.deadline}:', style: TextStyle(fontSize: 13, color: AppColors.greyColor)),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
 
-                    const DateTimeRow(),
+                    isTest? Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/icons/ic_time.svg',
+                          colorFilter: const ColorFilter.mode(
+                            Colors.black,
+                            BlendMode.srcIn,
+                          ),
+                          height: 15,
+                        ),
+                        const SizedBox(width: 9,),
+                        const Text('40 мин', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                      ],
+                    ) :const DateTimeRow(),
 
                     SizedBox(
                         height: 30,
@@ -59,7 +75,7 @@ class TestDeadlineInfoCard extends StatelessWidget {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 14),
                           ),
-                          onPressed: (){},
+                          onPressed: onPressed,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

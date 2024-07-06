@@ -36,13 +36,11 @@ class NoInternetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.blue,
-      body: WillPopScope(
-        onWillPop: () async {
-          return false;
-        },
-        child: const Center(
+      body: PopScope(
+        canPop: false,
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

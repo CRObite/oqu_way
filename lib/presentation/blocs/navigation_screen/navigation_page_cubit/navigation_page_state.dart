@@ -10,3 +10,7 @@ class NavigationPageComments extends NavigationPageState {
 
   NavigationPageComments({required this.id});
 }
+
+class NavigationPageCommentsClose extends NavigationPageState {
+
+}

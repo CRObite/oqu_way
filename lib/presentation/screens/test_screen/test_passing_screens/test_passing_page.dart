@@ -13,7 +13,9 @@ import '../../../common/widgets/count_down_timer.dart';
 import '../widgets/question_number_row.dart';
 
 class TestPassingPage extends StatefulWidget {
-  const TestPassingPage({super.key});
+  const TestPassingPage({super.key, this.oneSubjectPage = false});
+
+  final bool oneSubjectPage;
 
   @override
   State<TestPassingPage> createState() => _TestPassingPageState();
@@ -27,125 +29,247 @@ class _TestPassingPageState extends State<TestPassingPage> {
   int currentQuestion = 0;
   int? selectedAns;
 
+  @override
+  void initState() {
+    print(widget.oneSubjectPage);
+
+    subjectSelected = widget.oneSubjectPage;
+    super.initState();
+  }
+
+
   List<bool> ended = [false,false,false,false,false];
+
+  void _displayTestEndSource() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.35,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 54,
+                  child: Center(
+                    child: Container(
+                      width: 50,
+                      height: 6,
+                      decoration: BoxDecoration(
+                          color: AppColors.greyColor,
+                          borderRadius: const BorderRadius.all(Radius.circular(50))
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(color: AppColors.greyColor),
+
+                Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      const Text('Тесттен шығуға сенімдісізбе?',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                      const SizedBox(height: 25,),
+                      GestureDetector(
+                        onTap: (){context.pop();},
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 1,
+                                color: AppColors.blueColor
+                            ),
+                            color: AppColors.blueColor.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                          child: Row(
+                            children: [
+                              Text('Жалғастыру',style: TextStyle(fontSize: 14,color: AppColors.blueColor,fontWeight: FontWeight.bold),)
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 8,),
+
+                      GestureDetector(
+                        onTap: (){
+                          if(widget.oneSubjectPage){
+                            context.go('/course/courseDetails');
+                          }else{
+                            context.go('/test');
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: AppColors.blueColor,
+                              borderRadius: BorderRadius.circular(5),
+                              boxShadow: AppShadow.cardShadow
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                          child: const Row(
+                            children: [
+                              Text('Шығу',style: TextStyle(fontSize: 14,color: Colors.white),)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+
+              ],
+            ),
+          ),
+        );
+      },
+    ).whenComplete(() {
+
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          toolbarHeight: 80,
+          toolbarHeight: 20,
         ),
-        body: SingleChildScrollView(
-          child: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Row(
-                    children: [
-                      IconButton(
-                          onPressed: (){
-                            if(subjectSelected){
-                              setState(() {
-                                subjectSelected = false;
-                              });
-                            }else {
-                              context.pop();
-                            }
-                          },
-                          icon: Transform.rotate(
-                            angle: 180 * 3.1415926535/180,
-                            child: SvgPicture.asset(
-                              'assets/icons/ic_arrow.svg',
-                              height: 11,
-                            ),
-                          ),
-                      ),
-
-                      const SizedBox(width: 30,),
-
-                      CountDownTimer(
-                        duration: const Duration(hours: 3,minutes: 58,seconds: 48),
-                        onTimePassed: () { context.pushReplacement('/testResults'); },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 36,),
-
-                !subjectSelected ?
+        body: PopScope(
+          canPop: false,
+          onPopInvoked: (value){
+            if(widget.oneSubjectPage){
+              _displayTestEndSource();
+            }else{
+              if(subjectSelected){
+                setState(() {
+                  subjectSelected = false;
+                });
+              }else {
+                _displayTestEndSource();
+              }
+            }
+          },
+          child: SingleChildScrollView(
+            child: SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: ListView.builder(
-                        itemCount: 5,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context,index){
-                          return SelectNextSubject(
-                            onSelected: () {
-                              setState(() {
-                                subjectIndex = index;
-                                subjectSelected = true;
-                              });
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: (){
+                              if(widget.oneSubjectPage){
+                                _displayTestEndSource();
+                              }else{
+                                if(subjectSelected){
+                                  setState(() {
+                                    subjectSelected = false;
+                                  });
+                                }else {
+                                  _displayTestEndSource();
+                                }
+                              }
                             },
-                            ended: ended[index],
-
-                          );
-                        }
-                    ),
-                  ):
-                Column(
-                  children: [
-                    QuestionNumberRow(
-                      currentQuestionIndex: currentQuestion,
-                      onSelectQuestion: (value ) {
-                        setState(() {
-                          currentQuestion = value;
-                        });
-                      },
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Ақмола-Қарталы темір жолының маңызы:',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold
+                            icon: Transform.rotate(
+                              angle: 180 * 3.1415926535/180,
+                              child: SvgPicture.asset(
+                                'assets/icons/ic_arrow.svg',
+                                height: 11,
+                              ),
                             ),
-                          ),
+                        ),
 
-                          const SizedBox(height: 30,),
+                        const SizedBox(width: 30,),
 
-                          ListView.builder(
-                            itemCount: 4,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context,index){
-                              return AnswerCard(
-                                  selected: selectedAns == index,
-                                  onAnswerSelected: (){
-                                    setState(() {
-                                      selectedAns = index;
-                                    });
-                                  }, questionText: 'Орталық Қазақстанның өнеркәсіп аудандарын Оралдың оңтүстігімен байланыстырады.'
-                              );
-                            }
-                          )
-                        ],
+                        CountDownTimer(
+                          duration: const Duration(hours: 3,minutes: 58,seconds: 48),
+                          onTimePassed: () { context.pushReplacement('/testResults'); },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 36,),
+
+                  !subjectSelected ?
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: ListView.builder(
+                          itemCount: 5,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context,index){
+                            return SelectNextSubject(
+                              onSelected: () {
+                                setState(() {
+                                  subjectIndex = index;
+                                  subjectSelected = true;
+                                });
+                              },
+                              ended: ended[index],
+
+                            );
+                          }
                       ),
-                    )
-                  ],
-                )
-              ],
+                    ):
+                  Column(
+                    children: [
+                      QuestionNumberRow(
+                        currentQuestionIndex: currentQuestion,
+                        onSelectQuestion: (value ) {
+                          setState(() {
+                            currentQuestion = value;
+                          });
+                        },
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Ақмола-Қарталы темір жолының маңызы:',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
+
+                            const SizedBox(height: 30,),
+
+                            ListView.builder(
+                              itemCount: 4,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context,index){
+                                return AnswerCard(
+                                    selected: selectedAns == index,
+                                    onAnswerSelected: (){
+                                      setState(() {
+                                        selectedAns = index;
+                                      });
+                                    }, questionText: 'Орталық Қазақстанның өнеркәсіп аудандарын Оралдың оңтүстігімен байланыстырады.'
+                                );
+                              }
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),
         bottomNavigationBar: BottomAppBar(
+          color: Colors.white,
             padding: const EdgeInsets.only(left: 20,right: 20, bottom: 42),
             surfaceTintColor: Colors.transparent,
             height: 95,
@@ -168,10 +292,16 @@ class _TestPassingPageState extends State<TestPassingPage> {
                   ),
 
                   onPressed: () {
-                    setState(() {
-                      subjectSelected = false;
-                      currentQuestion = 0;
-                    });
+
+                    if(widget.oneSubjectPage){
+                     _displayTestEndSource();
+                    }else{
+                      setState(() {
+                        subjectSelected = false;
+                        currentQuestion = 0;
+                      });
+                    }
+
                   },
                   child: Text(AppText.exit, style: TextStyle(color: AppColors.blueColor, fontSize: 15), ),
                 ),
@@ -183,11 +313,15 @@ class _TestPassingPageState extends State<TestPassingPage> {
                       currentQuestion ++;
                     });
                   }else {
-                    setState(() {
-                      ended[subjectIndex] = true;
-                      subjectSelected = false;
-                      currentQuestion = 0;
-                    });
+                    if(widget.oneSubjectPage){
+                      context.push('/testPassingPage/courseTestResult');
+                    }else{
+                      setState(() {
+                        ended[subjectIndex] = true;
+                        subjectSelected = false;
+                        currentQuestion = 0;
+                      });
+                    }
                   }
                 } , horizontalPadding: 27, verticalPadding: 13,fontSize: 15,)
               ],

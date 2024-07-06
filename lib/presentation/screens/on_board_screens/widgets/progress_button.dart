@@ -16,7 +16,7 @@ class ProgressButton extends StatelessWidget {
 
         Center(
           child: CustomPaint(
-            size: const Size(100, 100),
+            size: const Size(90, 90),
             painter: RoundedCircularProgressIndicator(
               value: animation.value,
               color: AppColors.blueColor.withOpacity(0.5),
@@ -40,7 +40,7 @@ class ProgressButton extends StatelessWidget {
               onPressed: (){
                 onPressed();
               },
-              child: const Icon(Icons.arrow_forward_rounded,size: 30, color: Colors.white,),
+              child: const Icon(Icons.arrow_forward_rounded,size: 20, color: Colors.white,),
             ),
           ),
         )

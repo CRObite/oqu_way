@@ -19,7 +19,7 @@ class AnswerCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
               width: 1,color: selected ? AppColors.blueColor : AppColors.greyColor
           ),

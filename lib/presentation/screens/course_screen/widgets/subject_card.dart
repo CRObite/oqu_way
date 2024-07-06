@@ -82,7 +82,7 @@ class _SubjectCardState extends State<SubjectCard> with SingleTickerProviderStat
                           angle: _animation.value * (180 * 3.1415926535 / 180),
                           child: Transform.rotate(
                             angle: 90 * 3.1415926535/180,
-                            child: SvgPicture.asset('assets/icons/ic_arrow.svg', height: 8,),
+                            child: SvgPicture.asset('assets/icons/ic_arrow.svg', height: 10,),
                           ),
                         );
                       },

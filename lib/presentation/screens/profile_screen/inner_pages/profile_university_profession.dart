@@ -79,7 +79,7 @@ class _ProfileUniversityProfessionState extends State<ProfileUniversityProfessio
                 itemBuilder: (context, index){
                   return GestureDetector(
                     onTap: (){
-                      context.push('/profilePage/profileUniversity/profileUniversityDetails/profileUniversityProfession/professionDetails');
+                      context.push('/profileUniversityDetails/profileUniversityProfession/professionDetails');
                     },
                     child: Container(
                       margin: const EdgeInsets.only(top: 20),

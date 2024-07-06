@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:oqu_way/domain/face_subject.dart';
 import 'package:oqu_way/presentation/screens/course_screen/widgets/common_progress_indicatore.dart';
 import 'package:oqu_way/presentation/screens/course_screen/widgets/icon_text_small_container.dart';
@@ -29,7 +30,9 @@ class _CourseDetailsState extends State<CourseDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('${AppText.myCourses} > Математика', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                GestureDetector(
+                  onTap: (){context.pop();},
+                    child: Text('${AppText.myCourses} > Математика', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
                 const SizedBox(height: 14,),
                 const Text('Математика', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 const SizedBox(height: 22,),
@@ -59,19 +62,6 @@ class _CourseDetailsState extends State<CourseDetails> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context,index){
-
-                    if(index == 0){
-                      return SubjectNestedList(
-                          opened: FakeSubject.listOfOpened[index].opened,
-                          openedPressed: (){
-                           setState(() {
-                             FakeSubject.listOfOpened[index].opened= !FakeSubject.listOfOpened[index].opened;
-                           });
-                          },
-                          isFirst: true
-                      );
-                    }
-
                     return SubjectNestedList(
                         opened: FakeSubject.listOfOpened[index].opened,
                         openedPressed: (){
@@ -79,14 +69,11 @@ class _CourseDetailsState extends State<CourseDetails> {
                             FakeSubject.listOfOpened[index].opened= !FakeSubject.listOfOpened[index].opened;
                           });
                         },
-                        isFirst: false
                     );
                   }
-                )
+                ),
 
-
-
-
+                const SizedBox(height: 80,),
               ],
             ),
           ),

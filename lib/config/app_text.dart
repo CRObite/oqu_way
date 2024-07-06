@@ -1,7 +1,9 @@
 class AppText{
   static String welcome = 'Қош келдіңіз!';
   static String enterEmail= 'Пошта енгізіңіз';
+  static String enterPhone= 'Телефон номер';
   static String email= 'Пошта';
+  static String number= 'Номер';
   static String enterPassword = 'Құпиясөзді енгізіңіз';
   static String password = 'Құпиясөз';
   static String forgotPassword = 'Құпиясөзді ұмыттыңыз ба?';
@@ -15,10 +17,11 @@ class AppText{
   static String myCourses = 'Менің курстарым ';
   static String teacher = 'Мұғалім';
   static String attandance = 'Аттенданс';
-  static String video = 'Видеожазбасы';
+  static String video = 'Видеожазба';
   static String attend = 'Қатысу';
   static String test = 'Тест';
   static String deadline = 'Дедлайн';
+  static String time = 'Уақыт';
   static String doIt = 'Орындау';
   static String onlineTests = 'Онлайн тесттер';
   static String professional  = 'Кәсіби';
@@ -72,4 +75,6 @@ class AppText{
   static String selectSubjects = 'Пәндерді таңдау';
   static String selectSpecialization = 'Мамандықты таңдау';
   static String villageQuota = 'Ауыл квотасы';
+  static String description = 'Түсіндірме';
+
 }

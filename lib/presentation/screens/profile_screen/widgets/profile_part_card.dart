@@ -22,7 +22,7 @@ class ProfilePartCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
         child: Row(
           children: [
-            Text(title,style: const TextStyle(fontSize: 16),)
+            Text(title,style: const TextStyle(fontSize: 14),)
           ],
         ),
       ),

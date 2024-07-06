@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -37,7 +40,6 @@ class _NavigationPageState extends State<NavigationPage> {
   }
 
 
-
   void _displayBottomComments() {
     showModalBottomSheet(
       context: context,
@@ -50,7 +52,19 @@ class _NavigationPageState extends State<NavigationPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const SizedBox(height: 54),
+                SizedBox(
+                  height: 54,
+                  child: Center(
+                    child: Container(
+                      width: 50,
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: AppColors.greyColor,
+                        borderRadius: const BorderRadius.all(Radius.circular(50))
+                      ),
+                    ),
+                  ),
+                ),
                 Divider(color: AppColors.greyColor),
                 Expanded(
                   child: Padding(
@@ -145,11 +159,10 @@ class _NavigationPageState extends State<NavigationPage> {
           ),
         );
       },
-    );
+    ).whenComplete(() {
+      NavigationPageCubit.isOpened = false;
+    });
   }
-
-
-
 
 
 
@@ -165,7 +178,7 @@ class _NavigationPageState extends State<NavigationPage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: currentPage != 2 ? CustomAppBar(
-        onBellPressed: (){},
+        onBellPressed: (){context.push('/notificationPage');},
         title: 'Алуа Алпысбаева',
         imageId: '',
         setDot: true,
@@ -176,6 +189,8 @@ class _NavigationPageState extends State<NavigationPage> {
           listener: (context,state){
             if(state is NavigationPageComments){
               _displayBottomComments();
+            }else if(state is  NavigationPageCommentsClose){
+              Navigator.pop(context);
             }
           },
           child: Stack(

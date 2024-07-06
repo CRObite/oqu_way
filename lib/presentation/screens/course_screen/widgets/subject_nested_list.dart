@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:oqu_way/presentation/screens/course_screen/widgets/subject_card.dart';
 import 'package:oqu_way/presentation/screens/course_screen/widgets/subject_name_card.dart';
 import 'package:oqu_way/presentation/screens/course_screen/widgets/test_deadline_info_card.dart';
@@ -11,11 +12,11 @@ import '../../../common/card_container_decoration.dart';
 import '../../../common/widgets/common_button.dart';
 
 class SubjectNestedList extends StatefulWidget {
-  const SubjectNestedList({super.key, required this.opened, required this.openedPressed, required this.isFirst});
+  const SubjectNestedList({super.key, required this.opened, required this.openedPressed});
 
   final bool opened;
   final VoidCallback openedPressed;
-  final bool isFirst;
+
 
   @override
   State<SubjectNestedList> createState() => _SubjectNestedListState();
@@ -38,26 +39,8 @@ class _SubjectNestedListState extends State<SubjectNestedList> {
                   widget.openedPressed();
                 }
             ),
-
-            const SizedBox(width: 17,),
-
-            widget.isFirst ? Container(
-
-              padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 12),
-              margin: const EdgeInsets.only(bottom: 15),
-              decoration: CardContainerDecoration.decoration,
-              child: Column(
-                children: [
-                  Text(AppText.attandance, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),),
-                  Text('80%', style: TextStyle(color: AppColors.greenColor),),
-                ],
-              ),
-            ):  const SizedBox(width: 90),
           ],
         ),
-
-
-
 
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
@@ -74,16 +57,12 @@ class _SubjectNestedListState extends State<SubjectNestedList> {
           child: widget.opened ? Column(
             key: ValueKey<bool>(widget.opened),
             children: [
-              const SizedBox(height: 26),
-              SubjectNameCard(buttonName: AppText.video, withDate: false,),
-              const SizedBox(height: 5,),
-              SubjectNameCard(buttonName: AppText.attend, withDate: false,),
+              const SizedBox(height: 20),
+              SubjectNameCard(buttonName: AppText.video, withDate: false, onButtonPressed: () { context.goNamed('courseVideos');},),
               const SizedBox(height: 17,),
-              const TestDeadlineInfoCard(),
+              TestDeadlineInfoCard(isTest: true, onPressed: () { context.push('/courseTestPage');},),
               const SizedBox(height: 6,),
-              const TestDeadlineInfoCard(),
-              const SizedBox(height: 17,),
-              SubjectNameCard(buttonName: AppText.attend, withDate: true,),
+              TestDeadlineInfoCard(isTest: false, onPressed: () {context.push('/courseHomework');},),
               const SizedBox(height: 26),
             ],
           ) : const SizedBox(key: ValueKey<bool>(false)),

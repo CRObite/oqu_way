@@ -105,9 +105,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onPressed:onBellPressed,
                 icon: SvgPicture.asset('assets/icons/ic_notification.svg', height: 16,)
               )
-
-
-
             ],
           ),
         ),

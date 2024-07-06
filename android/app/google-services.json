@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "690954328849",
+    "project_id": "oquway",
+    "storage_bucket": "oquway.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:690954328849:android:241b0221b0ff978d830ab0",
+        "android_client_info": {
+          "package_name": "com.example.oqu_way"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "690954328849-mfuggerho2b2kgkhn3mjrjieel62a4sr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMCIqf176_5HfrnKjVWSCQnPYGsn6PoNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "690954328849-mfuggerho2b2kgkhn3mjrjieel62a4sr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

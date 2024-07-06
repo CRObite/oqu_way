@@ -1,13 +1,18 @@
+
+
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:oqu_way/config/app_colors.dart';
-import 'package:oqu_way/config/app_shadow.dart';
-import 'package:oqu_way/presentation/common/card_container_decoration.dart';
+import 'package:oqu_way/presentation/common/confirm_dialog.dart';
 import 'package:oqu_way/presentation/screens/profile_screen/widgets/profile_part_card.dart';
 
+import '../../../config/app_colors.dart';
+import '../../../config/app_shadow.dart';
 import '../../../config/app_text.dart';
+import '../../../util/image_picker_helper.dart';
+import '../../common/widgets/common_button.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -39,22 +44,108 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
       end: collapsedTopContainerHeight,
     ).animate(animationController);
     scrollController.addListener(() {
-      if (scrollController.offset > 30) {
-        scrollController.jumpTo(30);
-      }
+      // if (scrollController.offset > 30) {
+      //   scrollController.jumpTo(30);
+      // }
     });
     // Listen to scroll changes
     scrollController.addListener(() {
 
-      if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
-        if (!animationController.isAnimating && animationController.status == AnimationStatus.completed) {
-          animationController.reverse(); // Reverse the animation when scrolling up
-        }
-      } else {
-        if (!animationController.isAnimating && animationController.status == AnimationStatus.dismissed) {
-          animationController.forward(); // Forward the animation when scrolling down
-        }
-      }
+      // if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+      //   if (!animationController.isAnimating && animationController.status == AnimationStatus.completed) {
+      //     animationController.reverse(); // Reverse the animation when scrolling up
+      //   }
+      // } else {
+      //   if (!animationController.isAnimating && animationController.status == AnimationStatus.dismissed) {
+      //     animationController.forward(); // Forward the animation when scrolling down
+      //   }
+      // }
+    });
+  }
+
+
+  void _displayImageSource() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.28,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 54,
+                  child: Center(
+                    child: Container(
+                      width: 50,
+                      height: 6,
+                      decoration: BoxDecoration(
+                          color: AppColors.greyColor,
+                          borderRadius: const BorderRadius.all(Radius.circular(50))
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(color: AppColors.greyColor),
+
+                Padding(
+                    padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () async {
+                          Uint8List? image = await  ImagePickerHelper().pickImageBytesFromGallery();
+
+                          print(image);
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.photo_outlined, color: AppColors.blueColor,size: 30,),
+                            const SizedBox(width: 25,),
+                            const Text('Галерея',style: TextStyle(fontSize: 16),)
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10,),
+                      GestureDetector(
+                        onTap: () async {
+                          Uint8List? image = await  ImagePickerHelper().pickImageBytesFromCamera();
+
+                          print(image);
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.camera_alt_outlined, color: AppColors.blueColor,size: 30,),
+                            const SizedBox(width: 25,),
+                            const Text('Камера',style: TextStyle(fontSize: 16),)
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10,),
+                      GestureDetector(
+                        onTap: (){},
+                        child: Row(
+                          children: [
+                            Icon(Icons.person_outline_rounded, color: AppColors.blueColor,size: 30,),
+                            const SizedBox(width: 25,),
+                            const Text('Аваны өшіру',style: TextStyle(fontSize: 16,color: Colors.red),)
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                )
+
+              ],
+            ),
+          ),
+        );
+      },
+    ).whenComplete(() {
+
     });
   }
 
@@ -69,7 +160,8 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-        controller: scrollController,
+        // controller: scrollController,
+        physics: const NeverScrollableScrollPhysics(),
         child: Column(
           children: [
             AnimatedBuilder(
@@ -131,18 +223,27 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                     ? Positioned(
                                   bottom: 0,
                                   right: 0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: AppColors.greenColor,
-                                      shape: BoxShape.circle,
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      _displayImageSource();},
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AppColors.greenColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Center(child: Icon(Icons.add, color: Colors.white)),
                                     ),
-                                    child: const Center(child: Icon(Icons.add, color: Colors.white)),
                                   ),
                                 )
                                     : const SizedBox(),
                               ],
                             ),
-                            SvgPicture.asset('assets/icons/ic_notification.svg', height: 18,),
+                            GestureDetector(
+                              onTap: (){
+                                context.push('/notificationPage');
+                              },
+                                child: SvgPicture.asset('assets/icons/ic_notification.svg', height: 18,)
+                            ),
                           ],
                         ),
                       ),
@@ -163,12 +264,68 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                 ProfilePartCard(title: AppText.data, onTaped: () { context.push('/profilePage/profileDetails'); },),
                 ProfilePartCard(title: AppText.rating, onTaped: () { context.push('/profilePage/profileRating'); },),
                 ProfilePartCard(title: AppText.attends, onTaped: () { context.push('/profilePage/profileAttends'); },),
-                ProfilePartCard(title: AppText.homeworks, onTaped: () { },),
-                ProfilePartCard(title: AppText.schedule, onTaped: () { context.push('/profilePage/profileSchedule'); },),
-                ProfilePartCard(title: AppText.plan, onTaped: () {  },),
-                ProfilePartCard(title: AppText.universities, onTaped: () { context.push('/profilePage/profileUniversity'); },),
+                // ProfilePartCard(title: AppText.universities, onTaped: () { context.push('/profilePage/profileUniversity'); },),
                 ProfilePartCard(title: AppText.analysis, onTaped: () { context.push('/profilePage/profileAnalysis'); },),
-                ProfilePartCard(title: AppText.questions, onTaped: () {  },),
+                // ProfilePartCard(title: AppText.questions, onTaped: () { context.push('/profilePage/profileQuestions'); },),
+
+                GestureDetector(
+                  onTap: (){
+                    ConfirmDialog.showConfirmationDialog(
+                        context,
+                        'Сіз профиліңізді жоюға сенімдісізбе?',
+                        'Иә, жою',
+                        'Жоқ',
+                            (){
+                          context.go('/loginPage');
+                        }
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: AppColors.blueColor
+                      ),
+                        color: AppColors.blueColor.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(5),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                    child: Row(
+                      children: [
+                        Text('Аккаунтты жою',style: TextStyle(fontSize: 14,color: AppColors.blueColor,fontWeight: FontWeight.bold),)
+                      ],
+                    ),
+                  ),
+                ),
+                
+                GestureDetector(
+                  onTap: (){
+                    ConfirmDialog.showConfirmationDialog(
+                        context,
+                        'Сіз профиліңізден шығуға сенімдісізбе?',
+                        'Иә, шығу',
+                        'Жоқ',
+                        (){
+                          context.go('/loginPage');
+                        }
+                    );
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    decoration: BoxDecoration(
+                        color: AppColors.blueColor,
+                        borderRadius: BorderRadius.circular(5),
+                        boxShadow: AppShadow.cardShadow
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                    child: const Row(
+                      children: [
+                        Text('Шығу',style: TextStyle(fontSize: 14,color: Colors.white),)
+                      ],
+                    ),
+                  ),
+                ),
                 const SizedBox(height: 48,),
               ],
             ),

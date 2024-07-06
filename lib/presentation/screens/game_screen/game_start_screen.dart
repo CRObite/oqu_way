@@ -77,7 +77,7 @@ class _GameStartScreenState extends State<GameStartScreen>
                   child: Image.asset('assets/image/thunder.png'),
                   builder: (context, child) {
                     return Transform.scale(
-                      scale: _animation.value * 1.5,
+                      scale: _animation.value * 1.2,
                       child: Transform.rotate(
                         angle: _animation.value * 2 * math.pi,
                         child: child,

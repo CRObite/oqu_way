@@ -52,8 +52,28 @@ dependencies:
   mask_text_input_formatter: ^2.9.0
   fl_chart: ^0.68.0
   syncfusion_flutter_calendar: ^26.1.38
+  flutter_native_splash: ^2.4.0
+  flutter_launcher_icons: ^0.13.1
+  image_picker: ^1.1.2
+  google_sign_in: ^6.2.1
+  firebase_core: ^3.1.1
+  firebase_auth: ^5.1.1
+  oauth2_client: ^3.2.2
+  video_player: ^2.9.1
+  flick_video_player: ^0.8.0
 
+flutter_native_splash:
+  background_image: assets/image/splash.png
+  image: assets/image/logo.png
+#  color: "#FFFFFF"
+  android: true
+  ios: true
+  web: false
 
+flutter_launcher_icons:
+  android: 'oqu_way'
+  ios: true
+  image_path: assets/image/small_logo.png
 
 
 dev_dependencies:

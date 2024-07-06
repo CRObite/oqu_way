@@ -73,8 +73,9 @@ class _OnboardPageState extends State<OnboardPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        toolbarHeight: 40,
+        toolbarHeight: 20,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
