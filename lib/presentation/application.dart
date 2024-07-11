@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import '../config/app_navigation.dart';
+import '../data/local/shared_preferences_operator.dart';
 import '../util/scale_size.dart';
 import '../util/scroll_behavior.dart';
 
@@ -8,9 +10,10 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp.router(
       scrollBehavior: CustomScrollBehavior(),
-      title: 'OQUWAY',
+      title: 'OquWay',
       debugShowCheckedModeBanner: false,
       routerConfig: AppNavigation.router,
       builder: (context, child) {

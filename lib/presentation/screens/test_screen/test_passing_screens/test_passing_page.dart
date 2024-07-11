@@ -1,3 +1,5 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -28,6 +30,10 @@ class _TestPassingPageState extends State<TestPassingPage> {
   int subjectIndex = 0;
   int currentQuestion = 0;
   int? selectedAns;
+
+  List<String> valuesWithExtra = ['value1value1value1', 'value2','value3','value4',];
+  List<String> selectedValues = ['','','',''];
+
 
   @override
   void initState() {
@@ -222,7 +228,7 @@ class _TestPassingPageState extends State<TestPassingPage> {
                     children: [
                       QuestionNumberRow(
                         currentQuestionIndex: currentQuestion,
-                        onSelectQuestion: (value ) {
+                        onSelectQuestion: (value) {
                           setState(() {
                             currentQuestion = value;
                           });
@@ -248,6 +254,85 @@ class _TestPassingPageState extends State<TestPassingPage> {
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context,index){
+                                if(currentQuestion >= 10){
+                                  return Container(
+                                    margin: const EdgeInsets.only(bottom: 20),
+                                    child: Row(
+                                      children: [
+                                        const Expanded(child: Text('Абылай хан')),
+                                        const SizedBox(width: 25,),
+                                        Container(
+                                          width: 150,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(width: 1, color: AppColors.greyColor),
+                                            borderRadius: const BorderRadius.all(Radius.circular(5))
+                                          ),
+                                          padding: const EdgeInsets.all(8),
+                                          child: DropdownButton2<String>(
+                                            value: selectedValues[index].isNotEmpty ? selectedValues[index] : null,
+                                            onChanged: (String? newValue) {
+                                              if(newValue!= null){
+
+                                                if(selectedValues.contains(newValue)){
+                                                  setState(() {
+                                                    selectedValues[selectedValues.indexOf(newValue)] = selectedValues[index];
+                                                    selectedValues[index] = newValue;
+                                                  });
+                                                }else{
+                                                  setState(() {
+                                                    selectedValues[index] = newValue;
+                                                  });
+                                                }
+
+                                              }
+                                            },
+                                            items: valuesWithExtra.map<DropdownMenuItem<String>>((String value) {
+                                              return DropdownMenuItem<String>(
+                                                value: value,
+                                                child: Text(
+                                                    value,
+                                                  style: const TextStyle(
+                                                    fontSize: 14, fontWeight: FontWeight.normal
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                            iconStyleData: IconStyleData(
+                                                icon: Transform.rotate(
+                                                  angle: 90 * 3.1415926535/180,
+                                                  child: SvgPicture.asset(
+                                                    'assets/icons/ic_arrow.svg',
+                                                    height: 11,
+                                                    width: 5,
+                                                  ),
+                                                )
+                                            ),
+                                            dropdownStyleData: DropdownStyleData(
+                                              maxHeight: 200,
+                                              width: MediaQuery.of(context).size.width - 60,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(5),
+                                              ),
+                                              offset: const Offset(-20, 0),
+                                              scrollbarTheme: ScrollbarThemeData(
+                                                radius: const Radius.circular(40),
+                                                thickness: WidgetStateProperty.all(6),
+                                                thumbVisibility: WidgetStateProperty.all(true),
+                                              ),
+                                            ),
+                                            isExpanded: true,
+                                            underline: Container(),
+                                            menuItemStyleData: const MenuItemStyleData(
+                                              height: 40,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+
                                 return AnswerCard(
                                     selected: selectedAns == index,
                                     onAnswerSelected: (){

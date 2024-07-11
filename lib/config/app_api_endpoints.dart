@@ -1,6 +1,11 @@
 class AppApiEndpoints {
-  static String apiBaseUrl = 'http://192.168.8.222:8080';
-  static String oauth2RedirectUrl = 'http://192.168.8.222:3000/oauth2/redirect';
-  static String googleAuthUrl = '$apiBaseUrl/oauth2/authorize/google?redirect_uri=$oauth2RedirectUrl';
+  static String url = 'https://api.oquway.kz';
+
+  static String api = '$url/api';
+  static String userLogin = '$api/user-login';
+  static String getMe = '$api/universal-get-me';
+  static String registration = '$api/user-registration';
+
+
 }
 

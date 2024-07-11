@@ -122,11 +122,11 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
                   Text('${sliderValue.round()}', style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
                 ],
               ),
+
               Slider(
                 value: sliderValue,
                 min: 0,
                 max: 140,
-                label: sliderValue.round().toString(),
                 onChanged: (double value) {
                   setState(() {
                     sliderValue = value;

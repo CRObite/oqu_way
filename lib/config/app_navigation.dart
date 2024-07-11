@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_page.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_test/course_test_page.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_test/course_test_result.dart';
@@ -43,7 +44,20 @@ import '../presentation/screens/test_screen/test_passing_screens/test_results.da
 import '../presentation/screens/test_screen/test_subject_select_page.dart';
 class AppNavigation{
 
-  static String initR = '/onboardPage';
+  static bool onBoardPassed = false;
+
+  static Future<bool> getStatus() async {
+    if(await SharedPreferencesOperator.containsOnBoardStatus()){
+      bool? value  = await SharedPreferencesOperator.getOnBoardStatus();
+      onBoardPassed = value ?? false;
+    }
+
+    return onBoardPassed;
+  }
+
+
+
+  static String initR =  onBoardPassed ? '/loginPage' : '/onboardPage';
 
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
   static final _rootNavigatorNews = GlobalKey<NavigatorState>(debugLabel: 'shellNews');

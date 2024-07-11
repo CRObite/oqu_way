@@ -27,6 +27,7 @@ class _ProfileDetailsState extends State<ProfileDetails> {
 
   String selected = '';
   List<String> valuesWithExtra = ['12 сынып','11 сынып','10 сынып','9 сынып',];
+  double sliderValue = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +110,27 @@ class _ProfileDetailsState extends State<ProfileDetails> {
                   Container(width: double.infinity,height: 1,color: AppColors.greyColor,)
                 ],
               ),
-            )
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Пробный тесттен алған балл', style: TextStyle(fontSize: 16),),
+                Text('${sliderValue.round()}', style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+              ],
+            ),
+
+            Slider(
+                value: sliderValue,
+                min: 0,
+                max: 140,
+                onChanged: (double value) {
+                  setState(() {
+                    sliderValue = value;
+                  });
+                },
+                activeColor: AppColors.blueColor,
+                inactiveColor:AppColors.greyColor.withOpacity(0.5)
+            ),
           ],
         ),
       ),

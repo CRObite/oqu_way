@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_text.dart';
+import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/presentation/screens/on_board_screens/widgets/progress_button.dart';
 
 import '../../../config/app_colors.dart';
@@ -15,6 +16,20 @@ class OnboardPage extends StatefulWidget {
 
 class _OnboardPageState extends State<OnboardPage>
     with SingleTickerProviderStateMixin {
+
+
+
+  Future<void> checkOnboard() async {
+    if(await SharedPreferencesOperator.containsOnBoardStatus()){
+      bool? value  = await SharedPreferencesOperator.getOnBoardStatus();
+      if(value != null && value){
+        context.go('/loginPage');
+      }
+    }
+
+  }
+
+
   late Animation<double> _animation;
   late AnimationController _controller;
 
@@ -25,6 +40,8 @@ class _OnboardPageState extends State<OnboardPage>
 
   @override
   void initState() {
+    checkOnboard();
+
     super.initState();
     _controller = AnimationController(
       duration: const Duration(milliseconds: 600),
@@ -123,6 +140,7 @@ class _OnboardPageState extends State<OnboardPage>
                         });
                         _updateAnimation();
                       }else{
+                        SharedPreferencesOperator.saveOnBoardStatus(true);
                         context.go('/loginPage');
                       }
                     },
