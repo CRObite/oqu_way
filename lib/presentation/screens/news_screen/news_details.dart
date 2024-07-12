@@ -1,24 +1,55 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_image.dart';
 import 'package:oqu_way/config/app_text.dart';
+import 'package:oqu_way/data/repository/post_repository/post_repository.dart';
+import 'package:oqu_way/domain/face_subject.dart';
 import 'package:oqu_way/presentation/blocs/navigation_screen/navigation_page_cubit/navigation_page_cubit.dart';
+import 'package:oqu_way/presentation/screens/news_screen/widgets/news_card.dart';
 
+import '../../../config/app_colors.dart';
+import '../../../config/app_image_loading.dart';
+import '../../../data/repository/media_file_repositry/media_file_repository.dart';
+import '../../../domain/post.dart';
 import '../../common/widgets/comment_view_check_row.dart';
 
 class NewsDetails extends StatefulWidget {
-  const NewsDetails({super.key, required this.displayBottomCommentsCallback});
+  const NewsDetails({super.key, required this.newsId});
 
-  final Function(BuildContext) displayBottomCommentsCallback;
+  final int? newsId;
 
   @override
   State<NewsDetails> createState() => _NewsDetailsState();
 }
 
 class _NewsDetailsState extends State<NewsDetails> {
+
+  Post? post;
+
+  @override
+  void initState() {
+    print(widget.newsId);
+    if(widget.newsId!= null){
+      getPostById();
+    }
+
+    super.initState();
+  }
+
+
+
+  Future<void> getPostById() async {
+    Post? value = await PostRepository().getPostById(TempToken.token, widget.newsId!);
+    setState(() {
+      post = value;
+    });
+
+  }
 
 
   @override
@@ -32,7 +63,7 @@ class _NewsDetailsState extends State<NewsDetails> {
       },
       child: Container(
         color: Colors.white,
-        child: SafeArea(
+        child: post== null? const Center(child: CircularProgressIndicator(),):SafeArea(
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,14 +82,29 @@ class _NewsDetailsState extends State<NewsDetails> {
                             style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),)
                       ),
                       const SizedBox(height: 10,),
-                      const Text('Как будет проходить ЕНТ в  2023 году?',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                      Text(post!.title ?? '???',style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
                     ],
                   ),
                 ),
 
                 SizedBox(
                   height: 250,
-                  child: Image.network(AppImage.newsImage, fit: BoxFit.cover,),
+                  child: FutureBuilder<Uint8List?>(
+                    future: MediaFileRepository().downloadFile(TempToken.token, post!.mediaFiles!.id),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox(
+                          height: 250, width: double.infinity,
+                            child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
+                      } else if (snapshot.hasError) {
+                        return const NoImagePhoto(height: 250, width: double.infinity);
+                      } else if (!snapshot.hasData) {
+                        return const NoImagePhoto(height: 250, width: double.infinity);
+                      } else {
+                        return Image.memory(snapshot.data!);
+                      }
+                    },
+                  ),
                 ),
 
                 Padding(
@@ -74,9 +120,7 @@ class _NewsDetailsState extends State<NewsDetails> {
 
                       const SizedBox(height: 10,),
 
-                      const Text('Қаңтар ҰБТ-сы ақылы болғанын бәріміз білеміз. Ал Маусым ҰБТ-сы мектеп оқушыларына тегін болады. Айырмашылық неде? Қаңтар, Наурыз және Тамыз ҰБТ-сының сертификаттары университетке ақылы бөлімге түсуге мүмкіндік береді. Маусым ҰБТ-сының сертификаты грант конкурсына қатысуға мүмкіндік береді. Оқушылардың арасында жиі кездесетін қате пікір: «Мен Наурыз ҰБТ-ны тапсырсам Қаңтар ҰБТ-ның нәтижесі жойылып кетеді» Оқушы 4 ҰБТ-ны тапсырса, сол 4-еуінің де нәтижесі келесі оқу жылына дейін сақталады Сәйкесінше, оқуға түсерде өзі қалаған сертификатты қолдана алады ҰБТ-ның нәтижесін біздің приложениеден көруге болады. Ол үшін өз профиліңе кіріп, ЖСН (ИИН) енгізу керек.',
-                       style: TextStyle(fontSize: 12),)
-
+                      Html(data: post!.description ?? '???',)
                     ],
                   ),
                 ),

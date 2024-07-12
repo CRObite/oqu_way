@@ -11,7 +11,7 @@ class AuthorizationRepository {
       )
   );
 
-  //
+
   // Future<void> getAllCities(String accessToken) async {
   //   dio.options.headers['Authorization'] = 'Bearer $accessToken';
   //
@@ -34,5 +34,18 @@ class AuthorizationRepository {
   //   }
   // }
 
+  Future<int?> userGetMyId(String accessToken) async {
+    dio.options.headers['Authorization'] = 'Bearer $accessToken';
+
+    final response = await dio.get(
+      AppApiEndpoints.getMe,
+    );
+
+    if (response.statusCode! ~/ 100 == 2) {
+      return response.data['id'];
+    } else {
+      return null;
+    }
+  }
 
 }

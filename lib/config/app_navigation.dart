@@ -386,8 +386,18 @@ class AppNavigation{
             name: 'profileUniversityDetails',
             pageBuilder: (context, state) => SwipeablePage(
               builder: (context){
+
+                int? universityId;
+                if(state.extra != null){
+                  final extras = state.extra as Map<String, int>;
+                  if(extras.containsKey('universityId')){
+                    universityId = extras['universityId'];
+                  }
+                }
+
                 return ProfileUniversityDetails(
                   key: state.pageKey,
+                  universityId: universityId,
                 );
               },
             ),
@@ -469,9 +479,18 @@ class AppNavigation{
                           name: 'newsDetails',
                           pageBuilder: (context, state) => SwipeablePage(
                             builder: (context){
+
+                              int? newsId;
+                              if(state.extra != null){
+                                final extras = state.extra as Map<String, int>;
+                                if(extras.containsKey('newsId')){
+                                  newsId = extras['newsId'];
+                                }
+                              }
+
                               return NewsDetails(
                                 key: state.pageKey,
-                                displayBottomCommentsCallback: (context) {  },
+                                newsId: newsId,
                               );
                             },
                           ),
