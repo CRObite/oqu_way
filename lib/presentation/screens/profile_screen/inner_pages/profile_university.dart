@@ -1,18 +1,10 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:oqu_way/config/app_shadow.dart';
 import 'package:oqu_way/presentation/screens/profile_screen/widgets/university_card.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_text.dart';
-import '../../../../data/repository/university_repository/university_repository.dart';
-import '../../../../domain/face_subject.dart';
-import '../../../../domain/pagination.dart';
-import '../../../../domain/university.dart';
-import '../../../../util/custom_exeption.dart';
 import '../../../common/pagination_builder.dart';
+import '../../../common/widgets/common_search_field.dart';
 
 class ProfileUniversity extends StatefulWidget {
   const ProfileUniversity({super.key});
@@ -24,7 +16,10 @@ class ProfileUniversity extends StatefulWidget {
 class _ProfileUniversityState extends State<ProfileUniversity> {
 
   bool isOpened = false;
+
   TextEditingController searchController = TextEditingController();
+  String query = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,39 +31,9 @@ class _ProfileUniversityState extends State<ProfileUniversity> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(20),
-                child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.all(Radius.circular(5)),
-                      border: Border.all(
-                          width: 1,
-                          color: AppColors.greyColor
-                      ),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search_rounded,color: AppColors.greyColor,),
-                        const SizedBox(width: 10,),
-                        Expanded(
-                          child: SizedBox(
-                            height: 40,
-                            child: TextFormField(
-                              controller: searchController,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 12,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: AppText.search,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                ),
+                child: CommonSearchField(searchController: searchController, onEnded: (){
+                  setState(() {query = searchController.text;});
+                },),
               ),
 
 
@@ -143,15 +108,19 @@ class _ProfileUniversityState extends State<ProfileUniversity> {
                     ),
                   );
                 }
-              ): PaginationBuilder(
-                size: 10,
-                type: PageableType.universities,
-                query: searchController.text,
-                child: (context, university) => UniversityCard(university: university),
+              ): Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: PaginationBuilder(
+                    size: 10,
+                    bottomSize: 96,
+                    type: PageableType.universities,
+                    query: query,
+                    child: (context, university) => UniversityCard(university: university),
+                  ),
+                ),
               ),
 
-
-              const SizedBox(height: 96,)
             ],
         ),
       ),

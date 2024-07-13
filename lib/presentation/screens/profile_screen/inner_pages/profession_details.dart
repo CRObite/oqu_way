@@ -1,17 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oqu_way/data/repository/specialization_repository/specialization_repository.dart';
+import 'package:oqu_way/domain/face_subject.dart';
+import 'package:oqu_way/domain/specialization.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_text.dart';
 
 class ProfessionDetails extends StatefulWidget {
-  const ProfessionDetails({super.key});
+  const ProfessionDetails({super.key, required this.specializationId});
+
+  final int? specializationId;
 
   @override
   State<ProfessionDetails> createState() => _ProfessionDetailsState();
 }
 
 class _ProfessionDetailsState extends State<ProfessionDetails> {
+
+  Specialization? specialization;
+
+  @override
+  void initState() {
+    if(widget.specializationId != null){
+      getSpecialization();
+    }
+
+    super.initState();
+  }
+
+  Future<void> getSpecialization() async {
+    Specialization? value = await SpecializationRepository().getSpecializationsById(TempToken.token, widget.specializationId!);
+
+    setState(() {
+      specialization = value;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,18 +49,18 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
             },
             child: const Icon(Icons.arrow_back_ios_new_rounded,size: 18, )
         ),
-        title: Text('${AppText.universities} > SDU  > Мамандықтар', style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+        title: specialization!=null? Text('${AppText.universities} > Мамандықтар > ${specialization!.name}', style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),): const SizedBox(),
       ),
-      body: Padding(
+      body: specialization!=null? Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20,),
-              Text('Ақпараттық технологиялар',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.moreDarkerBlueColor),),
+              Text(specialization!.name,style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.moreDarkerBlueColor),),
               const SizedBox(height: 10,),
-              Text('Пәндер : Математика, Информатика',style: TextStyle(fontSize: 10, color: AppColors.greenColor),),
+              Text('Пәндер : ${specialization!.subjects[0].name}, ${specialization!.subjects[1].name}',style: TextStyle(fontSize: 10, color: AppColors.greenColor),),
 
               const SizedBox(height: 20,),
 
@@ -46,7 +72,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Код бағасы',style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.moreDarkerBlueColor),),
-                        const Text('B057',style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(specialization!.code,style: const TextStyle(fontWeight: FontWeight.bold),),
                       ],
                     ),
                     const SizedBox(height: 10,),
@@ -54,7 +80,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Грант саны',style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.moreDarkerBlueColor),),
-                        const Text('2500',style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text('${specialization!.grandCount}',style: const TextStyle(fontWeight: FontWeight.bold),),
                       ],
                     ),
                     const SizedBox(height: 10,),
@@ -62,7 +88,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Грантқа шекті балл',style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.moreDarkerBlueColor),),
-                        const Text('140',style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text('${specialization!.grandScore}',style: const TextStyle(fontWeight: FontWeight.bold),),
                       ],
                     ),
                     const SizedBox(height: 10,),
@@ -70,7 +96,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Орташа жалақы',style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.moreDarkerBlueColor),),
-                        const Text('1000 000 тг',style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text('${specialization!.averageSalary}',style: const TextStyle(fontWeight: FontWeight.bold),),
                       ],
                     ),
                     const SizedBox(height: 10,),
@@ -78,7 +104,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Сұраныс',style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.moreDarkerBlueColor),),
-                        const Text('жоғары',style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(specialization!.demand,style: const TextStyle(fontWeight: FontWeight.bold),),
                       ],
                     ),
 
@@ -90,7 +116,8 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                 children: [
                   GestureDetector(
                     onTap: (){
-                      context.push('/profileUniversityDetails/profileUniversityProfession/professionDetails/professionInUniversities');
+                      context.push('/profileUniversityDetails/profileUniversityProfession/professionDetails/professionInUniversities',
+                        extra: {'specializationId': specialization!.id , 'specializationName': specialization!.name, 'listOfSubject': specialization!.subjects});
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -108,7 +135,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('Университеттер',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                          Text('15',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold, color: AppColors.greenColor),),
+                          Text('${specialization!.universities!.length}',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold, color: AppColors.greenColor),),
                         ],
                       ),
                     ),
@@ -148,8 +175,8 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                 children: [
                   Text('Қысқаша сипаттама',style: TextStyle(fontSize: 11, color: AppColors.greenColor),),
                   const SizedBox(height: 10,),
-                  const Text('Біз көрсететін Грант саны - ЖАЛПЫ ГРАНТ конкурсында ойнатылатын грант саны. Бұл жерде «педагогикалық квота», «медициналық квота», «серпін» секілді квоталық гранттар көрсетілмеген. IT маман – компьютерлік жүйелерді әзірлейді. Бағдарлама жасайды, компьютерге қатысты жұмыстарды істейді. Олар – электроника инженерлері, байланыс және аспап жасаушы инженерлер, өнеркәсіптік роботтарға техникалық қызмет көрсетуші. Жұмысы жайлы: IT маманы әлемдегі ең керекті және перспективті мамандықтардың бірі. IT мамандығына түсу арқылы сіз JAVA, C++, PYTHON, HTML жүйесінде код жазып үйрене аласыз. Осы білімді алдағы уақытта жаңа программалар және веб-сайттар жасау үшін қолдана аласыз. Кез-келген компанияға осындай қызметтер қажет болғандықтан, жұмыс табу қиын болмайды. Сондай-ақ егер сіз бөгде адамға бағынғыңыз келмей, еркін жұмыс жасағыңыз келсе, онда фрилансерлік жұмыс атқара аласыз. Фрилансер дегеніміз интернеттегі түрлі тапсырыстарды белгілі бір уақытқа қабылдап, орындайтын жұмысшыларды айтамыз. Осындай тапсырыстардың қатарына веб-сайттар мен программалар жасау жатады. Басты қасиеттері: - Компьютердің нағыз маманы; - Ағылшын тілінде еркін сөйлеу; - JAVA, C++, PYTHON және т.б. программаларда еркін код жаза алу; - Логикалық өй-өрісі дамыған болу; - Күні бойы компьютер алдында отыруға дайын болу.'
-                    ,style: TextStyle(fontSize: 12),)
+                  Text(specialization!.description
+                    ,style: const TextStyle(fontSize: 12),)
                 ],
               ),
               const SizedBox(height: 20,)
@@ -157,7 +184,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
             ],
           ),
         ),
-      ),
+      ): const SizedBox(),
 
     );
   }

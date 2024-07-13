@@ -31,11 +31,14 @@ class _NewsCardState extends State<NewsCard> {
 
 
   Post? post;
+  bool isLoading = true;
 
   @override
   void initState() {
     print(widget.post);
-    post = Post.fromJson(widget.post);
+    setState(() {
+      post = Post.fromJson(widget.post);
+    });
     super.initState();
   }
 
@@ -118,7 +121,7 @@ class _NewsCardState extends State<NewsCard> {
 
           ],
         ),
-      ),
+      )
     );
   }
 }

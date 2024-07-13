@@ -30,6 +30,7 @@ class NewsDetails extends StatefulWidget {
 class _NewsDetailsState extends State<NewsDetails> {
 
   Post? post;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -47,6 +48,7 @@ class _NewsDetailsState extends State<NewsDetails> {
     Post? value = await PostRepository().getPostById(TempToken.token, widget.newsId!);
     setState(() {
       post = value;
+      isLoading =false;
     });
 
   }
@@ -63,7 +65,9 @@ class _NewsDetailsState extends State<NewsDetails> {
       },
       child: Container(
         color: Colors.white,
-        child: post== null? const Center(child: CircularProgressIndicator(),):SafeArea(
+        child: isLoading? const Center(child: CircularProgressIndicator(),):
+            post!= null?
+        SafeArea(
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +134,7 @@ class _NewsDetailsState extends State<NewsDetails> {
               ],
             ),
           ),
-        ),
+        ): const Center(child: Text('ErrorText')),
       ),
     );
   }

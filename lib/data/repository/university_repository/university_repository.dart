@@ -24,6 +24,7 @@ class UniversityRepository{
 
     print(page);
     print(size);
+    print(query);
 
     final response = await dio.get(
       AppApiEndpoints.getAllUniversity,
@@ -52,6 +53,8 @@ class UniversityRepository{
     );
 
     if (response.statusCode! ~/ 100 == 2) {
+
+      print(response.data);
       return University.fromJson(response.data);
     } else {
       return null;

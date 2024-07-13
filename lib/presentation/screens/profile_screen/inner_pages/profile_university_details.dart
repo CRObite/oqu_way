@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_colors.dart';
@@ -5,7 +7,9 @@ import 'package:oqu_way/data/repository/university_repository/university_reposit
 import 'package:oqu_way/domain/face_subject.dart';
 
 import '../../../../config/app_text.dart';
+import '../../../../data/repository/media_file_repositry/media_file_repository.dart';
 import '../../../../domain/university.dart';
+import '../../news_screen/widgets/news_card.dart';
 
 class ProfileUniversityDetails extends StatefulWidget {
   const ProfileUniversityDetails({super.key, required this.universityId});
@@ -64,12 +68,31 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(
+              Container(
                 width: 75,
                 height: 75,
-                child: Image.asset(
-                  'assets/image/university.png',
-                  fit: BoxFit.cover
+                decoration: BoxDecoration(
+                    border: Border.all(width: 2,color: AppColors.blueColor),
+                    borderRadius: const BorderRadius.all(Radius.circular(5))
+                ),
+                padding: const EdgeInsets.all(5),
+                child: FutureBuilder<Uint8List?>(
+                  future: MediaFileRepository().downloadFile(TempToken.token, university!.mediaFiles!.id),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return SizedBox(
+                          height: 60,
+                          width: 60,
+                          child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,))
+                      );
+                    } else if (snapshot.hasError) {
+                      return const NoImagePhoto(height: 60, width: 60);
+                    } else if (!snapshot.hasData) {
+                      return const NoImagePhoto(height: 60, width: 60);
+                    } else {
+                      return Image.memory(snapshot.data!);
+                    }
+                  },
                 ),
               ),
               const SizedBox(height: 20,),
@@ -127,7 +150,9 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
                 children: [
                   GestureDetector(
                     onTap: (){
-                      context.push('/profileUniversityDetails/profileUniversityProfession');
+                      context.push('/profileUniversityDetails/profileUniversityProfession',
+                        extra: {'universityId': university!.id}
+                      );
                     },
                     child: Container(
                       decoration: BoxDecoration(

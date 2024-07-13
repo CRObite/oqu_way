@@ -11,9 +11,10 @@ import '../../../../domain/university.dart';
 import '../../news_screen/widgets/news_card.dart';
 
 class UniversityCard extends StatefulWidget {
-  const UniversityCard({super.key, this.university});
+  const UniversityCard({super.key, this.university, this.popUntil = false});
 
   final dynamic university;
+  final bool popUntil;
 
   @override
   State<UniversityCard> createState() => _UniversityCardState();
@@ -22,9 +23,15 @@ class UniversityCard extends StatefulWidget {
 class _UniversityCardState extends State<UniversityCard> {
   Uint8List? image;
   University?  university;
+
+
   @override
   void initState() {
-    university = University.fromJson(widget.university);
+
+    setState(() {
+      university = University.fromJson(widget.university);
+    });
+
 
     super.initState();
   }
@@ -33,6 +40,14 @@ class _UniversityCardState extends State<UniversityCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
+
+        if(widget.popUntil){
+          context.pop();
+          context.pop();
+          context.pop();
+          context.pop();
+        }
+
         context.push('/profileUniversityDetails', extra: {'universityId':university!.id });
       },
       child: Container(

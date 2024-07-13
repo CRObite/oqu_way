@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/data/local/shared_preferences_operator.dart';
+import 'package:oqu_way/domain/subject.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_page.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_test/course_test_page.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_test/course_test_result.dart';
@@ -408,8 +409,18 @@ class AppNavigation{
                   name: 'profileUniversityProfession',
                   pageBuilder: (context, state) => SwipeablePage(
                     builder: (context){
+
+                      int? universityId;
+                      if(state.extra != null){
+                        final extras = state.extra as Map<String, int>;
+                        if(extras.containsKey('universityId')){
+                          universityId = extras['universityId'];
+                        }
+                      }
+
                       return ProfileUniversityProfession(
                         key: state.pageKey,
+                        universityId: universityId,
                       );
                     },
                   ),
@@ -420,8 +431,17 @@ class AppNavigation{
                         name: 'professionDetails',
                         pageBuilder: (context, state) => SwipeablePage(
                           builder: (context){
+                            int? specializationId;
+                            if(state.extra != null){
+                              final extras = state.extra as Map<String, int>;
+                              if(extras.containsKey('specializationId')){
+                                specializationId = extras['specializationId'];
+                              }
+                            }
+
                             return ProfessionDetails(
                               key: state.pageKey,
+                              specializationId: specializationId,
                             );
                           },
                         ),
@@ -431,9 +451,31 @@ class AppNavigation{
                             path: 'professionInUniversities',
                             name: 'professionInUniversities',
                             pageBuilder: (context, state) => SwipeablePage(
+
                               builder: (context){
+
+                                int? specializationId;
+                                String specializationName = '';
+                                List<Subject> listOfSubject = [];
+                                if(state.extra != null){
+                                  final extras = state.extra as Map<String, dynamic>;
+                                  if(extras.containsKey('specializationId')){
+                                    specializationId = extras['specializationId'] as int;
+                                  }
+                                  if(extras.containsKey('specializationName')){
+                                    specializationName = extras['specializationName'] as String;
+                                  }
+
+                                  if(extras.containsKey('listOfSubject')){
+                                    listOfSubject = extras['listOfSubject'];
+                                  }
+                                }
+
                                 return ProfessionInUniversities(
                                   key: state.pageKey,
+                                  specializationId: specializationId,
+                                  specializationName: specializationName,
+                                  listOfSubject: listOfSubject,
                                 );
                               },
                             ),
