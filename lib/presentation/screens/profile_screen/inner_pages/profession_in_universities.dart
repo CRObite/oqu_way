@@ -6,6 +6,7 @@ import 'package:oqu_way/presentation/common/pagination_builder.dart';
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_shadow.dart';
 import '../../../../config/app_text.dart';
+import '../../../blocs/pagination_builder/pagination_builder_cubit/pagination_builder_cubit.dart';
 import '../widgets/university_card.dart';
 
 class ProfessionInUniversities extends StatefulWidget {

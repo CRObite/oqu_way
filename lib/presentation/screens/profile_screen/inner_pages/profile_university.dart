@@ -3,6 +3,7 @@ import 'package:oqu_way/presentation/screens/profile_screen/widgets/university_c
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_text.dart';
+import '../../../blocs/pagination_builder/pagination_builder_cubit/pagination_builder_cubit.dart';
 import '../../../common/pagination_builder.dart';
 import '../../../common/widgets/common_search_field.dart';
 
@@ -85,26 +86,22 @@ class _ProfileUniversityState extends State<ProfileUniversity> {
                         isOpened = false;
                       });
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                                color: AppColors.greyColor,
-                                width: 1
-                            ),
-                            top: BorderSide(
-                                color: AppColors.greyColor,
-                                width: 1
-                            ),
-                          )
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 18),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Text('Алматы'),
-                        ],
-                      ),
+                    child: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Divider(),
+
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Text('Алматы'),
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                      ],
                     ),
                   );
                 }

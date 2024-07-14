@@ -1,9 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../config/app_colors.dart';
 import '../../../config/app_shadow.dart';
+import '../../../data/repository/media_file_repositry/media_file_repository.dart';
+import '../../../domain/face_subject.dart';
+import '../../screens/news_screen/widgets/news_card.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomAppBar({super.key, required this.onBellPressed, required this.title, required this.imageId, this.setDot = false});
@@ -42,13 +47,28 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     Padding(
                       padding: const EdgeInsets.all(2),
                       child: imageId.isNotEmpty ? Container(
-                        width: 35,
-                        height: 35,
+                        width: 35, height: 35,
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(
                             Radius.circular(5.0),
                           ),
+                        ),
+                        child: FutureBuilder<Uint8List?>(
+                          future: MediaFileRepository().downloadFile(TempToken.token, imageId),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState == ConnectionState.waiting) {
+                              return SizedBox(
+                                  height: 70, width: double.infinity,
+                                  child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
+                            } else if (snapshot.hasError) {
+                              return const NoImagePhoto(width: 35, height: 35,);
+                            } else if (!snapshot.hasData) {
+                              return const NoImagePhoto(width: 35, height: 35);
+                            } else {
+                              return Image.memory(snapshot.data!, fit: BoxFit.cover,width: 35,);
+                            }
+                          },
                         ),
                       ): Container(
                         width: 35,

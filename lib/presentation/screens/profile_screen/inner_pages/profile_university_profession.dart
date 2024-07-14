@@ -7,6 +7,7 @@ import 'package:oqu_way/presentation/screens/profile_screen/widgets/specilaizati
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_shadow.dart';
 import '../../../../config/app_text.dart';
+import '../../../blocs/pagination_builder/pagination_builder_cubit/pagination_builder_cubit.dart';
 import '../../../common/widgets/common_search_field.dart';
 
 class ProfileUniversityProfession extends StatefulWidget {

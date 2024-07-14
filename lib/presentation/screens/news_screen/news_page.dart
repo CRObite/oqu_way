@@ -4,6 +4,7 @@ import 'package:oqu_way/config/app_text.dart';
 import 'package:oqu_way/presentation/common/pagination_builder.dart';
 import 'package:oqu_way/presentation/screens/news_screen/widgets/news_card.dart';
 
+import '../../blocs/pagination_builder/pagination_builder_cubit/pagination_builder_cubit.dart';
 
 
 class NewsPage extends StatefulWidget {
@@ -14,8 +15,6 @@ class NewsPage extends StatefulWidget {
 }
 
 class _NewsPageState extends State<NewsPage> {
-
-
   @override
   Widget build(BuildContext context) {
     return Padding(
