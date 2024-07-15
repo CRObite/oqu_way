@@ -7,14 +7,14 @@ part 'specialization.g.dart';
 @JsonSerializable()
 class Specialization {
   int id;
-  String name;
+  String? name;
   int? grandScore;
   int? grandCount;
   int? averageSalary;
-  String demand;
-  String code;
-  String description;
-  List<Subject> subjects;
+  String? demand;
+  String? code;
+  String? description;
+  List<Subject>? subjects;
   List<University>? universities;
 
   Specialization(

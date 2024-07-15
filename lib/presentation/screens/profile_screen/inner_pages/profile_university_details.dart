@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_colors.dart';
+import 'package:oqu_way/data/repository/comment_repository/comment_repository.dart';
 import 'package:oqu_way/data/repository/university_repository/university_repository.dart';
 import 'package:oqu_way/domain/face_subject.dart';
 
@@ -98,10 +99,10 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
               const SizedBox(height: 20,),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 58),
-                child: Text(university!.name,textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.moreDarkerBlueColor),),
+                child: Text(university!.name ?? '???',textAlign: TextAlign.center, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.moreDarkerBlueColor),),
               ),
               const SizedBox(height: 10,),
-              Text('${university!.city.name} қаласы, ${university!.address}',style: TextStyle(fontSize: 10, color: AppColors.moreDarkerBlueColor),),
+              Text('${university!.city!.name} қаласы, ${university!.address}',style: TextStyle(fontSize: 10, color: AppColors.moreDarkerBlueColor),),
               Text('Код : ${university!.code}',style: TextStyle(fontSize: 10, color: AppColors.moreDarkerBlueColor),),
           
               const SizedBox(height: 20,),
@@ -130,7 +131,7 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Жатақхана',style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.moreDarkerBlueColor),),
-                        Text(university!.dormitory? 'бар': 'жоқ',style: const TextStyle(fontWeight: FontWeight.bold),),
+                        Text(university!.dormitory! ? 'бар': 'жоқ',style: const TextStyle(fontWeight: FontWeight.bold),),
                       ],
                     ),
                     const SizedBox(height: 10,),
@@ -138,7 +139,7 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Әскери кафедра',style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.moreDarkerBlueColor),),
-                        Text(university!.militaryDepartment? 'бар': 'жоқ',style: const TextStyle(fontWeight: FontWeight.bold),),
+                        Text(university!.militaryDepartment! ? 'бар': 'жоқ',style: const TextStyle(fontWeight: FontWeight.bold),),
                       ],
                     ),
           
@@ -178,7 +179,7 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
           
                   GestureDetector(
                     onTap: (){
-                      context.push('/profileComments');
+                      context.push('/profileComments', extra: {'id': university!.id, 'type':'${CommentType.University}'});
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -209,7 +210,7 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
                 children: [
                   Text('Қысқаша сипаттама',style: TextStyle(fontSize: 11, color: AppColors.greenColor),),
                   const SizedBox(height: 10,),
-                  Text(university!.description
+                  Text(university!.description ?? '???'
                       ,style: const TextStyle(fontSize: 12),)
                 ],
               )

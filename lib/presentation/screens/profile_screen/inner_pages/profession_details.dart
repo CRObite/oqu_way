@@ -6,6 +6,7 @@ import 'package:oqu_way/domain/specialization.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_text.dart';
+import '../../../../data/repository/comment_repository/comment_repository.dart';
 
 class ProfessionDetails extends StatefulWidget {
   const ProfessionDetails({super.key, required this.specializationId});
@@ -58,9 +59,9 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20,),
-              Text(specialization!.name,style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.moreDarkerBlueColor),),
+              Text(specialization!.name ?? '???',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.moreDarkerBlueColor),),
               const SizedBox(height: 10,),
-              Text('Пәндер : ${specialization!.subjects[0].name}, ${specialization!.subjects[1].name}',style: TextStyle(fontSize: 10, color: AppColors.greenColor),),
+              Text('Пәндер : ${specialization!.subjects![0].name}, ${specialization!.subjects![1].name}',style: TextStyle(fontSize: 10, color: AppColors.greenColor),),
 
               const SizedBox(height: 20,),
 
@@ -72,7 +73,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Код бағасы',style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.moreDarkerBlueColor),),
-                        Text(specialization!.code,style: const TextStyle(fontWeight: FontWeight.bold),),
+                        Text(specialization!.code ?? '???',style: const TextStyle(fontWeight: FontWeight.bold),),
                       ],
                     ),
                     const SizedBox(height: 10,),
@@ -104,7 +105,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('Сұраныс',style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.moreDarkerBlueColor),),
-                        Text(specialization!.demand,style: const TextStyle(fontWeight: FontWeight.bold),),
+                        Text(specialization!.demand ?? '???',style: const TextStyle(fontWeight: FontWeight.bold),),
                       ],
                     ),
 
@@ -143,7 +144,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
 
                   GestureDetector(
                     onTap: (){
-                      context.push('/profileComments');
+                      context.push('/profileComments', extra: {'id': specialization!.id, 'type': '${CommentType.Specialization}'});
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -175,7 +176,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
                 children: [
                   Text('Қысқаша сипаттама',style: TextStyle(fontSize: 11, color: AppColors.greenColor),),
                   const SizedBox(height: 10,),
-                  Text(specialization!.description
+                  Text(specialization!.description ?? '???'
                     ,style: const TextStyle(fontSize: 12),)
                 ],
               ),

@@ -45,7 +45,7 @@ class _SpecializationCardState extends State<SpecializationCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      specialization!.name,
+                      specialization!.name ?? '???',
                       style: const TextStyle(fontSize: 13,
                           fontWeight: FontWeight.bold),
                     ),

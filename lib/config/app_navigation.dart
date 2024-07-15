@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/data/local/shared_preferences_operator.dart';
+import 'package:oqu_way/data/repository/comment_repository/comment_repository.dart';
+import 'package:oqu_way/domain/comment.dart';
 import 'package:oqu_way/domain/subject.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_page.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_test/course_test_page.dart';
@@ -279,7 +281,6 @@ class AppNavigation{
                 key: state.pageKey,
               );
             }
-
           },
           routes: [
             GoRoute(
@@ -374,8 +375,24 @@ class AppNavigation{
           name: 'profileComments',
           pageBuilder: (context, state) => SwipeablePage(
             builder: (context){
+
+              int? id;
+              String? type;
+
+              if(state.extra != null){
+                final extras = state.extra as Map<String, dynamic>;
+                if(extras.containsKey('id')){
+                  id = extras['id'] as int;
+                }
+                if(extras.containsKey('type')){
+                  type = extras['type'] as String;
+                }
+              }
+
               return ProfileComments(
                 key: state.pageKey,
+                type: type!,
+                id: id!,
               );
             },
           ),
@@ -604,27 +621,13 @@ class AppNavigation{
                 navigatorKey: _rootNavigatorTest,
                 routes: [
                   GoRoute(
-                    path: '/test',
-                    name: 'Test',
+                    path: '/testSubjectSelectPage',
+                    name: 'testSubjectSelectPage',
                     builder: (context,state){
-                      return TestPage(
+                      return TestSubjectSelectPage(
                         key: state.pageKey,
                       );
                     },
-                    routes: [
-                      GoRoute(
-                        path: 'testSubjectSelectPage',
-                        name: 'testSubjectSelectPage',
-                        pageBuilder: (context, state) => SwipeablePage(
-                          builder: (context){
-                            return TestSubjectSelectPage(
-                              key: state.pageKey,
-                            );
-                          },
-                        ),
-                      )
-
-                    ]
                   )
                 ],
               ),

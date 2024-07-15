@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:oqu_way/domain/comment.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_text.dart';
 
 class CommentsRow extends StatefulWidget {
-  const CommentsRow({super.key});
+  const CommentsRow({super.key, required this.comment});
 
-
-
+  final Comment comment;
 
   @override
   State<CommentsRow> createState() => _CommentsRowState();
@@ -72,7 +72,7 @@ class _CommentsRowState extends State<CommentsRow> with SingleTickerProviderStat
                         shape: BoxShape.circle
                     ),
                     padding: const EdgeInsets.all(13),
-                    child: const Text('A',style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                    child: Text(widget.comment.appUser.login!= null? widget.comment.appUser.login![0]: '?',style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
                   ),
 
                   const SizedBox(width: 10,),
@@ -80,8 +80,8 @@ class _CommentsRowState extends State<CommentsRow> with SingleTickerProviderStat
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Асем',style: TextStyle(fontWeight: FontWeight.bold),),
-                      const Text('Консультация калай алуға болады?',style: TextStyle(),),
+                      Text(widget.comment.appUser.login!= null? widget.comment.appUser.login!: '?',style: const TextStyle(fontWeight: FontWeight.bold),),
+                      Text(widget.comment.text),
                       const SizedBox(height: 5,),
                       Text(AppText.sendResponse,style: TextStyle(color: AppColors.greyColor,fontSize: 12)),
                     ],

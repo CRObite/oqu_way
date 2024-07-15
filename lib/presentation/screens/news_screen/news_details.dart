@@ -7,6 +7,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_image.dart';
 import 'package:oqu_way/config/app_text.dart';
+import 'package:oqu_way/data/repository/comment_repository/comment_repository.dart';
 import 'package:oqu_way/data/repository/post_repository/post_repository.dart';
 import 'package:oqu_way/domain/face_subject.dart';
 import 'package:oqu_way/presentation/blocs/navigation_screen/navigation_page_cubit/navigation_page_cubit.dart';
@@ -15,6 +16,7 @@ import 'package:oqu_way/presentation/screens/news_screen/widgets/news_card.dart'
 import '../../../config/app_colors.dart';
 import '../../../config/app_image_loading.dart';
 import '../../../data/repository/media_file_repositry/media_file_repository.dart';
+import '../../../domain/comment.dart';
 import '../../../domain/post.dart';
 import '../../common/widgets/comment_view_check_row.dart';
 
@@ -32,13 +34,13 @@ class _NewsDetailsState extends State<NewsDetails> {
   Post? post;
   bool isLoading = true;
 
+
   @override
   void initState() {
     print(widget.newsId);
     if(widget.newsId!= null){
       getPostById();
     }
-
     super.initState();
   }
 
@@ -50,7 +52,6 @@ class _NewsDetailsState extends State<NewsDetails> {
       post = value;
       isLoading =false;
     });
-
   }
 
 
@@ -118,7 +119,9 @@ class _NewsDetailsState extends State<NewsDetails> {
                     children: [
                       CommentViewCheckRow(iconSize: 18, fontSize: 12,
                         onCommentsTap: () {
-                          navigationPageCubit.openComments(1);
+                          if(widget.newsId!= null){
+                            navigationPageCubit.openComments(widget.newsId!);
+                          }
                         },
                       ),
 

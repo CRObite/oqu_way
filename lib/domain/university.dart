@@ -9,16 +9,16 @@ part 'university.g.dart';
 @JsonSerializable()
 class University{
   int id;
-  String name;
-  String address;
+  String? name;
+  String? address;
   int? middlePrice;
   String? status;
-  bool militaryDepartment;
-  bool dormitory;
-  String description;
-  String code;
+  bool? militaryDepartment;
+  bool? dormitory;
+  String? description;
+  String? code;
   List<Specialization>? specializations;
-  City city;
+  City? city;
   MediaFile? mediaFiles;
 
   University(

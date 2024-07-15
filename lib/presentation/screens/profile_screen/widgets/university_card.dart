@@ -94,7 +94,7 @@ class _UniversityCardState extends State<UniversityCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      university!.name,
+                      university!.name ?? '???',
                       style: const TextStyle(fontSize: 13,
                           fontWeight: FontWeight.bold),
                     ),
@@ -104,7 +104,7 @@ class _UniversityCardState extends State<UniversityCard> {
                           color: AppColors.greyColor),
                     ),
                     Text(
-                      '${university!.city.name} қаласы, ${university!.address}',
+                      '${university!.city!.name} қаласы, ${university!.address}',
                       style: TextStyle(fontSize: 8,
                           color: AppColors.greyColor),
                     ),

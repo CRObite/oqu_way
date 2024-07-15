@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:oqu_way/config/app_colors.dart';
 
 import '../../../../config/app_shadow.dart';
 import '../../../common/card_container_decoration.dart';
 import 'common_progress_indicatore.dart';
 
 class CoursesCard extends StatelessWidget {
-  const CoursesCard({super.key});
+  const CoursesCard({super.key, required this.courseName});
+
+  final String courseName;
 
   @override
   Widget build(BuildContext context) {
@@ -18,21 +21,27 @@ class CoursesCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(
+            Container(
+                decoration: BoxDecoration(
+                  color: AppColors.blueColor,
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                ),
                 height: 58,
                 width: 58,
-                child: SvgPicture.asset('assets/icons/ic_math.svg' , height: 30,)
+                child: Center(
+                  child: Text(courseName[0],style: const TextStyle(color: Colors.white, fontSize: 20),),
+                )
             ),
 
             const SizedBox(width: 20),
 
-            const Expanded(
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Математика',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                  SizedBox(height: 20,),
-                  CommonProgressIndicator(),
+                  Text(courseName,style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                  const SizedBox(height: 20,),
+                  const CommonProgressIndicator(),
                 ],
               ),
             ),

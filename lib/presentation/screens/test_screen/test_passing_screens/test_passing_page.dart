@@ -106,7 +106,7 @@ class _TestPassingPageState extends State<TestPassingPage> {
                           if(widget.oneSubjectPage){
                             context.go('/course/courseDetails');
                           }else{
-                            context.go('/test');
+                            context.go('/testSubjectSelectPage');
                           }
                         },
                         child: Container(

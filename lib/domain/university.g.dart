@@ -8,18 +8,20 @@ part of 'university.dart';
 
 University _$UniversityFromJson(Map<String, dynamic> json) => University(
       (json['id'] as num).toInt(),
-      json['name'] as String,
-      json['address'] as String,
+      json['name'] as String?,
+      json['address'] as String?,
       (json['middlePrice'] as num?)?.toInt(),
       json['status'] as String?,
-      json['militaryDepartment'] as bool,
-      json['dormitory'] as bool,
-      json['description'] as String,
-      json['code'] as String,
+      json['militaryDepartment'] as bool?,
+      json['dormitory'] as bool?,
+      json['description'] as String?,
+      json['code'] as String?,
       (json['specializations'] as List<dynamic>?)
           ?.map((e) => Specialization.fromJson(e as Map<String, dynamic>))
           .toList(),
-      City.fromJson(json['city'] as Map<String, dynamic>),
+      json['city'] == null
+          ? null
+          : City.fromJson(json['city'] as Map<String, dynamic>),
       json['mediaFiles'] == null
           ? null
           : MediaFile.fromJson(json['mediaFiles'] as Map<String, dynamic>),

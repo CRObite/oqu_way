@@ -6,9 +6,9 @@ abstract class NavigationPageState {}
 class NavigationPageInitial extends NavigationPageState {}
 
 class NavigationPageComments extends NavigationPageState {
-  final int id;
+  final int newsId;
 
-  NavigationPageComments({required this.id});
+  NavigationPageComments({required this.newsId});
 }
 
 class NavigationPageCommentsClose extends NavigationPageState {

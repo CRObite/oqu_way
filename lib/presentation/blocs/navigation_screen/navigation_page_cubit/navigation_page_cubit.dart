@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../domain/comment.dart';
 part 'navigation_page_state.dart';
 
 class NavigationPageCubit extends Cubit<NavigationPageState> {
@@ -9,19 +11,21 @@ class NavigationPageCubit extends Cubit<NavigationPageState> {
 
   static bool isOpened = false;
 
-  Future<void> openComments(int id)async {
+  Future<void> openComments(int newsId)async {
 
     isOpened = true;
 
-    emit(NavigationPageComments(id: id));
+    emit(NavigationPageComments(newsId: newsId));
   }
 
-  Future<void> closeComments()async {
+
+  Future<void> closeComments() async {
 
    if(isOpened){
      isOpened = false;
      emit(NavigationPageCommentsClose());
    }
   }
+
 
 }

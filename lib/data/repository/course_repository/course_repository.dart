@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:oqu_way/domain/pagination.dart';
 
 import '../../../config/app_api_endpoints.dart';
-import '../../../domain/post.dart';
+import '../../../domain/subject.dart';
 
-class PostRepository {
+class CourseRepository{
 
   Dio dio = Dio(
       BaseOptions(
@@ -14,42 +13,40 @@ class PostRepository {
   );
 
 
-  Future<Pagination?> getAllPost(String accessToken,int id, int page, int size) async {
+  Future<List<Subject>> getAllCourseSubjects(String accessToken) async {
     dio.options.headers['Authorization'] = 'Bearer $accessToken';
 
     final response = await dio.get(
-      AppApiEndpoints.getAllPost,
-      data: {
-        "appUserId": id,
-        "page": page,
-        "size": size,
+      AppApiEndpoints.getAllSubjects,
+    );
+
+    if (response.statusCode! ~/ 100 == 2) {
+      List<dynamic> values = response.data;
+      List<Subject> subjects = [];
+
+      for(var item in values){
+        subjects.add(Subject.fromJson(item));
       }
-    );
 
-    if (response.statusCode! ~/ 100 == 2) {
-
-      print(response.data);
-      return Pagination.fromJson(response.data);
+      return subjects;
     } else {
-      return null;
+      return [];
     }
   }
 
-
-  Future<Post?> getPostById(String accessToken,int id) async {
+  Future<Subject?> getCourseSubjectById(String accessToken, int id) async {
     dio.options.headers['Authorization'] = 'Bearer $accessToken';
 
     final response = await dio.get(
-        '${AppApiEndpoints.getPostById}$id',
+      '${AppApiEndpoints.getSubjectById}$id',
     );
 
     if (response.statusCode! ~/ 100 == 2) {
-      print(response.data);
-      return Post.fromJson(response.data);
+      List<dynamic> values = response.data;
+      return Subject.fromJson(values.first);
     } else {
       return null;
     }
   }
-
 
 }
