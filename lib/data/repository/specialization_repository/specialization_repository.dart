@@ -18,7 +18,7 @@ class SpecializationRepository{
 
     final response = await dio.get(
         AppApiEndpoints.getAllSpecialization,
-        data: {
+        queryParameters: {
           "page": page,
           "size": size,
           "universityId": id,

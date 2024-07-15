@@ -24,7 +24,7 @@ class PaginationBuilderCubit extends Cubit<PaginationBuilderState> {
   List<dynamic> oldList = [];
 
   int maxPage = 0;
-  int currentPageCount = 0;
+  int currentPageCount = 1;
 
   Future<void> getNewData(int size,PageableType type,
     int? universityId,int? cityId,int? specializationId,String query) async {
@@ -34,10 +34,11 @@ class PaginationBuilderCubit extends Cubit<PaginationBuilderState> {
       if(type == PageableType.universities){
 
         pagination = await UniversityRepository().getAllUniversity(
-            TempToken.token, currentPageCount,size,cityId,specializationId,query);
+            TempToken.token, currentPageCount ,size,cityId,specializationId,query);
         if(pagination!= null && pagination.items.isNotEmpty){
 
           maxPage = pagination.totalPages;
+
           oldList.addAll(pagination.items);
 
           emit(PaginationBuilderFetched(listOfValue: oldList));
@@ -45,7 +46,6 @@ class PaginationBuilderCubit extends Cubit<PaginationBuilderState> {
         }
 
       }else if(type == PageableType.news){
-
         final int? id = await AuthorizationRepository().userGetMyId(TempToken.token);
         if(id != null){
           final Pagination? pagination = await PostRepository().getAllPost(TempToken.token, id, currentPageCount, size);

@@ -54,7 +54,7 @@ class _PaginationBuilderState extends State<PaginationBuilder> {
     scrollController.addListener(() {
       if (scrollController.position.maxScrollExtent == scrollController.position.pixels) {
         if (paginationBuilderCubit.maxPage - 1 >= paginationBuilderCubit.currentPageCount + 1) {
-          paginationBuilderCubit.currentPageCount++;
+          paginationBuilderCubit.currentPageCount ++;
           paginationBuilderCubit.getNewData(
             widget.size,
             widget.type,

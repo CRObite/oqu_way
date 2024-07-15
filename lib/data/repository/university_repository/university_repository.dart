@@ -28,7 +28,7 @@ class UniversityRepository{
 
     final response = await dio.get(
       AppApiEndpoints.getAllUniversity,
-      data: {
+      queryParameters: {
         "page": page,
         "size": size,
         "cityId": cityId,
