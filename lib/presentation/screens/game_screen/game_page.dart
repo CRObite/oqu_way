@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,6 +12,8 @@ import 'package:oqu_way/presentation/screens/test_screen/widgets/subject_picker_
 import '../../../config/app_colors.dart';
 import '../../../config/app_shadow.dart';
 import '../../../config/app_text.dart';
+import '../../../data/local/shared_preferences_operator.dart';
+import '../../../domain/app_user.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -25,6 +29,26 @@ class _GamePageState extends State<GamePage> {
   String selectedValue = '';
 
   List<String> valuesWithExtra = ['Предмет','Предмет2','Предмет3','Предмет4','Предмет5','Предмет6','Предмет7','Предмет8','Предмет9','Предмет10','Предмет11','Предмет12',];
+
+  String username = '?';
+
+  @override
+  void initState() {
+    getUsername();
+    super.initState();
+  }
+
+  Future<void> getUsername() async {
+    String? userJson = await SharedPreferencesOperator.getCurrentUser();
+    if(userJson!=null){
+      Map<String, dynamic> userMap = jsonDecode(userJson);
+      AppUser user = AppUser.fromJson(userMap);
+
+      setState(() {
+        username = user.login ?? '?';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +88,7 @@ class _GamePageState extends State<GamePage> {
                       ),
                       child: Center(
                         child: Text(
-                          'A',
+                          username[0],
                           style: TextStyle(
                             color: AppColors.greenColor,
                             fontSize: 40,
@@ -74,7 +98,7 @@ class _GamePageState extends State<GamePage> {
                       ),
                     ),
                     const SizedBox(height: 7,),
-                    const Text('Алуа Алпысбаева', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 20),)
+                    Text(username, style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 20),)
                   ],
                 ),
               )

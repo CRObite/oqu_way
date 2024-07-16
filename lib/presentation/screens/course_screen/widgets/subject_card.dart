@@ -3,14 +3,15 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_shadow.dart';
+import '../../../../domain/module.dart';
 import '../../../common/card_container_decoration.dart';
 import 'common_progress_indicatore.dart';
 
 class SubjectCard extends StatefulWidget {
-  const SubjectCard({super.key, required this.opened, required this.openedChanged});
+  const SubjectCard({super.key, required this.module, required this.onOpened});
 
-  final bool opened;
-  final VoidCallback openedChanged;
+  final Module module;
+  final VoidCallback onOpened;
 
   @override
   State<SubjectCard> createState() => _SubjectCardState();
@@ -25,7 +26,7 @@ class _SubjectCardState extends State<SubjectCard> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    isOpened = widget.opened;
+    isOpened = widget.module.opened;
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -56,7 +57,7 @@ class _SubjectCardState extends State<SubjectCard> with SingleTickerProviderStat
       _controller.reverse();
     }
 
-    widget.openedChanged();
+    widget.onOpened();
   }
 
   @override
@@ -74,7 +75,7 @@ class _SubjectCardState extends State<SubjectCard> with SingleTickerProviderStat
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Модуль атауы', style: TextStyle(fontSize: 11,fontWeight: FontWeight.bold),),
+                    Text(widget.module.name ?? '???', style: const TextStyle(fontSize: 11,fontWeight: FontWeight.bold),),
                     AnimatedBuilder(
                       animation: _animation,
                       builder: (context, child) {
@@ -94,9 +95,9 @@ class _SubjectCardState extends State<SubjectCard> with SingleTickerProviderStat
 
                 Row(
                   children: [
-                    const Expanded(child: CommonProgressIndicator()),
+                    Expanded(child: CommonProgressIndicator(percent: widget.module.percentage ?? 0.0,)),
                     const SizedBox(width: 5,),
-                    Text('90%', style: TextStyle(color: AppColors.greenColor, fontSize: 11),),
+                    Text('${((widget.module.percentage ?? 0.0) * 100).round()}%', style: TextStyle(color: AppColors.greenColor, fontSize: 11),),
                   ],
                 ),
               ],

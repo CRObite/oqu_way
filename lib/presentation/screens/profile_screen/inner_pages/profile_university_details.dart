@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_colors.dart';
+import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/data/repository/comment_repository/comment_repository.dart';
 import 'package:oqu_way/data/repository/university_repository/university_repository.dart';
 import 'package:oqu_way/domain/face_subject.dart';
@@ -37,9 +38,9 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
 
   Future<void> getUniversity() async {
 
-    University? value = await UniversityRepository().getUniversityById(TempToken.token,  widget.universityId!);
+    String? token = await SharedPreferencesOperator.getAccessToken();
 
-
+    University? value = await UniversityRepository().getUniversityById(token!,  widget.universityId!);
 
     setState(() {
       university = value;
@@ -78,7 +79,7 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
                 ),
                 padding: const EdgeInsets.all(5),
                 child: FutureBuilder<Uint8List?>(
-                  future: MediaFileRepository().downloadFile(TempToken.token, university!.mediaFiles!.id),
+                  future: MediaFileRepository().downloadFile(university!.mediaFiles!.id),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return SizedBox(
@@ -179,7 +180,7 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
           
                   GestureDetector(
                     onTap: (){
-                      context.push('/profileComments', extra: {'id': university!.id, 'type':'${CommentType.University}'});
+                      context.push('/profileComments', extra: {'id': university!.id, 'type':CommentType.University.toString().split('.').last});
                     },
                     child: Container(
                       decoration: BoxDecoration(

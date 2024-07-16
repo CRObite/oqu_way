@@ -5,7 +5,8 @@ class AppApiEndpoints {
   static String userLogin = '$api/user-login';
   static String refresh = '$api/refresh-token';
   static String getMe = '$api/universal-get-me';
-  static String registration = '$api/user-registration';
+  static String registration = '$api/registration';
+  static String login = '$api/login';
 
   // post endpoints
   static String getAllPost = '$api/post/get-all';

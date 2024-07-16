@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 
 import '../../../config/app_api_endpoints.dart';
 
@@ -15,8 +16,10 @@ class MediaFileRepository{
   );
 
 
-  Future<Uint8List?> downloadFile(String accessToken, String fileId) async {
-    dio.options.headers['Authorization'] = 'Bearer $accessToken';
+  Future<Uint8List?> downloadFile( String fileId) async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    dio.options.headers['Authorization'] = 'Bearer $token';
 
     final cacheManager = DefaultCacheManager();
     final fileInfo = await cacheManager.getFileFromCache(fileId);

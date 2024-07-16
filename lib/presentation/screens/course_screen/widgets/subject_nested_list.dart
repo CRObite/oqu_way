@@ -8,23 +8,20 @@ import 'package:oqu_way/presentation/screens/course_screen/widgets/test_deadline
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_shadow.dart';
 import '../../../../config/app_text.dart';
+import '../../../../domain/module.dart';
 import '../../../common/card_container_decoration.dart';
 import '../../../common/widgets/common_button.dart';
 
 class SubjectNestedList extends StatefulWidget {
-  const SubjectNestedList({super.key, required this.opened, required this.openedPressed});
+  const SubjectNestedList({super.key, required this.module});
 
-  final bool opened;
-  final VoidCallback openedPressed;
-
+  final Module module;
 
   @override
   State<SubjectNestedList> createState() => _SubjectNestedListState();
 }
 
 class _SubjectNestedListState extends State<SubjectNestedList> {
-
-
 
 
   @override
@@ -34,10 +31,12 @@ class _SubjectNestedListState extends State<SubjectNestedList> {
         Row(
           children: [
             SubjectCard(
-                opened: widget.opened,
-                openedChanged: (){
-                  widget.openedPressed();
-                }
+                module: widget.module,
+                onOpened: () {
+                  setState(() {
+                    widget.module.opened= !widget.module.opened;
+                  });
+                },
             ),
           ],
         ),
@@ -54,16 +53,36 @@ class _SubjectNestedListState extends State<SubjectNestedList> {
               ),
             );
           },
-          child: widget.opened ? Column(
-            key: ValueKey<bool>(widget.opened),
+          child: widget.module.opened ? Column(
+            key: ValueKey<bool>(widget.module.opened),
             children: [
               const SizedBox(height: 20),
-              SubjectNameCard(buttonName: AppText.video, withDate: false, onButtonPressed: () { context.goNamed('courseVideos');},),
-              const SizedBox(height: 17,),
-              TestDeadlineInfoCard(isTest: true, onPressed: () { context.push('/courseTestPage');},),
-              const SizedBox(height: 6,),
-              TestDeadlineInfoCard(isTest: false, onPressed: () {context.push('/courseHomework');},),
-              const SizedBox(height: 26),
+
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: widget.module.topics.length,
+                itemBuilder: (context,index){
+                  return Column(
+                    children: [
+                      SubjectNameCard(
+                        onButtonPressed: () { context.goNamed('courseVideos');},
+                        name: widget.module.topics[index].name ?? '???',
+                        description: widget.module.topics[index].description ?? '???',
+                        hasButton: true
+                        // widget.module.topics[index].videoUrl!= null && widget.module.topics[index].videoUrl!.isNotEmpty,
+                      ),
+
+                      const SizedBox(height: 17,),
+                      // TestDeadlineInfoCard(isTest: true, onPressed: () { context.push('/courseTestPage');},),
+                      // const SizedBox(height: 6,),
+                      widget.module.topics[index].task!= null ? TestDeadlineInfoCard(isTest: false, deadline: widget.module.topics[index].task!.deadline ?? '',onPressed: () {context.push('/courseHomework');},): const SizedBox(),
+                      const SizedBox(height: 26),
+
+                    ],
+                  );
+                }
+              ),
             ],
           ) : const SizedBox(key: ValueKey<bool>(false)),
         ),

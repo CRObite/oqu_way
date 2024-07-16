@@ -42,8 +42,9 @@ class CourseRepository{
     );
 
     if (response.statusCode! ~/ 100 == 2) {
-      List<dynamic> values = response.data;
-      return Subject.fromJson(values.first);
+
+      print(response.data);
+      return Subject.fromJson(response.data);
     } else {
       return null;
     }

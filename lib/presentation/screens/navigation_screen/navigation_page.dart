@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,10 +7,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_text.dart';
+import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/presentation/blocs/navigation_screen/navigation_page_cubit/navigation_page_cubit.dart';
 import 'package:oqu_way/presentation/screens/news_screen/widgets/comments_row.dart';
 
 import '../../../config/app_colors.dart';
+import '../../../domain/app_user.dart';
 import '../../../domain/comment.dart';
 import '../../common/widgets/comments_bottom_sheet.dart';
 import '../../common/widgets/custom_app_bar.dart';
@@ -28,7 +31,30 @@ class _NavigationPageState extends State<NavigationPage> {
   final TextEditingController commentController = TextEditingController();
   final NavigationPageCubit navigationPageCubit = NavigationPageCubit();
 
+
+
   int currentPage = 0;
+
+  String username = '?';
+
+  Future<void> getUsername() async {
+    String? userJson = await SharedPreferencesOperator.getCurrentUser();
+    if(userJson!=null){
+      Map<String, dynamic> userMap = jsonDecode(userJson);
+      AppUser user = AppUser.fromJson(userMap);
+
+      setState(() {
+        username = user.login ?? '?';
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    getUsername();
+    super.initState();
+  }
+
 
   void _goToBranch(int index) {
     setState(() {
@@ -73,9 +99,9 @@ class _NavigationPageState extends State<NavigationPage> {
         onBellPressed: () {
           context.push('/notificationPage');
         },
-        title: 'Алуа Алпысбаева',
+        title: username,
         imageId: '',
-        setDot: true,
+        setDot: false,
       )
           : null,
       body: BlocProvider(

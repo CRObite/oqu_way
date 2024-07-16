@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +10,8 @@ import 'package:oqu_way/config/app_text.dart';
 import 'package:oqu_way/presentation/common/widgets/common_button.dart';
 
 import '../../config/app_shadow.dart';
+import '../../data/repository/auth_reg_repository/authorization_repository.dart';
+import '../../util/custom_exeption.dart';
 import '../../util/google_sign_in_api.dart';
 import '../common/widgets/custom_text_field.dart';
 
@@ -19,15 +24,41 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  String validation = '';
 
 
   @override
   void dispose() {
-    phoneController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> login() async {
+    try {
+      bool value = await AuthorizationRepository().login(
+          emailController.text,
+          passwordController.text
+      );
+
+      if (value) {
+        context.go('/news');
+      }
+    } catch (error) {
+      if (error is DioException) {
+        CustomException.fromDioException(error);
+
+        setState(() {
+          validation = error.response?.data['detail'] ?? {};
+        });
+
+      }else{
+        rethrow;
+      }
+    }
   }
 
   @override
@@ -46,15 +77,20 @@ class _LoginPageState extends State<LoginPage> {
               style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 32,),
-            CustomTextField(title: AppText.enterPhone, controller: phoneController, type: TextInputType.phone, hint:AppText.number,),
+            CustomTextField(title: AppText.enterEmail, controller: emailController, type: TextInputType.emailAddress, hint:AppText.email,),
+
             const SizedBox(height: 20,),
             CustomTextField(title:  AppText.enterPassword , controller: passwordController, type: TextInputType.visiblePassword, hint:AppText.password),
+
             TextButton(
                 onPressed: (){context.goNamed('passwordRecovery');},
                 child: Text(AppText.forgotPassword, style: TextStyle(fontSize: 10, color: AppColors.blueColor),)
             ),
+            validation.isNotEmpty ? Text(validation, style: const TextStyle(color: Colors.red),):const SizedBox(),
             const SizedBox(height: 20,),
-            CommonButton(title: AppText.cont, onClick: (){context.go('/news');}),
+            CommonButton(title: AppText.cont, onClick: (){
+              login();
+            }),
             const SizedBox(height: 20,),
             
 

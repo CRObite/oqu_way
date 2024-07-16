@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 
 import '../../../../data/repository/auth_reg_repository/authorization_repository.dart';
 import '../../../../data/repository/post_repository/post_repository.dart';
@@ -29,12 +30,14 @@ class PaginationBuilderCubit extends Cubit<PaginationBuilderState> {
   Future<void> getNewData(int size,PageableType type,
     int? universityId,int? cityId,int? specializationId,String query) async {
 
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
     try{
       Pagination? pagination;
       if(type == PageableType.universities){
 
         pagination = await UniversityRepository().getAllUniversity(
-            TempToken.token, currentPageCount ,size,cityId,specializationId,query);
+            token!, currentPageCount ,size,cityId,specializationId,query);
         if(pagination!= null && pagination.items.isNotEmpty){
 
           maxPage = pagination.totalPages;
@@ -46,9 +49,9 @@ class PaginationBuilderCubit extends Cubit<PaginationBuilderState> {
         }
 
       }else if(type == PageableType.news){
-        final int? id = await AuthorizationRepository().userGetMyId(TempToken.token);
+        final int? id = await AuthorizationRepository().userGetMyId(token!);
         if(id != null){
-          final Pagination? pagination = await PostRepository().getAllPost(TempToken.token, id, currentPageCount, size);
+          final Pagination? pagination = await PostRepository().getAllPost(token, id, currentPageCount, size);
           if(pagination!= null && pagination.items.isNotEmpty){
             maxPage = pagination.totalPages;
             oldList.addAll(pagination.items);
@@ -60,7 +63,7 @@ class PaginationBuilderCubit extends Cubit<PaginationBuilderState> {
       }else if(type == PageableType.specialization){
         if(universityId != null){
           pagination = await SpecializationRepository().getAllSpecializations(
-              TempToken.token,universityId,currentPageCount,size,query);
+              token!,universityId,currentPageCount,size,query);
           if(pagination!= null && pagination.items.isNotEmpty){
             maxPage = pagination.totalPages;
             oldList.addAll(pagination.items);
@@ -75,13 +78,13 @@ class PaginationBuilderCubit extends Cubit<PaginationBuilderState> {
 
         if(exception.statusCode == 401){
 
-          bool value = await AuthorizationRepository().refreshToken(TempToken.refToken);
+          String? refToken = await SharedPreferencesOperator.getRefreshToken();
+
+          bool value = await AuthorizationRepository().refreshToken(refToken!);
           if(value){
             getNewData(size,type,universityId,cityId,specializationId,query);
           }else{
-
             emit(PaginationBuilderPushLogin());
-
           }
         }else{
           emit(PaginationBuilderError(errorText: error.message ?? 'неизвестная ошибка'));
@@ -96,8 +99,14 @@ class PaginationBuilderCubit extends Cubit<PaginationBuilderState> {
 
   void resetPage(int size,PageableType type,
       int? universityId,int? cityId,int? specializationId,String query){
-    oldList.clear();
-    currentPageCount = 0;
+    oldList = [];
+
+    if(type == PageableType.universities){
+      currentPageCount = 1;
+    }else{
+      currentPageCount = 0;
+    }
+
     getNewData(size,type,universityId,cityId,specializationId,query);
   }
 }

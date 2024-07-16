@@ -6,6 +6,7 @@ import 'package:oqu_way/domain/specialization.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_text.dart';
+import '../../../../data/local/shared_preferences_operator.dart';
 import '../../../../data/repository/comment_repository/comment_repository.dart';
 
 class ProfessionDetails extends StatefulWidget {
@@ -31,7 +32,10 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
   }
 
   Future<void> getSpecialization() async {
-    Specialization? value = await SpecializationRepository().getSpecializationsById(TempToken.token, widget.specializationId!);
+
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    Specialization? value = await SpecializationRepository().getSpecializationsById(token!, widget.specializationId!);
 
     setState(() {
       specialization = value;
@@ -144,7 +148,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
 
                   GestureDetector(
                     onTap: (){
-                      context.push('/profileComments', extra: {'id': specialization!.id, 'type': '${CommentType.Specialization}'});
+                      context.push('/profileComments', extra: {'id': specialization!.id, 'type': CommentType.Specialization.toString().split('.').last});
                     },
                     child: Container(
                       decoration: BoxDecoration(

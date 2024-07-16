@@ -55,7 +55,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                           ),
                         ),
                         child: FutureBuilder<Uint8List?>(
-                          future: MediaFileRepository().downloadFile(TempToken.token, imageId),
+                          future: MediaFileRepository().downloadFile(imageId),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
                               return SizedBox(

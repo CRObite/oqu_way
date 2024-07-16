@@ -1,23 +1,23 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'subject.dart';
+part of 'module.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Subject _$SubjectFromJson(Map<String, dynamic> json) => Subject(
+Module _$ModuleFromJson(Map<String, dynamic> json) => Module(
       (json['id'] as num).toInt(),
       json['name'] as String?,
-      (json['percentage'] as num?)?.toDouble(),
-      (json['modules'] as List<dynamic>)
-          .map((e) => Module.fromJson(e as Map<String, dynamic>))
+      (json['topics'] as List<dynamic>)
+          .map((e) => Topic.fromJson(e as Map<String, dynamic>))
           .toList(),
+      (json['percentage'] as num?)?.toDouble(),
     );
 
-Map<String, dynamic> _$SubjectToJson(Subject instance) => <String, dynamic>{
+Map<String, dynamic> _$ModuleToJson(Module instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'topics': instance.topics,
       'percentage': instance.percentage,
-      'modules': instance.modules,
     };

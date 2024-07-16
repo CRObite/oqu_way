@@ -69,7 +69,7 @@ class _UniversityCardState extends State<UniversityCard> {
               ),
               padding: const EdgeInsets.all(5),
               child: FutureBuilder<Uint8List?>(
-                future: MediaFileRepository().downloadFile(TempToken.token, university!.mediaFiles!.id),
+                future: MediaFileRepository().downloadFile(university!.mediaFiles!.id),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return SizedBox(

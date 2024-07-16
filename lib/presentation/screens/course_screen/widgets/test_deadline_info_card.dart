@@ -6,9 +6,10 @@ import 'package:oqu_way/presentation/common/widgets/date_time_row.dart';
 import '../../../../config/app_colors.dart';
 
 class TestDeadlineInfoCard extends StatelessWidget {
-  const TestDeadlineInfoCard({super.key, required this.isTest, required this.onPressed});
+  const TestDeadlineInfoCard({super.key, required this.isTest, required this.onPressed, this.deadline = ''});
 
   final bool isTest;
+  final String deadline;
   final VoidCallback onPressed;
 
   @override
@@ -61,7 +62,7 @@ class TestDeadlineInfoCard extends StatelessWidget {
                         const SizedBox(width: 9,),
                         const Text('40 мин', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                       ],
-                    ) :const DateTimeRow(),
+                    ) : deadline.isNotEmpty ?  const DateTimeRow(): const Text('мерзім жоқ'),
 
                     SizedBox(
                         height: 30,

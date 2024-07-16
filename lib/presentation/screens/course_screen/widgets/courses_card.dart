@@ -7,9 +7,10 @@ import '../../../common/card_container_decoration.dart';
 import 'common_progress_indicatore.dart';
 
 class CoursesCard extends StatelessWidget {
-  const CoursesCard({super.key, required this.courseName});
+  const CoursesCard({super.key, required this.courseName, required this.percent});
 
   final String courseName;
+  final double percent;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class CoursesCard extends StatelessWidget {
                 children: [
                   Text(courseName,style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                   const SizedBox(height: 20,),
-                  const CommonProgressIndicator(),
+                  CommonProgressIndicator(percent: percent,),
                 ],
               ),
             ),

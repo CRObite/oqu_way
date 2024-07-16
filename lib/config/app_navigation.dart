@@ -577,8 +577,18 @@ class AppNavigation{
 
                         pageBuilder: (context, state) => SwipeablePage(
                           builder: (context){
+
+                            int? courseId;
+                            if(state.extra != null){
+                              final extras = state.extra as Map<String, int>;
+                              if(extras.containsKey('courseId')){
+                                courseId = extras['courseId'];
+                              }
+                            }
+
                             return CourseDetails(
                               key: state.pageKey,
+                              courseId: courseId,
                             );
                           },
 

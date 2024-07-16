@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/data/repository/course_repository/course_repository.dart';
 import 'package:oqu_way/domain/face_subject.dart';
 import 'package:oqu_way/presentation/screens/course_screen/widgets/courses_card.dart';
@@ -25,7 +26,10 @@ class _CoursePageState extends State<CoursePage> {
   }
 
   Future<void> getAllCourses() async {
-    List<Subject> value = await CourseRepository().getAllCourseSubjects(TempToken.token);
+
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    List<Subject> value = await CourseRepository().getAllCourseSubjects(token!);
     setState(() {
       subjects = value;
     });
@@ -45,18 +49,20 @@ class _CoursePageState extends State<CoursePage> {
               Text(AppText.myCourses, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
               const SizedBox(height: 20,),
 
-              ListView.builder(
+              subjects.isNotEmpty? ListView.builder(
                   itemCount: subjects.length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context,index) {
                     return GestureDetector(
                         onTap: (){
-                          context.goNamed('courseDetails');
+                          context.goNamed('courseDetails', extra: {'courseId': subjects[index].id});
                         },
-                        child: CoursesCard(courseName: subjects[index].name,)
+                        child: CoursesCard(courseName: subjects[index].name ?? '???', percent: subjects[index].percentage ?? 0.0,)
                     );
                   }
+              ): const Center(
+                child: Text('Курстар жоқ'),
               ),
 
 

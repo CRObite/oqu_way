@@ -87,31 +87,35 @@ class CommentRepository {
       String accessToken,
       String text,
       CommentType type,
-      Post? post,
-      University? university,
-      Specialization? specialization,
-      int userId) async {
+      {int? post,
+        int? university,
+        int? specialization}) async {
     dio.options.headers['Authorization'] = 'Bearer $accessToken';
 
-    final response = await dio.post(AppApiEndpoints.saveComments,
-        data: {
+    Map<String, dynamic> data = {
       "text": text,
-      "type": '$type',
-      "dateTime": '${DateTime.now()}',
-      "post": post,
-      "university": university,
-      "specialization": specialization,
-      "appUser": {
-        "id": userId,
-      }
-    });
+      "type": type.toString().split('.').last,
+    };
+
+    if (type == CommentType.Post && post != null) {
+      data["post"] = {'id': post};
+    } else if (type == CommentType.University && university != null) {
+      data["university"] = {'id': university};
+    } else if (type == CommentType.Specialization && specialization != null) {
+      data["specialization"] = {'id': specialization};
+    }
+
+    print(data);
+
+    final response = await dio.post(AppApiEndpoints.saveComments, data: data);
 
     if (response.statusCode! ~/ 100 == 2) {
       print(response.data);
-
       return true;
     } else {
+      print('Failed to create comment: ${response.statusCode} ${response.statusMessage}');
       return false;
     }
   }
+
 }

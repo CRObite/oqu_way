@@ -15,6 +15,7 @@ import 'package:oqu_way/presentation/screens/news_screen/widgets/news_card.dart'
 
 import '../../../config/app_colors.dart';
 import '../../../config/app_image_loading.dart';
+import '../../../data/local/shared_preferences_operator.dart';
 import '../../../data/repository/media_file_repositry/media_file_repository.dart';
 import '../../../domain/comment.dart';
 import '../../../domain/post.dart';
@@ -47,7 +48,9 @@ class _NewsDetailsState extends State<NewsDetails> {
 
 
   Future<void> getPostById() async {
-    Post? value = await PostRepository().getPostById(TempToken.token, widget.newsId!);
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    Post? value = await PostRepository().getPostById(token!, widget.newsId!);
     setState(() {
       post = value;
       isLoading =false;
@@ -95,7 +98,7 @@ class _NewsDetailsState extends State<NewsDetails> {
                 SizedBox(
                   height: 250,
                   child: FutureBuilder<Uint8List?>(
-                    future: MediaFileRepository().downloadFile(TempToken.token, post!.mediaFiles!.id),
+                    future: MediaFileRepository().downloadFile(post!.mediaFiles!.id),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return SizedBox(

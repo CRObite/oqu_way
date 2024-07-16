@@ -68,7 +68,7 @@ class _NewsCardState extends State<NewsCard> {
                 ),
                 child:
                 FutureBuilder<Uint8List?>(
-                  future: MediaFileRepository().downloadFile(TempToken.token, post!.mediaFiles!.id),
+                  future: MediaFileRepository().downloadFile(post!.mediaFiles!.id),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return SizedBox(

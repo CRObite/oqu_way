@@ -6,6 +6,7 @@ import 'package:oqu_way/domain/comment.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_text.dart';
+import '../../../../data/local/shared_preferences_operator.dart';
 import '../../../../domain/face_subject.dart';
 import '../../news_screen/widgets/comments_row.dart';
 
@@ -31,15 +32,16 @@ class _ProfileCommentsState extends State<ProfileComments> {
   }
 
   Future<void> getComments() async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
 
-    if(widget.type == '${CommentType.University}'){
-      List<Comment> value = await CommentRepository().getAllUniversityComments(TempToken.token, widget.id);
+    if(widget.type == 'University'){
+      List<Comment> value = await CommentRepository().getAllUniversityComments(token!, widget.id);
 
       setState(() {
         comments = value;
       });
-    }else if(widget.type == '${CommentType.Specialization}'){
-      List<Comment> value = await CommentRepository().getAllSpecializationComments(TempToken.token, widget.id);
+    }else if(widget.type == 'Specialization'){
+      List<Comment> value = await CommentRepository().getAllSpecializationComments(token!, widget.id);
 
       setState(() {
         comments = value;
@@ -49,17 +51,29 @@ class _ProfileCommentsState extends State<ProfileComments> {
   }
 
   Future<void> addComment() async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+    if(widget.type == 'University'){
 
-    // bool value = await CommentRepository().createComments(
-    //     TempToken.token,
-    //     commentController.text,
-    //     CommentType.Post,
-    //     Post(widget.newsId, null, null, null, null),
-    //     null, null, 6
-    // );
+
+      bool value = await CommentRepository().createComments(
+          token!,
+          commentController.text,
+          CommentType.University,
+          university: widget.id
+      );
+    }else if(widget.type == 'Specialization'){
+      bool value = await CommentRepository().createComments(
+          token!,
+          commentController.text,
+          CommentType.Specialization,
+          specialization: widget.id
+      );
+    }
 
 
     getComments();
+
+    commentController.clear();
   }
 
 
@@ -91,7 +105,7 @@ class _ProfileCommentsState extends State<ProfileComments> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ListView.builder(
+                child: comments.isEmpty ?  const Center(child: Text('Пікірлер Жоқ')) :ListView.builder(
                   itemCount: comments.length,
                   itemBuilder: (context, index) {
                     return CommentsRow(comment: comments[index]);
@@ -156,6 +170,7 @@ class _ProfileCommentsState extends State<ProfileComments> {
                             InkWell(
                               onTap: (){
                                 addComment();
+
                               },
                               child: Container(
                                 height: 32,

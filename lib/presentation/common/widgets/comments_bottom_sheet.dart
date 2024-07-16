@@ -6,6 +6,7 @@ import 'package:oqu_way/domain/post.dart';
 
 import '../../../config/app_colors.dart';
 import '../../../config/app_text.dart';
+import '../../../data/local/shared_preferences_operator.dart';
 import '../../../domain/comment.dart';
 import '../../screens/news_screen/widgets/comments_row.dart';
 
@@ -28,7 +29,9 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
   }
 
   Future<void> getComments() async {
-    List<Comment> value = await CommentRepository().getAllNewsComments(TempToken.token, widget.newsId);
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    List<Comment> value = await CommentRepository().getAllNewsComments(token!, widget.newsId);
 
     setState(() {
       comments = value;
@@ -36,17 +39,19 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
   }
 
   Future<void> addComment() async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
 
-    // bool value = await CommentRepository().createComments(
-    //     TempToken.token,
-    //     commentController.text,
-    //     CommentType.Post,
-    //     Post(widget.newsId, null, null, null, null),
-    //     null, null, 6
-    // );
+    bool value = await CommentRepository().createComments(
+        token!,
+        commentController.text,
+        CommentType.Post,
+        post:  widget.newsId
+    );
 
 
     getComments();
+
+    commentController.clear();
   }
 
   TextEditingController commentController = TextEditingController();
@@ -77,7 +82,9 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: ListView.builder(
+                child: comments.isEmpty ? const Center(
+                  child: Text('Пікірлер Жоқ'),
+                ) : ListView.builder(
                   itemCount: comments.length,
                   itemBuilder: (context, index) {
                     return CommentsRow(comment: comments[index]);
@@ -141,7 +148,6 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                               onTap: () {
                                 if (commentController.text.isNotEmpty) {
                                   addComment();
-                                  commentController.clear();
                                 }
                               },
                               child: Container(

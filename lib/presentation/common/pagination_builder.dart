@@ -15,7 +15,7 @@ class PaginationBuilder extends StatefulWidget {
     this.specializationId,
     this.query = '',
     this.universityId,
-    this.bottomSize = 0.0,
+    this.bottomSize = 0.0, this.onRefreshed,
   });
 
   final int size;
@@ -26,6 +26,7 @@ class PaginationBuilder extends StatefulWidget {
   final int? specializationId;
   final String query;
   final double bottomSize;
+  final VoidCallback? onRefreshed;
 
   @override
   State<PaginationBuilder> createState() => _PaginationBuilderState();
@@ -41,6 +42,10 @@ class _PaginationBuilderState extends State<PaginationBuilder> {
 
     scrollController = ScrollController();
     paginationBuilderCubit = PaginationBuilderCubit();
+
+    if(widget.type == PageableType.universities){
+      paginationBuilderCubit.currentPageCount = 1;
+    }
 
     paginationBuilderCubit.getNewData(
       widget.size,
@@ -81,6 +86,17 @@ class _PaginationBuilderState extends State<PaginationBuilder> {
         widget.query,
       );
     }
+
+    if(oldWidget.cityId != widget.cityId){
+      paginationBuilderCubit.resetPage(
+        widget.size,
+        widget.type,
+        widget.universityId,
+        widget.cityId,
+        widget.specializationId,
+        widget.query,
+      );
+    }
   }
 
   @override
@@ -103,6 +119,11 @@ class _PaginationBuilderState extends State<PaginationBuilder> {
                 if (state is PaginationBuilderFetched) {
                   return RefreshIndicator(
                     onRefresh: () async {
+
+                      if(widget.onRefreshed!= null){
+                        widget.onRefreshed!();
+                      }
+
                       paginationBuilderCubit.resetPage(
                         widget.size,
                         widget.type,
@@ -111,6 +132,10 @@ class _PaginationBuilderState extends State<PaginationBuilder> {
                         widget.specializationId,
                         widget.query,
                       );
+
+                      print('refreshed');
+
+
                     },
                     child: ListView.builder(
                       controller: scrollController,

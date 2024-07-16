@@ -1,5 +1,6 @@
 
 
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,8 @@ import 'package:oqu_way/presentation/screens/profile_screen/widgets/profile_part
 import '../../../config/app_colors.dart';
 import '../../../config/app_shadow.dart';
 import '../../../config/app_text.dart';
+import '../../../data/local/shared_preferences_operator.dart';
+import '../../../domain/app_user.dart';
 import '../../../util/image_picker_helper.dart';
 import '../../common/widgets/common_button.dart';
 
@@ -29,9 +32,25 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   double initialTopContainerHeight = 260.0;
   double collapsedTopContainerHeight = 120.0;
 
+
+  String username = '?';
+
+  Future<void> getUsername() async {
+    String? userJson = await SharedPreferencesOperator.getCurrentUser();
+    if(userJson!=null){
+      Map<String, dynamic> userMap = jsonDecode(userJson);
+      AppUser user = AppUser.fromJson(userMap);
+
+      setState(() {
+        username = user.login ?? '?';
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    getUsername();
     scrollController = ScrollController();
     animationController = AnimationController(
       vsync: this,
@@ -209,7 +228,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                     ),
                                     child: Center(
                                       child: Text(
-                                        'A',
+                                        username[0],
                                         style: TextStyle(
                                           color: AppColors.greenColor,
                                           fontSize: animation.isDismissed ? 40 : 14,
@@ -248,7 +267,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                         ),
                       ),
                       const SizedBox(height: 7,),
-                      animation.isDismissed ? const Text('Алуа Алпысбаева', style: TextStyle(color: Colors.white, fontSize: 20),) : const SizedBox(),
+                      animation.isDismissed ? Text(username, style: const TextStyle(color: Colors.white, fontSize: 20),) : const SizedBox(),
                       animation.isDismissed ? const Text('оқушы', style: TextStyle(color: Colors.white),) : const SizedBox(),
                     ],
                   ),
