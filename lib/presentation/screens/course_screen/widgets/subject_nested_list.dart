@@ -13,9 +13,10 @@ import '../../../common/card_container_decoration.dart';
 import '../../../common/widgets/common_button.dart';
 
 class SubjectNestedList extends StatefulWidget {
-  const SubjectNestedList({super.key, required this.module});
+  const SubjectNestedList({super.key, required this.module, required this.subject});
 
   final Module module;
+  final String subject;
 
   @override
   State<SubjectNestedList> createState() => _SubjectNestedListState();
@@ -69,15 +70,16 @@ class _SubjectNestedListState extends State<SubjectNestedList> {
                         onButtonPressed: () { context.goNamed('courseVideos');},
                         name: widget.module.topics[index].name ?? '???',
                         description: widget.module.topics[index].description ?? '???',
-                        hasButton: true
-                        // widget.module.topics[index].videoUrl!= null && widget.module.topics[index].videoUrl!.isNotEmpty,
+                        hasButton: widget.module.topics[index].videoUrl!= null && widget.module.topics[index].videoUrl!.isNotEmpty && widget.module.topics[index].videoUrl! != '/',
                       ),
 
                       const SizedBox(height: 17,),
-                      // TestDeadlineInfoCard(isTest: true, onPressed: () { context.push('/courseTestPage');},),
-                      // const SizedBox(height: 6,),
-                      widget.module.topics[index].task!= null ? TestDeadlineInfoCard(isTest: false, deadline: widget.module.topics[index].task!.deadline ?? '',onPressed: () {context.push('/courseHomework');},): const SizedBox(),
+                      widget.module.topics[index].appTest!= null ? TestDeadlineInfoCard(isTest: true,deadline:widget.module.topics[index].appTest!.deadline ?? '', onPressed: () { context.push('/courseTestPage', extra: {'subjectName': widget.subject, 'testId': widget.module.topics[index].appTest!.id});},): const SizedBox(),
+                      const SizedBox(height: 6,),
+                      widget.module.topics[index].task!= null ? TestDeadlineInfoCard(isTest: false, deadline: widget.module.topics[index].task!.deadline ?? '',onPressed: () {context.push('/courseHomework', extra:{'taskId':widget.module.topics[index].task!.id });},): const SizedBox(),
                       const SizedBox(height: 26),
+
+
 
                     ],
                   );

@@ -106,14 +106,14 @@ class _ProfileQuestionsState extends State<ProfileQuestions> {
 
                 const SizedBox(height: 30,),
 
-                SubjectPickerDropDown(
-                  valuesWithExtra: valuesWithExtra,
-                  selectedValue: selectedFirst,
-                  onValueSelected: (String value) {
-                    selectedFirst = value;
-                  },
-                  hint: 'Кімге',
-                ),
+                // SubjectPickerDropDown(
+                //   valuesWithExtra: valuesWithExtra,
+                //   selectedValue: selectedFirst,
+                //   onValueSelected: (String value) {
+                //     selectedFirst = value;
+                //   },
+                //   hint: 'Кімге',
+                // ),
                 const SizedBox(height: 30,),
 
                 const Text('Өзіңіздің сұрағыңызды жазыңыз',style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),),

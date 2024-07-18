@@ -54,21 +54,24 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                             Radius.circular(5.0),
                           ),
                         ),
-                        child: FutureBuilder<Uint8List?>(
-                          future: MediaFileRepository().downloadFile(imageId),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return SizedBox(
-                                  height: 70, width: double.infinity,
-                                  child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
-                            } else if (snapshot.hasError) {
-                              return const NoImagePhoto(width: 35, height: 35,);
-                            } else if (!snapshot.hasData) {
-                              return const NoImagePhoto(width: 35, height: 35);
-                            } else {
-                              return Image.memory(snapshot.data!, fit: BoxFit.cover,width: 35,);
-                            }
-                          },
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.all(Radius.circular(5)),
+                          child: FutureBuilder<Uint8List?>(
+                            future: MediaFileRepository().downloadFile(imageId),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return SizedBox(
+                                    height: 70, width: double.infinity,
+                                    child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
+                              } else if (snapshot.hasError) {
+                                return const NoImagePhoto(width: 35, height: 35,);
+                              } else if (!snapshot.hasData) {
+                                return const NoImagePhoto(width: 35, height: 35);
+                              } else {
+                                return Image.memory(snapshot.data!, fit: BoxFit.cover,width: 35,);
+                              }
+                            },
+                          ),
                         ),
                       ): Container(
                         width: 35,

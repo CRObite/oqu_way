@@ -1,23 +1,27 @@
+import 'dart:typed_data';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_colors.dart';
-import 'package:oqu_way/presentation/common/card_container_decoration.dart';
+import 'package:oqu_way/domain/app_test.dart';
 import 'package:oqu_way/presentation/screens/test_screen/widgets/answer_card.dart';
 import 'package:oqu_way/presentation/screens/test_screen/widgets/select_next_subject.dart';
 
 import '../../../../config/app_shadow.dart';
 import '../../../../config/app_text.dart';
+import '../../../../data/repository/media_file_repositry/media_file_repository.dart';
 import '../../../common/widgets/common_button.dart';
 import '../../../common/widgets/count_down_timer.dart';
+import '../../news_screen/widgets/news_card.dart';
 import '../widgets/question_number_row.dart';
 
 class TestPassingPage extends StatefulWidget {
-  const TestPassingPage({super.key, this.oneSubjectPage = false});
+  const TestPassingPage({super.key, this.oneSubjectPage = false, required this.test});
 
   final bool oneSubjectPage;
+  final AppTest? test;
 
   @override
   State<TestPassingPage> createState() => _TestPassingPageState();
@@ -29,7 +33,9 @@ class _TestPassingPageState extends State<TestPassingPage> {
   bool subjectSelected = false;
   int subjectIndex = 0;
   int currentQuestion = 0;
-  int? selectedAns;
+  int? hiddenSelected;
+
+
 
   List<String> valuesWithExtra = ['value1value1value1', 'value2','value3','value4',];
   List<String> selectedValues = ['','','',''];
@@ -194,14 +200,14 @@ class _TestPassingPageState extends State<TestPassingPage> {
 
                         const SizedBox(width: 30,),
 
-                        CountDownTimer(
+                        widget.oneSubjectPage? const SizedBox() : CountDownTimer(
                           duration: const Duration(hours: 3,minutes: 58,seconds: 48),
                           onTimePassed: () { context.pushReplacement('/testResults'); },
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 36,),
+                  const SizedBox(height: 10,),
 
                   !subjectSelected ?
                     Padding(
@@ -233,28 +239,67 @@ class _TestPassingPageState extends State<TestPassingPage> {
                             currentQuestion = value;
                           });
                         },
+                        questionNumber: widget.test!.questions!.length,
                       ),
 
                       Padding(
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: [
-                            const Text(
-                              'Ақмола-Қарталы темір жолының маңызы:',
-                              style: TextStyle(
+                            Text(
+                              widget.test!.questions![currentQuestion].question ?? '',
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold
                               ),
                             ),
 
-                            const SizedBox(height: 30,),
+                            const SizedBox(height: 20,),
+
+                            widget.test!.questions![currentQuestion].mediaFiles!= null?ListView.builder(
+                                itemCount: widget.test!.questions![currentQuestion].mediaFiles!.length,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context,index){
+                                  return FutureBuilder<Uint8List?>(
+                                    future: MediaFileRepository().downloadFile(widget.test!.questions![currentQuestion].mediaFiles![index].id),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState == ConnectionState.waiting) {
+                                        return SizedBox(
+                                            height: 250, width: double.infinity,
+                                            child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
+                                      } else if (snapshot.hasError) {
+                                        return const NoImagePhoto(height: 100, width: 100);
+                                      } else if (!snapshot.hasData) {
+                                        return const NoImagePhoto(height: 100, width: 100);
+                                      } else {
+                                        return Image.memory(snapshot.data!);
+                                      }
+                                    },
+                                  );
+                                }
+                            ) : const SizedBox(),
+
+                            const SizedBox(height: 10,),
 
                             ListView.builder(
-                              itemCount: 4,
+                              itemCount: widget.test!.questions![currentQuestion].options!.length,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context,index){
-                                if(currentQuestion >= 10){
+
+                                if(widget.test!.questions![currentQuestion].checkedAnswers!= null && widget.test!.questions![currentQuestion].checkedAnswers!.isNotEmpty){
+                                  for(int element in widget.test!.questions![currentQuestion].checkedAnswers!){
+                                    int index = widget.test!.questions![currentQuestion].options!.indexWhere((option) => option.id == element);
+                                    if (index != -1) {
+                                      widget.test!.questions![currentQuestion].options![index].checked = true;
+                                    }
+                                  }
+                                }
+
+
+
+                                if(widget.test!.questions![currentQuestion].subOptions!= null && widget.test!.questions![currentQuestion].subOptions!.isNotEmpty){
                                   return Container(
                                     margin: const EdgeInsets.only(bottom: 20),
                                     child: Row(
@@ -334,12 +379,27 @@ class _TestPassingPageState extends State<TestPassingPage> {
                                 }
 
                                 return AnswerCard(
-                                    selected: selectedAns == index,
+                                    selected: widget.test!.questions![currentQuestion].options![index].checked ?? false,
                                     onAnswerSelected: (){
+                                      if(!(widget.test!.questions![currentQuestion].multipleAnswers ?? false)){
+                                        if(hiddenSelected != null &&  hiddenSelected != index){
+                                          widget.test!.questions![currentQuestion].options![hiddenSelected!].checked = false;
+                                        }
+                                        hiddenSelected = index;
+                                      }
+
                                       setState(() {
-                                        selectedAns = index;
+                                        if(!(widget.test!.questions![currentQuestion].multipleAnswers ?? false)){
+
+                                          widget.test!.questions![currentQuestion].options![index].checked = true;
+
+                                        }else{
+
+                                          widget.test!.questions![currentQuestion].options![index].checked = !(widget.test!.questions![currentQuestion].options![index].checked ?? false);
+                                        }
+
                                       });
-                                    }, questionText: 'Орталық Қазақстанның өнеркәсіп аудандарын Оралдың оңтүстігімен байланыстырады.'
+                                    }, questionText: widget.test!.questions![currentQuestion].options![index].text ?? ''
                                 );
                               }
                             )
@@ -354,7 +414,7 @@ class _TestPassingPageState extends State<TestPassingPage> {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-          color: Colors.white,
+          color: Colors.transparent,
             padding: const EdgeInsets.only(left: 20,right: 20, bottom: 42),
             surfaceTintColor: Colors.transparent,
             height: 95,
@@ -391,9 +451,9 @@ class _TestPassingPageState extends State<TestPassingPage> {
                   child: Text(AppText.exit, style: TextStyle(color: AppColors.blueColor, fontSize: 15), ),
                 ),
 
-                Text('${currentQuestion+1}/15', style: TextStyle(color: AppColors.greyColor, fontSize: 15),),
-                CommonButton(title: currentQuestion+1 == 15 ?AppText.end:AppText.next, onClick: (){
-                  if(currentQuestion+1 != 15){
+                Text('${currentQuestion+1}/${widget.test!.questions!.length}', style: TextStyle(color: AppColors.greyColor, fontSize: 15),),
+                CommonButton(title: currentQuestion+1 == widget.test!.questions!.length ?AppText.end:AppText.next, onClick: (){
+                  if(currentQuestion+1 != widget.test!.questions!.length){
                     setState(() {
                       currentQuestion ++;
                     });

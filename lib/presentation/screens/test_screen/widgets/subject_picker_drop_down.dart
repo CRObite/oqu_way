@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../config/app_colors.dart';
+import '../../../../domain/subject.dart';
 
 class SubjectPickerDropDown extends StatefulWidget {
-  const SubjectPickerDropDown({super.key, required this.valuesWithExtra, required this.selectedValue, required this.onValueSelected, required this.hint});
+  const SubjectPickerDropDown({super.key, required this.valuesWithExtra, required this.onValueSelected, required this.hint});
 
-  final List<String> valuesWithExtra;
-  final String selectedValue;
-  final Function(String) onValueSelected;
+  final List<Subject> valuesWithExtra;
+  final Function(Subject) onValueSelected;
   final String hint;
 
   @override
@@ -19,14 +19,21 @@ class SubjectPickerDropDown extends StatefulWidget {
 class _SubjectPickerDropDownState extends State<SubjectPickerDropDown> {
 
 
-  String selected = '';
+  Subject? selected;
+
+
 
   @override
-  void initState() {
-    setState(() {
-      selected = widget.selectedValue;
-    });
-    super.initState();
+  void didUpdateWidget(covariant SubjectPickerDropDown oldWidget) {
+
+    if(oldWidget.valuesWithExtra != widget.valuesWithExtra){
+      setState(() {
+        selected = null;
+      });
+
+      print(selected);
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
 
@@ -42,10 +49,10 @@ class _SubjectPickerDropDownState extends State<SubjectPickerDropDown> {
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
         child:
         DropdownButtonHideUnderline(
-          child: DropdownButton2<String>(
+          child: DropdownButton2<Subject>(
             hint: Text(widget.hint, style: TextStyle(color: AppColors.greyColor.withOpacity(0.5)),),
-            value: selected.isNotEmpty ? selected : null,
-            onChanged: (String? newValue) {
+            value: selected,
+            onChanged: (Subject? newValue) {
               if(newValue!= null){
                 setState(() {
                   selected = newValue;
@@ -54,10 +61,10 @@ class _SubjectPickerDropDownState extends State<SubjectPickerDropDown> {
                 widget.onValueSelected(newValue);
               }
             },
-            items: widget.valuesWithExtra.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
+            items: widget.valuesWithExtra.map<DropdownMenuItem<Subject>>((Subject value) {
+              return DropdownMenuItem<Subject>(
                 value: value,
-                child: Text(value),
+                child: Text(value.name ?? ''),
               );
             }).toList(),
             iconStyleData: IconStyleData(
@@ -79,8 +86,8 @@ class _SubjectPickerDropDownState extends State<SubjectPickerDropDown> {
               offset: const Offset(-20, 0),
               scrollbarTheme: ScrollbarThemeData(
                 radius: const Radius.circular(40),
-                thickness: MaterialStateProperty.all(6),
-                thumbVisibility: MaterialStateProperty.all(true),
+                thickness: WidgetStateProperty.all(6),
+                thumbVisibility: WidgetStateProperty.all(true),
               ),
             ),
             isExpanded: true,

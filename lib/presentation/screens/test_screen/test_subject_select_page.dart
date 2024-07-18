@@ -2,12 +2,15 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oqu_way/data/local/shared_preferences_operator.dart';
+import 'package:oqu_way/data/repository/ent_test_repository/ent_test_repository.dart';
 import 'package:oqu_way/presentation/common/card_container_decoration.dart';
 import 'package:oqu_way/presentation/common/widgets/common_button.dart';
 import 'package:oqu_way/presentation/screens/test_screen/widgets/subject_picker_drop_down.dart';
 
 import '../../../config/app_colors.dart';
 import '../../../config/app_text.dart';
+import '../../../domain/subject.dart';
 
 class TestSubjectSelectPage extends StatefulWidget {
   const TestSubjectSelectPage({super.key});
@@ -18,10 +21,36 @@ class TestSubjectSelectPage extends StatefulWidget {
 
 class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
 
-  String selectedFirst = '';
-  String selectedSecond = '';
+  Subject? selectedFirst;
+  Subject? selectedSecond;
 
-  List<String> valuesWithExtra = ['Предмет','Предмет2','Предмет3','Предмет4','Предмет5','Предмет6','Предмет7','Предмет8','Предмет9','Предмет10','Предмет11','Предмет12',];
+  List<Subject> firstList = [];
+  List<Subject> secondList = [];
+
+  @override
+  void initState() {
+    getFistSubjects();
+    super.initState();
+  }
+
+  Future<void> getFistSubjects() async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    List<Subject> values = await EntTestRepository().getAllEntSubjects(token!);
+    setState(() {
+      firstList = values;
+    });
+  }
+
+  Future<void> getSecondSubjects(int id) async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    List<Subject> values = await EntTestRepository().getAllEntSubjectsByFirst(token!, id);
+    setState(() {
+      secondList = values;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -59,23 +88,32 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
                     const SizedBox(height: 33,),
 
                     SubjectPickerDropDown(
-                      valuesWithExtra: valuesWithExtra,
-                      selectedValue: selectedFirst,
-                      onValueSelected: (String value) {
-                        selectedFirst = value;
+                      valuesWithExtra: firstList,
+
+                      onValueSelected: (Subject value) {
+
+                        setState(() {
+                          selectedSecond = null;
+                          selectedFirst = value;
+                        });
+
+                        getSecondSubjects(value.id);
+
                       },
                       hint: AppText.firstSubject,
                     ),
 
                     const SizedBox(height: 20,),
 
-                    SubjectPickerDropDown(
-                      valuesWithExtra: valuesWithExtra,
-                      selectedValue: selectedSecond,
-                      onValueSelected: (String value) {
-                        selectedSecond = value;
-                      },
-                      hint: AppText.secondSubject,
+                    IgnorePointer(
+                      ignoring: selectedFirst == null,
+                      child: SubjectPickerDropDown(
+                        valuesWithExtra: secondList,
+                        onValueSelected: (Subject value) {
+                          selectedSecond = value;
+                        },
+                        hint: AppText.secondSubject,
+                      ),
                     ),
 
                     const SizedBox(height: 40,),

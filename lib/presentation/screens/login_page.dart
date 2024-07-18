@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
         CustomException.fromDioException(error);
 
         setState(() {
-          validation = error.response?.data['detail'] ?? {};
+          validation = error.response?.data['detail'] ?? '';
         });
 
       }else{

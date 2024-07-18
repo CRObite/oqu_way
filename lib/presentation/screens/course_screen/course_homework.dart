@@ -1,14 +1,21 @@
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oqu_way/data/local/shared_preferences_operator.dart';
+import 'package:oqu_way/data/repository/media_file_repositry/media_file_repository.dart';
+import 'package:oqu_way/data/repository/task_repository/task_repository.dart';
 import 'package:oqu_way/presentation/common/widgets/date_time_row.dart';
 
 import '../../../config/app_colors.dart';
 import '../../../config/app_text.dart';
+import '../../../domain/task.dart';
 
 class CourseHomework extends StatefulWidget {
-  const CourseHomework({super.key});
+  const CourseHomework({super.key, required this.taskId});
+
+  final int? taskId;
 
   @override
   State<CourseHomework> createState() => _CourseHomeworkState();
@@ -19,7 +26,25 @@ class _CourseHomeworkState extends State<CourseHomework> {
   TextEditingController controller = TextEditingController();
   List<String> titles = [];
   bool isSent = true;
+  Task? task;
 
+
+  @override
+  void initState() {
+    if(widget.taskId!= null){
+      getTaskById();
+    }
+    super.initState();
+  }
+
+  Future<void> getTaskById() async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+    Task? value = await TaskRepository().getTaskById(token!, widget.taskId!);
+
+    setState(() {
+      task = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +60,7 @@ class _CourseHomeworkState extends State<CourseHomework> {
           ),
           title: Text(AppText.homeworks, style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
         ),
-        body: SingleChildScrollView(
+        body: task!= null ? SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -45,7 +70,7 @@ class _CourseHomeworkState extends State<CourseHomework> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Тапсырма уақыты',style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                    Container(
+                    task!.deadline != null ? Container(
                       decoration: BoxDecoration(
                         color: AppColors.greyColor.withOpacity(0.3),
                         borderRadius: const BorderRadius.all(
@@ -56,7 +81,7 @@ class _CourseHomeworkState extends State<CourseHomework> {
                         padding: const EdgeInsets.symmetric(vertical: 9,horizontal: 11),
                         child: DateTimeRow(color: AppColors.greenColor,)
                       ),
-                    ),
+                    ): const Text('мерзім жоқ'),
                   ],
                 ),
 
@@ -66,24 +91,24 @@ class _CourseHomeworkState extends State<CourseHomework> {
 
                 const SizedBox(height: 10,),
 
-                const Text('Арифметикалық прогрессияға есептер',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                Text(task!.name ?? '',style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
 
                 const SizedBox(height: 15,),
 
-                Text('Мұғалім', style: TextStyle(color: AppColors.greyColor,fontWeight: FontWeight.bold),),
-
-                const SizedBox(height: 10,),
-
-                const Text('Harsh Kadyan',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-
-                const SizedBox(height: 15,),
+                // Text('Мұғалім', style: TextStyle(color: AppColors.greyColor,fontWeight: FontWeight.bold),),
+                //
+                // const SizedBox(height: 10,),
+                //
+                // const Text('Harsh Kadyan',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                //
+                // const SizedBox(height: 15,),
 
                 Text('Тапсырма сипаттамасы', style: TextStyle(color: AppColors.greyColor,fontWeight: FontWeight.bold),),
 
                 const SizedBox(height: 10,),
 
-                const Text('Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris. Maecenas vitae mattis tellus. Nullam quis imperdiet augue. Vestibulum auctor ornare leo, non suscipit magna interdum eu. Curabitur pellentesque nibh nibh, at maximus ante fermentum sit amet. Pellentesque commodo lacus at sodales sodales. Quisque sagittis orci ut diam condimentum, vel euismod erat placerat. In iaculis arcu eros, eget tempus orci facilisis id. Praesent lorem orci, mattis non efficitur id, ultricies vel nibh. Sed volutpat lacus vitae gravida ',
-                  style: TextStyle(fontSize: 13),),
+                Text(task!.description ?? 'Cипаттама жоқ',
+                  style: const TextStyle(fontSize: 13),),
 
                 const SizedBox(height: 15,),
 
@@ -91,7 +116,7 @@ class _CourseHomeworkState extends State<CourseHomework> {
 
                 const SizedBox(height: 10,),
 
-                GridView.builder(
+                task!.mediaFiles.isNotEmpty ? GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -100,18 +125,28 @@ class _CourseHomeworkState extends State<CourseHomework> {
                     crossAxisSpacing: 10.0,
                     childAspectRatio: 3,
                     ),
-                    itemCount: 9,
+                    itemCount: task!.mediaFiles.length,
                     itemBuilder: (context,index){
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.greyColor.withOpacity(0.5),
-                          borderRadius: const BorderRadius.all(Radius.circular(5))
+                      return GestureDetector(
+                        onTap: () async {
+                          Uint8List? bytes =  await MediaFileRepository().downloadFile(task!.mediaFiles[index].id);
+
+                          if(bytes!= null){
+                            await MediaFileRepository().downloadUint8List(task!.mediaFiles[index].originalName ?? 'oqu_way_file', bytes);
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.greyColor.withOpacity(0.5),
+                            borderRadius: const BorderRadius.all(Radius.circular(5))
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Center(child: Text(task!.mediaFiles[index].originalName ?? '???', style: const TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis,),maxLines: 1,)),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: Center(child: Text('assigment.$index.pdf', style: const TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis,),maxLines: 1,)),
                       );
                     }
-                ),
+                ): const Text('Материалдар жоқ',
+                  style: TextStyle(fontSize: 13),),
 
                 const SizedBox(height: 20,),
 
@@ -169,7 +204,7 @@ class _CourseHomeworkState extends State<CourseHomework> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 12),
                               child: Center(
-                                  child: Text(titles[index], style: const TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis,),maxLines: 1,)
+                                  child: Text(titles[index].split('/').last, style: const TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis,),maxLines: 1,)
                               ),
                             ),
 
@@ -200,10 +235,13 @@ class _CourseHomeworkState extends State<CourseHomework> {
                 ),
                 isSent ?const SizedBox(): const SizedBox(height: 15,),
 
-                isSent ?const SizedBox(): GestureDetector(
-                  onTap: (){
+                isSent ? const SizedBox(): GestureDetector(
+                  onTap: () async {
+
+                    String path = await MediaFileRepository().pickFile();
+
                     setState(() {
-                      titles.add('newFile.png');
+                      titles.add(path);
                     });
                   },
                   child: Container(
@@ -249,7 +287,7 @@ class _CourseHomeworkState extends State<CourseHomework> {
 
                 const SizedBox(height: 10,),
 
-                isSent ? GestureDetector(
+                task!.status == TaskTypeEnum.CHECKED.toString() ? GestureDetector(
                   onTap: (){context.push('/courseHomework/courseHomeworkScore');},
                   child: Container(
                       decoration: BoxDecoration(
@@ -266,7 +304,7 @@ class _CourseHomeworkState extends State<CourseHomework> {
               ],
             ),
           ),
-        ),
+        ) : const SizedBox(),
     );
   }
 }

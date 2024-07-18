@@ -1,9 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:oqu_way/domain/comment.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_text.dart';
+import '../../../../data/repository/media_file_repositry/media_file_repository.dart';
+import 'news_card.dart';
 
 class CommentsRow extends StatefulWidget {
   const CommentsRow({super.key, required this.comment});
@@ -67,12 +71,30 @@ class _CommentsRowState extends State<CommentsRow> with SingleTickerProviderStat
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
+                    width: 35, height: 35,
                     decoration: BoxDecoration(
                         color: AppColors.greyColor.withOpacity(0.3),
                         shape: BoxShape.circle
                     ),
-                    padding: const EdgeInsets.all(13),
-                    child: Text(widget.comment.appUser.login!= null? widget.comment.appUser.login![0]: '?',style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
+                    child: widget.comment.appUser.avatar!= null?  ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(100)),
+                      child: FutureBuilder<Uint8List?>(
+                        future: MediaFileRepository().downloadFile(widget.comment.appUser.avatar!.split('/').last),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return SizedBox(
+                                height: 35, width: double.infinity,
+                                child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
+                          } else if (snapshot.hasError) {
+                            return const NoImagePhoto(width: 35, height: 35,);
+                          } else if (!snapshot.hasData) {
+                            return const NoImagePhoto(width: 35, height: 35);
+                          } else {
+                            return Image.memory(snapshot.data!, fit: BoxFit.cover,width: 35,);
+                          }
+                        },
+                      ),
+                    ):  Text(widget.comment.appUser.login!= null? widget.comment.appUser.login![0]: '?',style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),),
                   ),
 
                   const SizedBox(width: 10,),

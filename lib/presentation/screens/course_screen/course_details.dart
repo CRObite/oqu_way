@@ -91,7 +91,7 @@ class _CourseDetailsState extends State<CourseDetails> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context,index){
                     return SubjectNestedList(
-                        module: subject!.modules[index]
+                        module: subject!.modules[index], subject: subject!.name ?? '',
                     );
                   }
                 ),

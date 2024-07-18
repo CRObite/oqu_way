@@ -1,5 +1,6 @@
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,9 @@ import '../../../config/app_colors.dart';
 import '../../../config/app_shadow.dart';
 import '../../../config/app_text.dart';
 import '../../../data/local/shared_preferences_operator.dart';
+import '../../../data/repository/media_file_repositry/media_file_repository.dart';
 import '../../../domain/app_user.dart';
+import '../news_screen/widgets/news_card.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -30,7 +33,7 @@ class _GamePageState extends State<GamePage> {
 
   List<String> valuesWithExtra = ['Предмет','Предмет2','Предмет3','Предмет4','Предмет5','Предмет6','Предмет7','Предмет8','Предмет9','Предмет10','Предмет11','Предмет12',];
 
-  String username = '?';
+  AppUser? user;
 
   @override
   void initState() {
@@ -42,10 +45,10 @@ class _GamePageState extends State<GamePage> {
     String? userJson = await SharedPreferencesOperator.getCurrentUser();
     if(userJson!=null){
       Map<String, dynamic> userMap = jsonDecode(userJson);
-      AppUser user = AppUser.fromJson(userMap);
+      AppUser value = AppUser.fromJson(userMap);
 
       setState(() {
-        username = user.login ?? '?';
+        user = value;
       });
     }
   }
@@ -75,11 +78,29 @@ class _GamePageState extends State<GamePage> {
                 ),
               ),
 
-              Center(
+              user!= null ? Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
+                    user!.avatar != null ? ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      child: FutureBuilder<Uint8List?>(
+                        future: MediaFileRepository().downloadFile(user!.avatar!.split('/').last ),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return SizedBox(
+                                height: 70, width: double.infinity,
+                                child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
+                          } else if (snapshot.hasError) {
+                            return const NoImagePhoto(width: 100, height: 100,);
+                          } else if (!snapshot.hasData) {
+                            return const NoImagePhoto(width: 100, height: 100);
+                          } else {
+                            return Image.memory(snapshot.data!, fit: BoxFit.cover,width: 100, height: 100,);
+                          }
+                        },
+                      ),
+                    ): Container(
                       width: 100,
                       height: 100,
                       decoration: const BoxDecoration(
@@ -88,7 +109,7 @@ class _GamePageState extends State<GamePage> {
                       ),
                       child: Center(
                         child: Text(
-                          username[0],
+                          user!= null ? user!.login![0] : '?',
                           style: TextStyle(
                             color: AppColors.greenColor,
                             fontSize: 40,
@@ -98,10 +119,10 @@ class _GamePageState extends State<GamePage> {
                       ),
                     ),
                     const SizedBox(height: 7,),
-                    Text(username, style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 20),)
+                    Text(user!.login != null ? user!.login! : '?', style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 20),)
                   ],
                 ),
-              )
+              ) : const SizedBox()
             ],
           ),
         ),
@@ -112,14 +133,14 @@ class _GamePageState extends State<GamePage> {
           child: ListView(
             padding: const EdgeInsets.all(20),
             children: [
-              SubjectPickerDropDown(
-                  valuesWithExtra: valuesWithExtra,
-                  selectedValue: selectedValue,
-                  onValueSelected: (value){
-                    selectedValue = value;
-                  },
-                  hint: 'Пән таңдаңыз'
-              ),
+              // SubjectPickerDropDown(
+              //     valuesWithExtra: valuesWithExtra,
+              //     selectedValue: selectedValue,
+              //     onValueSelected: (value){
+              //       selectedValue = value;
+              //     },
+              //     hint: 'Пән таңдаңыз'
+              // ),
 
               const SizedBox(height: 30,),
               ElevatedButton(

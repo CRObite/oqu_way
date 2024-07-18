@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/data/repository/comment_repository/comment_repository.dart';
+import 'package:oqu_way/domain/app_test.dart';
 import 'package:oqu_way/domain/comment.dart';
 import 'package:oqu_way/domain/subject.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_page.dart';
@@ -264,21 +265,31 @@ class AppNavigation{
           name: 'testPassingPage',
           builder: (context,state){
 
+            AppTest? test;
+
             if(state.extra != null){
-              final extras = state.extra as Map<String, bool>;
+              final extras = state.extra as Map<String, dynamic>;
+
+              if(extras.containsKey('app_test')){
+                test = extras['app_test'] as AppTest;
+              }
+
               if(extras.containsKey('oneSubjectPage')){
                 return TestPassingPage(
                   key: state.pageKey,
                   oneSubjectPage: extras['oneSubjectPage'] as bool,
+                  test: test,
                 );
               }else {
                 return TestPassingPage(
                   key: state.pageKey,
+                  test: test,
                 );
               }
             }else{
               return TestPassingPage(
                 key: state.pageKey,
+                test: test,
               );
             }
           },
@@ -325,8 +336,17 @@ class AppNavigation{
             path: '/courseHomework',
             name: 'courseHomework',
             builder: (context,state){
+              int? taskId;
+
+              if(state.extra != null){
+                final extras = state.extra as Map<String, dynamic>;
+                if(extras.containsKey('taskId')){
+                  taskId = extras['taskId'] as int;
+                }
+              }
+
               return CourseHomework(
-                key: state.pageKey,
+                key: state.pageKey, taskId: taskId,
               );
             },
           routes: [
@@ -348,8 +368,24 @@ class AppNavigation{
           path: '/courseTestPage',
           name: 'courseTestPage',
           builder: (context,state){
+
+            String subjectName = '';
+            int? testId;
+
+            if(state.extra != null){
+              final extras = state.extra as Map<String, dynamic>;
+              if(extras.containsKey('subjectName')){
+                subjectName = extras['subjectName'] as String;
+              }
+              if(extras.containsKey('testId')){
+                testId = extras['testId'] as int;
+              }
+            }
+
             return CourseTestPage(
               key: state.pageKey,
+              subjectName: subjectName,
+              testId: testId,
             );
           },
         ),

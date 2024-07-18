@@ -35,7 +35,7 @@ class _NavigationPageState extends State<NavigationPage> {
 
   int currentPage = 0;
 
-  String username = '?';
+  AppUser? username;
 
   Future<void> getUsername() async {
     String? userJson = await SharedPreferencesOperator.getCurrentUser();
@@ -44,7 +44,7 @@ class _NavigationPageState extends State<NavigationPage> {
       AppUser user = AppUser.fromJson(userMap);
 
       setState(() {
-        username = user.login ?? '?';
+        username = user;
       });
     }
   }
@@ -99,8 +99,8 @@ class _NavigationPageState extends State<NavigationPage> {
         onBellPressed: () {
           context.push('/notificationPage');
         },
-        title: username,
-        imageId: '',
+        title: username!= null?  username!.login! : '?',
+        imageId: username!= null?  username!.avatar!= null ? username!.avatar!.split('/').last : '' : '',
         setDot: false,
       )
           : null,

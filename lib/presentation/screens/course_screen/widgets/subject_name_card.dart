@@ -26,8 +26,8 @@ class SubjectNameCard extends StatelessWidget {
             Container(
               color: AppColors.greenColor,
               width: 1,
-              constraints: const BoxConstraints(
-                maxHeight: 110,
+              constraints: BoxConstraints(
+                maxHeight: description.isNotEmpty ?  110: 40,
               ),
             ),
             const SizedBox(height: 7,),

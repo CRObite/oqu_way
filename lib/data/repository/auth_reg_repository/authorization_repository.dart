@@ -98,5 +98,21 @@ class AuthorizationRepository {
     }
   }
 
+  // Future<bool> sendCodeToEmail(String email) async {
+  //
+  //   final response = await dio.post(
+  //       AppApiEndpoints.recoverPassword,
+  //       data: {
+  //         "email":email,
+  //       }
+  //   );
+  //
+  //   if (response.statusCode! ~/ 100 == 2) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
 
 }

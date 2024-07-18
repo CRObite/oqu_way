@@ -16,7 +16,7 @@ class TestDeadlineInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin:const EdgeInsets.only(left: 40),
-      height: 80,
+      height: 100,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -43,26 +43,14 @@ class TestDeadlineInfoCard extends StatelessWidget {
               children: [
                 Text(isTest? AppText.test: AppText.homeworks, style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
                 const SizedBox(height: 6,),
-                Text(isTest?'${AppText.time}:': '${AppText.deadline}:', style: TextStyle(fontSize: 13, color: AppColors.greyColor)),
+                Text('${AppText.deadline}:', style: TextStyle(fontSize: 13, color: AppColors.greyColor)),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
 
-                    isTest? Row(
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/ic_time.svg',
-                          colorFilter: const ColorFilter.mode(
-                            Colors.black,
-                            BlendMode.srcIn,
-                          ),
-                          height: 15,
-                        ),
-                        const SizedBox(width: 9,),
-                        const Text('40 мин', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                      ],
-                    ) : deadline.isNotEmpty ?  const DateTimeRow(): const Text('мерзім жоқ'),
+                    deadline.isNotEmpty ?  const DateTimeRow(): const Text('мерзім жоқ'),
+
 
                     SizedBox(
                         height: 30,

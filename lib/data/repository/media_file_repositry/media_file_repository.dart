@@ -1,8 +1,14 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:oqu_way/config/app_toast.dart';
 import 'package:oqu_way/data/local/shared_preferences_operator.dart';
+import 'package:path_provider/path_provider.dart';
+
 
 import '../../../config/app_api_endpoints.dart';
 
@@ -71,6 +77,55 @@ class MediaFileRepository{
       return imageId;
     }else{
       return '';
+    }
+  }
+
+
+  Future<String> pickFile() async {
+    print('picker');
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      PlatformFile file = result.files.first;
+
+      if(file.path != null){
+        return file.path!;
+      }else{
+        return '';
+      }
+    } else {
+      return '';
+    }
+  }
+
+
+  Future<void> downloadUint8List(String filename, Uint8List bytes) async {
+    try {
+      final directory = await getTemporaryDirectory();
+
+      final file = File('${directory.path}/oqu_way_files');
+
+      await file.writeAsBytes(bytes);
+
+      final params = SaveFileDialogParams(
+        sourceFilePath: file.path,
+        fileName: filename,
+      );
+
+      final result = await FlutterFileDialog.saveFile(params: params);
+
+
+      if (result != null) {
+        print('File saved at $result');
+      } else {
+        print('File save canceled');
+      }
+    } catch (e) {
+
+      AppToast.showToast('Файл сақталмады');
+
+      print('Error downloading file: $e');
     }
   }
 }

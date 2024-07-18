@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:oqu_way/data/repository/comment_repository/comment_repository.dart';
 import 'package:oqu_way/domain/app_user.dart';
@@ -7,8 +10,10 @@ import 'package:oqu_way/domain/post.dart';
 import '../../../config/app_colors.dart';
 import '../../../config/app_text.dart';
 import '../../../data/local/shared_preferences_operator.dart';
+import '../../../data/repository/media_file_repositry/media_file_repository.dart';
 import '../../../domain/comment.dart';
 import '../../screens/news_screen/widgets/comments_row.dart';
+import '../../screens/news_screen/widgets/news_card.dart';
 
 class CommentsBottomSheet extends StatefulWidget {
   const CommentsBottomSheet({Key? key,  required this.newsId}) : super(key: key);
@@ -26,6 +31,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
   void initState() {
     super.initState();
     getComments();
+    getUsername();
   }
 
   Future<void> getComments() async {
@@ -52,6 +58,20 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
     getComments();
 
     commentController.clear();
+  }
+
+  AppUser? user;
+
+  Future<void> getUsername() async {
+    String? userJson = await SharedPreferencesOperator.getCurrentUser();
+    if(userJson!=null){
+      Map<String, dynamic> userMap = jsonDecode(userJson);
+      AppUser value = AppUser.fromJson(userMap);
+
+      setState(() {
+        user = value;
+      });
+    }
   }
 
   TextEditingController commentController = TextEditingController();
@@ -97,20 +117,44 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
               padding: const EdgeInsets.only(top: 18, left: 24, right: 24, bottom: 30),
               child: Row(
                 children: [
-                  Container(
+
+                  user!= null && user!.avatar!=null ?  SizedBox(
+                    height: 45,
+                    width: 45,
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      child: FutureBuilder<Uint8List?>(
+                        future: MediaFileRepository().downloadFile(user!.avatar!.split('/').last),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return SizedBox(
+                                height: 70, width: double.infinity,
+                                child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
+                          } else if (snapshot.hasError) {
+                            return const NoImagePhoto(width: 35, height: 35,);
+                          } else if (!snapshot.hasData) {
+                            return const NoImagePhoto(width: 35, height: 35);
+                          } else {
+                            return Image.memory(snapshot.data!, fit: BoxFit.cover,width: 35,);
+                          }
+                        },
+                      ),
+                    ),
+                  ):
+                  user!= null && user!.login!=null ? Container(
                     height: 45,
                     width: 45,
                     decoration: BoxDecoration(
                       color: AppColors.greyColor.withOpacity(0.3),
                       borderRadius: const BorderRadius.all(Radius.circular(5)),
                     ),
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        'A',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        user!.login![0] ?? '',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
-                  ),
+                  ): const SizedBox(),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Container(

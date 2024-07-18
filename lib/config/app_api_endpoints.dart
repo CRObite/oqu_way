@@ -7,6 +7,7 @@ class AppApiEndpoints {
   static String getMe = '$api/universal-get-me';
   static String registration = '$api/registration';
   static String login = '$api/login';
+  static String recoverPassword = '$api/recover-password';
 
   // post endpoints
   static String getAllPost = '$api/post/get-all';
@@ -37,6 +38,20 @@ class AppApiEndpoints {
   static String getAllSpecializationComments = '$api/comment/get-all-by-specialization/'; // + specialization id
   static String getAllPostComments = '$api/comment/get-all-by-post/'; // + post id
   static String saveComments = '$api/comment/save';
+
+  //task endpoints
+  static String getTaskById = '$api/task/get-by-id/'; // + TASK id
+
+  //test endpoints
+  static String getTestById = '$api/app-test/get-by-id/'; // + Test id
+  static String startTest = '$api/app-test/start/'; // + Test id
+  static String endTest = '$api/app-test/ended/'; // + Test id
+  static String getTestResult = '$api/app-test/get-result/'; // + Test id
+
+  //ent0-test endpoints
+  static String getEntSubjects = '$api/ent-test/subjects';
+  static String getEntSubjectByFirst = '$api/ent-test/subjects-in-mss';
+
 
 }
 

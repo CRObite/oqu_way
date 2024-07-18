@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oqu_way/data/local/shared_preferences_operator.dart';
+import 'package:oqu_way/data/repository/test_repository/test_repository.dart';
+import 'package:oqu_way/domain/app_test.dart';
 import 'package:oqu_way/presentation/common/info_border_row.dart';
 
 import '../../../../config/app_colors.dart';
@@ -8,7 +11,10 @@ import '../../../common/widgets/common_button.dart';
 import '../../test_screen/widgets/subject_picker_drop_down.dart';
 
 class CourseTestPage extends StatefulWidget {
-  const CourseTestPage({super.key});
+  const CourseTestPage({super.key, required this.subjectName, required this.testId});
+
+  final String subjectName;
+  final int? testId;
 
   @override
   State<CourseTestPage> createState() => _CourseTestPageState();
@@ -16,6 +22,24 @@ class CourseTestPage extends StatefulWidget {
 
 class _CourseTestPageState extends State<CourseTestPage> {
 
+  AppTest? test;
+
+  @override
+  void initState() {
+    getTestById();
+    super.initState();
+  }
+
+
+  Future<void> getTestById() async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    AppTest? value = await TestRepository().getTestById(token!, widget.testId!);
+
+    setState(() {
+      test = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +52,9 @@ class _CourseTestPageState extends State<CourseTestPage> {
             },
             child: const Icon(Icons.arrow_back_ios_new_rounded,size: 18, )
         ),
-        title: const Text('Математика > Тест', style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+        title: Text('${widget.subjectName} > Тест', style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
       ),
-      body:Padding(
+      body: test!= null? Padding(
         padding: const EdgeInsets.all(20.0),
         child: SizedBox(
           height: double.infinity,
@@ -53,15 +77,15 @@ class _CourseTestPageState extends State<CourseTestPage> {
               ),
               const SizedBox(height: 20,),
 
-              const InfoBorderRow(label: 'Пән', value: 'Тарих'),
+              InfoBorderRow(label: 'Пән', value: widget.subjectName),
               const InfoBorderRow(label: 'Уақыт', value: '40 мин'),
-              const InfoBorderRow(label: 'Сұрақ саны', value: '40'),
+              InfoBorderRow(label: 'Сұрақ саны', value: '${test!.questions!.length}'),
 
               const SizedBox(height: 80,),
             ],
           ),
         ),
-      ),
+      ): const SizedBox(),
 
         bottomNavigationBar: BottomAppBar(
             padding: const EdgeInsets.only(left: 20,right: 20, bottom: 42),
@@ -70,7 +94,7 @@ class _CourseTestPageState extends State<CourseTestPage> {
             child: CommonButton(title:'Тестті бастау', onClick: (){
               context.push(
                 '/testPassingPage',
-                extra: {'oneSubjectPage': true},);
+                extra: {'oneSubjectPage': true, 'app_test': test},);
             }, )
         )
 

@@ -65,7 +65,7 @@ class _ProfessionDetailsState extends State<ProfessionDetails> {
               const SizedBox(height: 20,),
               Text(specialization!.name ?? '???',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.moreDarkerBlueColor),),
               const SizedBox(height: 10,),
-              Text('Пәндер : ${specialization!.subjects![0].name}, ${specialization!.subjects![1].name}',style: TextStyle(fontSize: 10, color: AppColors.greenColor),),
+              Text('Пәндер : ${specialization!.subjects![0].name}, ${specialization!.subjects!.length > 1 ? specialization!.subjects![1].name : ''}',style: TextStyle(fontSize: 10, color: AppColors.greenColor),),
 
               const SizedBox(height: 20,),
 

@@ -7,6 +7,9 @@ import 'package:oqu_way/presentation/common/card_container_decoration.dart';
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_shadow.dart';
 import '../../../../config/app_text.dart';
+import '../../../../data/local/shared_preferences_operator.dart';
+import '../../../../data/repository/ent_test_repository/ent_test_repository.dart';
+import '../../../../domain/subject.dart';
 import '../../../common/widgets/common_button.dart';
 import '../../test_screen/widgets/subject_picker_drop_down.dart';
 import '../widgets/specialization_dropdown.dart';
@@ -20,19 +23,46 @@ class ProfileAnalysis extends StatefulWidget {
 
 class _ProfileAnalysisState extends State<ProfileAnalysis> {
 
-  String selectedFirst = '';
-  String selectedSecond = '';
   bool selected = false;
   double  sliderValue = 0;
-
 
   String selectedSpec = '';
   String selectedSpec2 = '';
   String selectedSpec3 = '';
   String selectedSpec4 = '';
 
-
   List<String> valuesWithExtra = ['Предмет','Предмет2','Предмет3','Предмет4','Предмет5','Предмет6','Предмет7','Предмет8','Предмет9','Предмет10','Предмет11','Предмет12',];
+
+  Subject? selectedFirst;
+  Subject? selectedSecond;
+
+  List<Subject> firstList = [];
+  List<Subject> secondList = [];
+
+  @override
+  void initState() {
+    getFistSubjects();
+    super.initState();
+  }
+
+  Future<void> getFistSubjects() async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    List<Subject> values = await EntTestRepository().getAllEntSubjects(token!);
+    setState(() {
+      firstList = values;
+    });
+  }
+
+  Future<void> getSecondSubjects(int id) async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    List<Subject> values = await EntTestRepository().getAllEntSubjectsByFirst(token!, id);
+    setState(() {
+      secondList = values;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,23 +88,32 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
               const SizedBox(height: 20,),
 
               SubjectPickerDropDown(
-                valuesWithExtra: valuesWithExtra,
-                selectedValue: selectedFirst,
-                onValueSelected: (String value) {
-                  selectedFirst = value;
+                valuesWithExtra: firstList,
+
+                onValueSelected: (Subject value) {
+
+                  setState(() {
+                    selectedSecond = null;
+                    selectedFirst = value;
+                  });
+
+                  getSecondSubjects(value.id);
+
                 },
                 hint: AppText.firstSubject,
               ),
 
               const SizedBox(height: 10,),
 
-              SubjectPickerDropDown(
-                valuesWithExtra: valuesWithExtra,
-                selectedValue: selectedSecond,
-                onValueSelected: (String value) {
-                  selectedSecond = value;
-                },
-                hint: AppText.secondSubject,
+              IgnorePointer(
+                ignoring: selectedFirst == null,
+                child: SubjectPickerDropDown(
+                  valuesWithExtra: secondList,
+                  onValueSelected: (Subject value) {
+                    selectedSecond = value;
+                  },
+                  hint: AppText.secondSubject,
+                ),
               ),
 
               const SizedBox(height: 10,),

@@ -13,9 +13,11 @@ import '../../../config/app_colors.dart';
 import '../../../config/app_shadow.dart';
 import '../../../config/app_text.dart';
 import '../../../data/local/shared_preferences_operator.dart';
+import '../../../data/repository/media_file_repositry/media_file_repository.dart';
 import '../../../domain/app_user.dart';
 import '../../../util/image_picker_helper.dart';
 import '../../common/widgets/common_button.dart';
+import '../news_screen/widgets/news_card.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -33,16 +35,16 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   double collapsedTopContainerHeight = 120.0;
 
 
-  String username = '?';
+  AppUser? user;
 
   Future<void> getUsername() async {
     String? userJson = await SharedPreferencesOperator.getCurrentUser();
     if(userJson!=null){
       Map<String, dynamic> userMap = jsonDecode(userJson);
-      AppUser user = AppUser.fromJson(userMap);
+      AppUser value = AppUser.fromJson(userMap);
 
       setState(() {
-        username = user.login ?? '?';
+        user = value;
       });
     }
   }
@@ -133,6 +135,8 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                         onTap: () async {
                           Uint8List? image = await  ImagePickerHelper().pickImageBytesFromCamera();
 
+
+
                           print(image);
                         },
                         child: Row(
@@ -197,12 +201,12 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                       bottomRight: Radius.circular(20),
                     ),
                   ),
-                  child: Column(
+                  child: user!= null? Column(
                     children: [
                       const SizedBox(height: 60,),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
+                        child:  Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             GestureDetector(
@@ -219,7 +223,29 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                               children: [
                                 Padding(
                                   padding: EdgeInsets.only(right: animation.isDismissed ? 8 : 0),
-                                  child: Container(
+                                  child: user!.avatar != null ? Container(
+                                    width: animation.isDismissed ? 100 : 40,
+                                    height: animation.isDismissed ? 100 : 40,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.all(Radius.circular(animation.isDismissed ? 20 : 5)),
+                                      child: FutureBuilder<Uint8List?>(
+                                        future: MediaFileRepository().downloadFile(user!.avatar!.split('/').last),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return SizedBox(
+                                                height: animation.isDismissed ? 100 : 40, width: double.infinity,
+                                                child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
+                                          } else if (snapshot.hasError) {
+                                            return  NoImagePhoto(width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40,);
+                                          } else if (!snapshot.hasData) {
+                                            return  NoImagePhoto(width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40);
+                                          } else {
+                                            return Image.memory(snapshot.data!, fit: BoxFit.cover,width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40,);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ):Container(
                                     width: animation.isDismissed ? 100 : 40,
                                     height: animation.isDismissed ? 100 : 40,
                                     decoration: BoxDecoration(
@@ -228,7 +254,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                     ),
                                     child: Center(
                                       child: Text(
-                                        username[0],
+                                        user!.login!= null ? user!.login![0] : '?',
                                         style: TextStyle(
                                           color: AppColors.greenColor,
                                           fontSize: animation.isDismissed ? 40 : 14,
@@ -267,13 +293,13 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                         ),
                       ),
                       const SizedBox(height: 7,),
-                      animation.isDismissed ? Text(username, style: const TextStyle(color: Colors.white, fontSize: 20),) : const SizedBox(),
+                      animation.isDismissed ? Text(user!.login ?? '?', style: const TextStyle(color: Colors.white, fontSize: 20),) : const SizedBox(),
                       animation.isDismissed ? const Text('оқушы', style: TextStyle(color: Colors.white),) : const SizedBox(),
                     ],
-                  ),
+                  ): const SizedBox() ,
                 );
               },
-            ),
+            ) ,
             ListView(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),

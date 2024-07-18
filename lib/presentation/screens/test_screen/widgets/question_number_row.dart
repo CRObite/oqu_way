@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../config/app_colors.dart';
 
 class QuestionNumberRow extends StatefulWidget {
-  const QuestionNumberRow({super.key, required this.currentQuestionIndex, required this.onSelectQuestion});
+  const QuestionNumberRow({super.key, required this.currentQuestionIndex, required this.onSelectQuestion, required this.questionNumber});
 
   final int currentQuestionIndex;
+  final int questionNumber;
   final Function(int) onSelectQuestion;
 
   @override
@@ -44,7 +45,7 @@ class _QuestionNumberRowState extends State<QuestionNumberRow> {
       child: ListView.builder(
           controller: _scrollController,
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          itemCount: 15,
+          itemCount: widget.questionNumber,
           scrollDirection: Axis.horizontal,
           itemBuilder: (context,index){
             return GestureDetector(
