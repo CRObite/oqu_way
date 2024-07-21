@@ -17,6 +17,8 @@ class Question{
   List<Option>? options;
   List<SubOption>? subOptions;
   String? answeredType;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String? context;
 
   Question(this.id, this.question, this.multipleAnswers, this.type, this.checkedAnswers,
       this.mediaFiles, this.options, this.subOptions, this.answeredType);

@@ -1,12 +1,16 @@
+import 'package:dio/dio.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oqu_way/config/app_toast.dart';
 import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/data/repository/ent_test_repository/ent_test_repository.dart';
+import 'package:oqu_way/domain/ent_test.dart';
 import 'package:oqu_way/presentation/common/card_container_decoration.dart';
 import 'package:oqu_way/presentation/common/widgets/common_button.dart';
 import 'package:oqu_way/presentation/screens/test_screen/widgets/subject_picker_drop_down.dart';
+import 'package:oqu_way/util/custom_exeption.dart';
 
 import '../../../config/app_colors.dart';
 import '../../../config/app_text.dart';
@@ -23,6 +27,9 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
 
   Subject? selectedFirst;
   Subject? selectedSecond;
+
+  bool isLoading = false;
+  String errorText = '';
 
   List<Subject> firstList = [];
   List<Subject> secondList = [];
@@ -51,6 +58,49 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
     });
   }
 
+  Future<void> startTest() async {
+
+
+
+    try{
+
+      setState(() {
+        isLoading = true;
+      });
+      String? token = await SharedPreferencesOperator.getAccessToken();
+
+      if(selectedFirst != null && selectedSecond != null){
+        EntTest? values = await EntTestRepository().generateEntTest(token!, selectedFirst!.id, selectedSecond!.id, 'SURVIVAL');
+
+        setState(() {
+          isLoading = false;
+        });
+
+        selectedFirst = null;
+        selectedSecond = null;
+
+        context.push('/testPassingPage', extra: {'ent_test': values});
+      }else{
+        AppToast.showToast('Пәндерді таңданыз');
+
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }catch(e){
+      setState(() {
+        isLoading = false;
+      });
+
+      if(e is DioException){
+        CustomException exception = CustomException.fromDioException(e);
+        setState(() {
+          errorText = exception.message;
+        });
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -61,13 +111,20 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Column(
+            child: isLoading ? Center(child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                
+                CircularProgressIndicator(color: AppColors.blueColor,),
+                const SizedBox(height: 20,),
+                
+                Text('Тест генерациясы жүріп жатыр күте тұрыңыз',textAlign: TextAlign.center,style: TextStyle(color: AppColors.blueColor,fontSize: 20),)
+              ],
+            ),):Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: [
-                GestureDetector(
-                    onTap: (){context.pop();},
-                    child: Text('${AppText.onlineTests} > ҰБТ байқау тесті', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                const Text('ҰБТ байқау тесті', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                 const SizedBox(height:46,),
                 Column(
                   mainAxisSize: MainAxisSize.min,
@@ -115,6 +172,9 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
                         hint: AppText.secondSubject,
                       ),
                     ),
+                    SizedBox(height: errorText.isNotEmpty?10: 0,),
+
+                    errorText.isNotEmpty?Text(errorText, textAlign: TextAlign.center, style: const TextStyle(color: Colors.red,fontSize: 12),): const SizedBox(),
 
                     const SizedBox(height: 40,),
 
@@ -124,7 +184,7 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
                         child: CommonButton(
                           title: AppText.startTest,
                           onClick: (){
-                            context.push('/testPassingPage');
+                            startTest();
                           },
                           radius: 10,
                           fontSize: 13,

@@ -1,16 +1,17 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:oqu_way/presentation/screens/profile_screen/widgets/specilaization_card.dart';
 
 import '../../../../config/app_text.dart';
+import '../../../../domain/specialization.dart';
 
 class SpecializationDropDown extends StatefulWidget {
-  const SpecializationDropDown({super.key, required this.title, required this.valuesWithExtra, required this.selectedValue, required this.onValueSelected});
+  const SpecializationDropDown({super.key, required this.title, required this.valuesWithExtra, required this.onValueSelected});
 
   final String title;
-  final List<String> valuesWithExtra;
-  final String selectedValue;
-  final Function(String) onValueSelected;
+  final List<Specialization> valuesWithExtra;
+  final Function(Specialization?) onValueSelected;
 
   @override
   State<SpecializationDropDown> createState() => _SpecializationDropDownState();
@@ -18,15 +19,7 @@ class SpecializationDropDown extends StatefulWidget {
 
 class _SpecializationDropDownState extends State<SpecializationDropDown> {
 
-  String selected = '';
-
-  @override
-  void initState() {
-    setState(() {
-      selected = widget.selectedValue;
-    });
-    super.initState();
-  }
+  Specialization? selected;
 
 
   @override
@@ -37,10 +30,10 @@ class _SpecializationDropDownState extends State<SpecializationDropDown> {
         const SizedBox(width: 10,),
         Expanded(
           child: DropdownButtonHideUnderline(
-            child: DropdownButton2<String>(
+            child: DropdownButton2<Specialization>(
               hint: Text(AppText.selectSpecialization),
-              value: selected.isNotEmpty ? selected : null,
-              onChanged: (String? newValue) {
+              value: selected,
+              onChanged: (Specialization? newValue) {
                 if(newValue!= null){
                   setState(() {
                     selected = newValue;
@@ -49,21 +42,21 @@ class _SpecializationDropDownState extends State<SpecializationDropDown> {
                   widget.onValueSelected(newValue);
                 }
               },
-              items: widget.valuesWithExtra.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
+              items: widget.valuesWithExtra.map<DropdownMenuItem<Specialization>>((Specialization value) {
+                return DropdownMenuItem<Specialization>(
                   value: value,
-                  child: Text(value),
+                  child: Text(value.name ?? ''),
                 );
               }).toList(),
               iconStyleData: IconStyleData(
-                  icon: selected.isNotEmpty ?
+                  icon: selected != null ?
                   GestureDetector(
                       onTap: (){
                         setState(() {
-                          selected = '';
+                          selected = null;
                         });
 
-                        widget.onValueSelected('');
+                        widget.onValueSelected(null);
                       },
                       child: const Icon(Icons.close,size: 18)
                   ):
@@ -92,7 +85,7 @@ class _SpecializationDropDownState extends State<SpecializationDropDown> {
               isExpanded: true,
               underline: Container(),
               menuItemStyleData: const MenuItemStyleData(
-                height: 40,
+                height: 50,
               ),
             ),
           ),

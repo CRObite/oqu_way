@@ -194,11 +194,11 @@ class _ProfileUniversityDetailsState extends State<ProfileUniversityDetails> {
                           )
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
+                      child: const Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Сұрақтар',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
-                          Text('666',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold, color: AppColors.greenColor),),
+                          Text('Сұрақтар',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),),
+                          // Text('666',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold, color: AppColors.greenColor),),
                         ],
                       ),
                     ),

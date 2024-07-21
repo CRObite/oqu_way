@@ -31,7 +31,21 @@ class AuthorizationRepository {
     }
   }
 
-  Future<bool> registration(String email,String phoneNumber, String firstName,String lastName, String iin) async {
+  Future<AppUser?> userGetMe(String accessToken) async {
+    dio.options.headers['Authorization'] = 'Bearer $accessToken';
+
+    final response = await dio.get(
+      AppApiEndpoints.getMe,
+    );
+
+    if (response.statusCode! ~/ 100 == 2) {
+      return AppUser.fromJson(response.data);
+    } else {
+      return null;
+    }
+  }
+
+  Future<bool> registration(String email,String phoneNumber, String firstName,String lastName, String middle) async {
 
     final response = await dio.post(
       AppApiEndpoints.registration,
@@ -40,7 +54,7 @@ class AuthorizationRepository {
         "phoneNumber": phoneNumber,
         "firstName": firstName,
         "lastName": lastName,
-        "iin": iin
+        "middleName": middle
       }
     );
 
@@ -98,21 +112,42 @@ class AuthorizationRepository {
     }
   }
 
-  // Future<bool> sendCodeToEmail(String email) async {
-  //
-  //   final response = await dio.post(
-  //       AppApiEndpoints.recoverPassword,
-  //       data: {
-  //         "email":email,
-  //       }
-  //   );
-  //
-  //   if (response.statusCode! ~/ 100 == 2) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
+  Future<bool> sendCodeToEmail(String email) async {
 
+    final response = await dio.put(
+        AppApiEndpoints.recoverPassword,
+        data: {
+          "email":email,
+        }
+    );
+
+    if (response.statusCode! ~/ 100 == 2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> changeUserInfo(String accessToken,int id, String? name, String? middle, String? last, String? number, String? email ) async {
+    dio.options.headers['Authorization'] = 'Bearer $accessToken';
+
+    final response = await dio.patch(
+        AppApiEndpoints.updateProfile,
+        data: {
+          "id": id,
+          "firstName": name,
+          "middleName":middle,
+          "lastName": last,
+          "email": email,
+          "phoneNumber": number,
+        }
+    );
+
+    if (response.statusCode! ~/ 100 == 2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
 }

@@ -2,20 +2,24 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/data/repository/media_file_repositry/media_file_repository.dart';
 import 'package:oqu_way/data/repository/task_repository/task_repository.dart';
+import 'package:oqu_way/domain/media_file.dart';
 import 'package:oqu_way/presentation/common/widgets/date_time_row.dart';
 
 import '../../../config/app_colors.dart';
 import '../../../config/app_text.dart';
 import '../../../domain/task.dart';
+import 'course_details_cubit/course_details_cubit.dart';
 
 class CourseHomework extends StatefulWidget {
-  const CourseHomework({super.key, required this.taskId});
+  const CourseHomework({super.key, required this.taskId, this.context});
 
   final int? taskId;
+  final BuildContext? context;
 
   @override
   State<CourseHomework> createState() => _CourseHomeworkState();
@@ -24,8 +28,7 @@ class CourseHomework extends StatefulWidget {
 class _CourseHomeworkState extends State<CourseHomework> {
 
   TextEditingController controller = TextEditingController();
-  List<String> titles = [];
-  bool isSent = true;
+  List<MediaFile> titles = [];
   Task? task;
 
 
@@ -44,6 +47,21 @@ class _CourseHomeworkState extends State<CourseHomework> {
     setState(() {
       task = value;
     });
+  }
+
+  Future<void> sendAnswer() async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    bool value = await TaskRepository().createAnswer(token!, task!.id, controller.text, titles);
+
+    if(value){
+
+      if(widget.context!= null){
+        widget.context!.read<CourseDetailsCubit>().getCourseInfo();
+      }
+
+      context.pop();
+    }
   }
 
   @override
@@ -204,11 +222,11 @@ class _CourseHomeworkState extends State<CourseHomework> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 12),
                               child: Center(
-                                  child: Text(titles[index].split('/').last, style: const TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis,),maxLines: 1,)
+                                  child: Text(titles[index].originalName!.split('/').last, style: const TextStyle(fontSize: 10,overflow: TextOverflow.ellipsis,),maxLines: 1,)
                               ),
                             ),
 
-                            isSent ?const SizedBox(): Positioned(
+                            Positioned(
                               right: 0,
                               child: GestureDetector(
                                 onTap:(){
@@ -233,16 +251,21 @@ class _CourseHomeworkState extends State<CourseHomework> {
                       );
                     }
                 ),
-                isSent ?const SizedBox(): const SizedBox(height: 15,),
+                const SizedBox(height: 15,),
 
-                isSent ? const SizedBox(): GestureDetector(
+                GestureDetector(
                   onTap: () async {
-
+                    String? token = await SharedPreferencesOperator.getAccessToken();
                     String path = await MediaFileRepository().pickFile();
 
-                    setState(() {
-                      titles.add(path);
-                    });
+                    MediaFile? file = await MediaFileRepository().uploadFile(token!, path);
+
+                    if(file!= null){
+                      setState(() {
+                        titles.add(file);
+                      });
+                    }
+
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -269,17 +292,15 @@ class _CourseHomeworkState extends State<CourseHomework> {
 
                 GestureDetector(
                   onTap: (){
-                    setState(() {
-                      isSent = !isSent;
-                    });
+                    sendAnswer();
                   },
                   child: Container(
                       decoration: BoxDecoration(
-                          color: isSent ? Colors.orange.withOpacity(0.2): AppColors.greyColor.withOpacity(0.5),
+                          color: AppColors.greyColor.withOpacity(0.5),
                           borderRadius: const BorderRadius.all(Radius.circular(5))
                       ),
                     padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 22),
-                    child: Text( isSent ? 'Өзгерту': 'Жіберу',
+                    child: Text('Жіберу',
                       style: TextStyle(color: AppColors.greenColor,fontSize: 10),
                     )
                   ),
@@ -287,19 +308,21 @@ class _CourseHomeworkState extends State<CourseHomework> {
 
                 const SizedBox(height: 10,),
 
-                task!.status == TaskTypeEnum.CHECKED.toString() ? GestureDetector(
-                  onTap: (){context.push('/courseHomework/courseHomeworkScore');},
-                  child: Container(
-                      decoration: BoxDecoration(
-                          color: AppColors.blueColor.withOpacity(0.3),
-                          borderRadius: const BorderRadius.all(Radius.circular(5))
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 22),
-                      child: Text('Бағаны көру',
-                        style: TextStyle(color: AppColors.blueColor,fontSize: 10),
-                      )
-                  ),
-                ): const SizedBox(),
+                // task!.status == 'CHECKED'?
+                // GestureDetector(
+                //   onTap: (){context.push('/courseHomework/courseHomeworkScore');},
+                //   child: Container(
+                //       decoration: BoxDecoration(
+                //           color: AppColors.blueColor.withOpacity(0.3),
+                //           borderRadius: const BorderRadius.all(Radius.circular(5))
+                //       ),
+                //       padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 22),
+                //       child: Text('Бағаны көру',
+                //         style: TextStyle(color: AppColors.blueColor,fontSize: 10),
+                //       )
+                //   ),
+                // )
+                    // : const SizedBox(),
 
               ],
             ),

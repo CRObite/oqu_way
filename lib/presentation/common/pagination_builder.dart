@@ -43,9 +43,9 @@ class _PaginationBuilderState extends State<PaginationBuilder> {
     scrollController = ScrollController();
     paginationBuilderCubit = PaginationBuilderCubit();
 
-    if(widget.type == PageableType.universities){
-      paginationBuilderCubit.currentPageCount = 1;
-    }
+    // if(widget.type == PageableType.universities){
+    //   paginationBuilderCubit.currentPageCount = 0;
+    // }
 
     paginationBuilderCubit.getNewData(
       widget.size,
@@ -145,6 +145,8 @@ class _PaginationBuilderState extends State<PaginationBuilder> {
                           if (index < state.listOfValue.length) {
                             return widget.child(context, state.listOfValue[index]);
                           } else {
+
+
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [

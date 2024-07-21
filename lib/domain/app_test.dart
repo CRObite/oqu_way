@@ -13,9 +13,17 @@ class AppTest{
   String? description;
   String? deadline;
   List<Question>? questions;
+  String? status;
 
-  AppTest(this.id, this.name, this.mediaFiles, this.description, this.deadline,
-      this.questions);
+
+  AppTest(
+      this.id,
+      this.name,
+      this.mediaFiles,
+      this.description,
+      this.deadline,
+      this.questions,
+      this.status);
 
   factory AppTest.fromJson(Map<String, dynamic> json) => _$AppTestFromJson(json);
   Map<String, dynamic> toJson() => _$AppTestToJson(this);

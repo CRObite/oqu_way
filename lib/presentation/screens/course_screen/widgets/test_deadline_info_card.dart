@@ -6,11 +6,13 @@ import 'package:oqu_way/presentation/common/widgets/date_time_row.dart';
 import '../../../../config/app_colors.dart';
 
 class TestDeadlineInfoCard extends StatelessWidget {
-  const TestDeadlineInfoCard({super.key, required this.isTest, required this.onPressed, this.deadline = ''});
+  const TestDeadlineInfoCard({super.key, required this.isTest, required this.onPressed, this.deadline = '', required this.isActive, required this.description});
 
   final bool isTest;
   final String deadline;
+  final String description ;
   final VoidCallback onPressed;
+  final bool isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +44,15 @@ class TestDeadlineInfoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(isTest? AppText.test: AppText.homeworks, style: const TextStyle(fontSize: 13,fontWeight: FontWeight.bold),),
-                const SizedBox(height: 6,),
-                Text('${AppText.deadline}:', style: TextStyle(fontSize: 13, color: AppColors.greyColor)),
+
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
 
-                    deadline.isNotEmpty ?  const DateTimeRow(): const Text('мерзім жоқ'),
+                    Expanded(child: Text(description ,maxLines: 4,style: TextStyle(color: AppColors.greyColor, fontSize:10,overflow: TextOverflow.ellipsis), )),
 
+                    const SizedBox(width: 10,),
 
                     SizedBox(
                         height: 30,
@@ -60,7 +62,7 @@ class TestDeadlineInfoCard extends StatelessWidget {
                             elevation: 0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
-                              side: BorderSide(color: AppColors.blueColor, width: 1),
+                              side: BorderSide(color: AppColors.blueColor , width: 1),
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 14),
                           ),
@@ -68,7 +70,7 @@ class TestDeadlineInfoCard extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(AppText.doIt, style: TextStyle(color: AppColors.blueColor, fontSize: 8),),
+                              Text(isActive ? AppText.doIt : 'Нәтижені көру', style: TextStyle(color: AppColors.blueColor, fontSize: 8),),
                             ],
                           ),
                         )

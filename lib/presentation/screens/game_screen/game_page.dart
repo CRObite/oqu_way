@@ -14,6 +14,7 @@ import '../../../config/app_colors.dart';
 import '../../../config/app_shadow.dart';
 import '../../../config/app_text.dart';
 import '../../../data/local/shared_preferences_operator.dart';
+import '../../../data/repository/auth_reg_repository/authorization_repository.dart';
 import '../../../data/repository/media_file_repositry/media_file_repository.dart';
 import '../../../domain/app_user.dart';
 import '../news_screen/widgets/news_card.dart';
@@ -42,15 +43,12 @@ class _GamePageState extends State<GamePage> {
   }
 
   Future<void> getUsername() async {
-    String? userJson = await SharedPreferencesOperator.getCurrentUser();
-    if(userJson!=null){
-      Map<String, dynamic> userMap = jsonDecode(userJson);
-      AppUser value = AppUser.fromJson(userMap);
+    String? token = await SharedPreferencesOperator.getAccessToken();
+    AppUser? value = await AuthorizationRepository().userGetMe(token!);
 
-      setState(() {
-        user = value;
-      });
-    }
+    setState(() {
+      user = value;
+    });
   }
 
   @override

@@ -22,6 +22,7 @@ Specialization _$SpecializationFromJson(Map<String, dynamic> json) =>
       (json['universities'] as List<dynamic>?)
           ?.map((e) => University.fromJson(e as Map<String, dynamic>))
           .toList(),
+      (json['possibilityChance'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$SpecializationToJson(Specialization instance) =>
@@ -36,4 +37,5 @@ Map<String, dynamic> _$SpecializationToJson(Specialization instance) =>
       'description': instance.description,
       'subjects': instance.subjects,
       'universities': instance.universities,
+      'possibilityChance': instance.possibilityChance,
     };

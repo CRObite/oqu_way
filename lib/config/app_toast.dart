@@ -7,10 +7,10 @@ class AppToast{
     Fluttertoast.showToast(
         msg: toastText,
         toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
+        gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
-        backgroundColor: AppColors.blueColor,
-        textColor: Colors.white,
+        backgroundColor: Colors.white,
+        textColor: AppColors.blueColor,
         fontSize: 16.0
     );
   }

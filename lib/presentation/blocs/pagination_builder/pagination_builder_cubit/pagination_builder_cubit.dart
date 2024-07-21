@@ -30,6 +30,7 @@ class PaginationBuilderCubit extends Cubit<PaginationBuilderState> {
   Future<void> getNewData(int size,PageableType type,
     int? universityId,int? cityId,int? specializationId,String query) async {
 
+
     String? token = await SharedPreferencesOperator.getAccessToken();
 
     try{

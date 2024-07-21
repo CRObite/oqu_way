@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/data/repository/comment_repository/comment_repository.dart';
 import 'package:oqu_way/domain/app_test.dart';
 import 'package:oqu_way/domain/comment.dart';
+import 'package:oqu_way/domain/ent_test.dart';
+import 'package:oqu_way/domain/specialization.dart';
 import 'package:oqu_way/domain/subject.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_page.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_test/course_test_page.dart';
@@ -15,6 +18,7 @@ import 'package:oqu_way/presentation/screens/shop_screen/shop_page.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import '../presentation/screens/course_screen/course_details.dart';
+import '../presentation/screens/course_screen/course_details_cubit/course_details_cubit.dart';
 import '../presentation/screens/course_screen/course_homework.dart';
 import '../presentation/screens/course_screen/course_homework_score.dart';
 import '../presentation/screens/course_screen/course_videos.dart';
@@ -215,34 +219,7 @@ class AppNavigation{
               ),
             ),
 
-            GoRoute(
-              path: 'profileAnalysis',
-              name: 'profileAnalysis',
-                pageBuilder: (context, state) => SwipeablePage(
-                  builder: (context){
-                    return ProfileAnalysis(
-                      key: state.pageKey,
-                    );
-                  },
-                ),
 
-              routes: [
-                GoRoute(
-                  path: 'profileAnalysisResult',
-                  name: 'profileAnalysisResult',
-                  pageBuilder: (context, state) => SwipeablePage(
-                    builder: (context){
-                      return ProfileAnalysisResult(
-                        key: state.pageKey,
-                      );
-                    },
-                  ),
-
-                ),
-
-
-              ]
-            ),
 
             GoRoute(
               path: 'profileQuestions',
@@ -266,6 +243,8 @@ class AppNavigation{
           builder: (context,state){
 
             AppTest? test;
+            EntTest? entTest;
+            BuildContext? context;
 
             if(state.extra != null){
               final extras = state.extra as Map<String, dynamic>;
@@ -273,23 +252,35 @@ class AppNavigation{
               if(extras.containsKey('app_test')){
                 test = extras['app_test'] as AppTest;
               }
+              if(extras.containsKey('ent_test')){
+                entTest = extras['ent_test'] as EntTest;
+              }
+              if(extras.containsKey('context')){
+                context = extras['context'] as BuildContext;
+              }
 
               if(extras.containsKey('oneSubjectPage')){
                 return TestPassingPage(
                   key: state.pageKey,
                   oneSubjectPage: extras['oneSubjectPage'] as bool,
                   test: test,
+                  ent: null,
+                  context: context,
                 );
               }else {
                 return TestPassingPage(
                   key: state.pageKey,
-                  test: test,
+                  test: null,
+                  ent: entTest,
+                  context: context,
                 );
               }
             }else{
               return TestPassingPage(
                 key: state.pageKey,
                 test: test,
+                 ent: entTest,
+                context: context,
               );
             }
           },
@@ -298,8 +289,26 @@ class AppNavigation{
               path: 'courseTestResult',
               name: 'courseTestResult',
               builder: (context,state){
+
+                BuildContext? context;
+                int? appTestId;
+
+                if(state.extra != null){
+                  final extras = state.extra as Map<String, dynamic>;
+                  if(extras.containsKey('appTestId')){
+                    appTestId = extras['appTestId'] as int;
+                  }
+                  if(extras.containsKey('context')){
+                    context = extras['context'] as BuildContext;
+                  }
+                }
+
                 return CourseTestResult(
                   key: state.pageKey,
+                  appTestId: appTestId,
+                  onClose: () {
+                  },
+                  context: context,
                 );
               },
             ),
@@ -312,8 +321,20 @@ class AppNavigation{
           path: '/testResults',
           name: 'testResults',
           builder: (context,state){
+
+            String? testId;
+
+            if(state.extra != null){
+              final extras = state.extra as Map<String, dynamic>;
+              if(extras.containsKey('testId')){
+                testId = extras['testId'] as String;
+              }
+            }
+
+
             return TestResults(
               key: state.pageKey,
+              testId: testId,
             );
           },
           routes: [
@@ -322,8 +343,18 @@ class AppNavigation{
               path: 'testMistakeWork',
               name: 'testMistakeWork',
               builder: (context,state){
+
+                EntTest? entTest;
+                if(state.extra != null){
+                  final extras = state.extra as Map<String, dynamic>;
+                  if(extras.containsKey('test_mistake')){
+                    entTest = extras['test_mistake'] as EntTest;
+                  }
+                }
+
                 return TestMistakeWork(
                   key: state.pageKey,
+                  ent: entTest,
                 );
               },
             ),
@@ -337,16 +368,21 @@ class AppNavigation{
             name: 'courseHomework',
             builder: (context,state){
               int? taskId;
+              BuildContext? context;
 
               if(state.extra != null){
                 final extras = state.extra as Map<String, dynamic>;
                 if(extras.containsKey('taskId')){
                   taskId = extras['taskId'] as int;
                 }
+                if(extras.containsKey('context')){
+                  context = extras['context'] as BuildContext;
+                }
               }
 
               return CourseHomework(
                 key: state.pageKey, taskId: taskId,
+                context: context,
               );
             },
           routes: [
@@ -355,8 +391,18 @@ class AppNavigation{
               path: 'courseHomeworkScore',
               name: 'courseHomeworkScore',
               builder: (context,state){
+                int? taskId;
+
+                if(state.extra != null){
+                  final extras = state.extra as Map<String, dynamic>;
+                  if(extras.containsKey('taskId')){
+                    taskId = extras['taskId'] as int;
+                  }
+                }
+
                 return CourseHomeworkScore(
                   key: state.pageKey,
+                  taskId: taskId,
                 );
               },
             ),
@@ -371,6 +417,7 @@ class AppNavigation{
 
             String subjectName = '';
             int? testId;
+            BuildContext? context;
 
             if(state.extra != null){
               final extras = state.extra as Map<String, dynamic>;
@@ -380,12 +427,16 @@ class AppNavigation{
               if(extras.containsKey('testId')){
                 testId = extras['testId'] as int;
               }
+              if(extras.containsKey('context')){
+                context = extras['context'] as BuildContext;
+              }
             }
 
             return CourseTestPage(
               key: state.pageKey,
               subjectName: subjectName,
               testId: testId,
+              context: context,
             );
           },
         ),
@@ -652,15 +703,39 @@ class AppNavigation{
                 navigatorKey: _rootNavigatorGame,
                 routes: [
                   GoRoute(
-                    path: '/game',
-                    name: 'Game',
-                    builder: (context,state){
-                      return GamePage(
-                        key: state.pageKey,
-                      );
+                      path: '/profileAnalysis',
+                      name: 'profileAnalysis',
+                      builder: (context,state){
+                        return ProfileAnalysis(
+                          key: state.pageKey,
+                        );
+                      },
 
-                    },
-                  )
+                      routes: [
+                        GoRoute(
+                          path: 'profileAnalysisResult',
+                          name: 'profileAnalysisResult',
+                          pageBuilder: (context, state) => SwipeablePage(
+                            builder: (context){
+
+                              List<Specialization> listOfSpecialization = [];
+                              if(state.extra != null){
+                                final extras = state.extra as Map<String, dynamic>;
+                                if(extras.containsKey('listOfSpecialization')){
+                                  listOfSpecialization = extras['listOfSpecialization'] as List<Specialization>;
+                                }
+                              }
+
+                              return ProfileAnalysisResult(
+                                key: state.pageKey,
+                                listOfSpecialization: listOfSpecialization,
+                              );
+                            },
+                          ),
+
+                        ),
+                      ]
+                  ),
                 ],
               ),
               StatefulShellBranch(

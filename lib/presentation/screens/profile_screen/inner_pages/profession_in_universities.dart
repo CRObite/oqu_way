@@ -44,7 +44,7 @@ class _ProfessionInUniversitiesState extends State<ProfessionInUniversities> {
             const SizedBox(height: 20,),
             Text(widget.specializationName,style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,color: AppColors.moreDarkerBlueColor),),
             const SizedBox(height: 10,),
-            Text('Пәндер : ${widget.listOfSubject[0].name}, ${widget.listOfSubject[1].name}',style: TextStyle(fontSize: 10, color: AppColors.greenColor),),
+            Text('Пәндер : ${widget.listOfSubject[0].name}, ${widget.listOfSubject.length !=1 ? widget.listOfSubject[1].name: ''}',style: TextStyle(fontSize: 10, color: AppColors.greenColor),),
 
             Expanded(
               child: PaginationBuilder(

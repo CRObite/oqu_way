@@ -6,11 +6,14 @@ import '../../../../config/app_text.dart';
 import '../../../common/widgets/common_button.dart';
 
 class SelectNextSubject extends StatelessWidget {
-  const SelectNextSubject({super.key, required this.onSelected, required this.ended, this.score});
+  const SelectNextSubject({super.key, required this.onSelected, required this.ended, this.score, required this.title});
 
   final VoidCallback onSelected;
   final bool ended;
   final int? score;
+  final String title;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class SelectNextSubject extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text('Қазақстан тарихы', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),),
+          Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),),
           SizedBox(
               height: 30,
               child: CommonButton(

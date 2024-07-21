@@ -3,27 +3,27 @@ import 'package:image_picker/image_picker.dart';
 
 class ImagePickerHelper{
 
-  Future<Uint8List?> pickImageBytesFromGallery() async {
+  Future<String?> pickImageBytesFromGallery() async {
 
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      Uint8List? bytes = await pickedFile.readAsBytes();
-      return bytes;
-    }else{
+      String? filePath = pickedFile.path;
+      return filePath;
+    } else {
       return null;
     }
 
   }
 
-  Future<Uint8List?> pickImageBytesFromCamera() async {
+  Future<String?> pickImageBytesFromCamera() async {
 
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
-      Uint8List? bytes = await pickedFile.readAsBytes();
-      return bytes;
-    }else{
+      String? filePath = pickedFile.path;
+      return filePath;
+    } else {
       return null;
     }
 

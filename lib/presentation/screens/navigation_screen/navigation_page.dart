@@ -1,19 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:oqu_way/config/app_text.dart';
 import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/presentation/blocs/navigation_screen/navigation_page_cubit/navigation_page_cubit.dart';
-import 'package:oqu_way/presentation/screens/news_screen/widgets/comments_row.dart';
 
-import '../../../config/app_colors.dart';
+import '../../../data/repository/auth_reg_repository/authorization_repository.dart';
+import '../../../data/repository/media_file_repositry/media_file_repository.dart';
 import '../../../domain/app_user.dart';
-import '../../../domain/comment.dart';
 import '../../common/widgets/comments_bottom_sheet.dart';
 import '../../common/widgets/custom_app_bar.dart';
 import '../../common/widgets/custom_nav_bar.dart';
@@ -36,18 +32,24 @@ class _NavigationPageState extends State<NavigationPage> {
   int currentPage = 0;
 
   AppUser? username;
+  Uint8List? avatarData;
 
   Future<void> getUsername() async {
-    String? userJson = await SharedPreferencesOperator.getCurrentUser();
-    if(userJson!=null){
-      Map<String, dynamic> userMap = jsonDecode(userJson);
-      AppUser user = AppUser.fromJson(userMap);
+    String? token = await SharedPreferencesOperator.getAccessToken();
+    AppUser? value = await AuthorizationRepository().userGetMe(token!);
 
+    setState(() {
+      username = value;
+    });
+
+    if (value!.avatar != null && value.avatar!.isNotEmpty) {
+      Uint8List? data = await MediaFileRepository().downloadFile(value.avatar!.split('/').last);
       setState(() {
-        username = user;
+        avatarData = data;
       });
     }
   }
+
 
   @override
   void initState() {
@@ -94,16 +96,21 @@ class _NavigationPageState extends State<NavigationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: currentPage != 2
-          ? CustomAppBar(
+      appBar: CustomAppBar(
         onBellPressed: () {
           context.push('/notificationPage');
         },
         title: username!= null?  username!.login! : '?',
-        imageId: username!= null?  username!.avatar!= null ? username!.avatar!.split('/').last : '' : '',
         setDot: false,
-      )
-          : null,
+        avatarData: avatarData,
+        moveTo: () async {
+          Object? value = await context.push('/profilePage');
+
+          if(value != null){
+            getUsername();
+          }
+        },
+      ),
       body: BlocProvider(
         create: (context) => navigationPageCubit,
         child: BlocListener<NavigationPageCubit, NavigationPageState>(

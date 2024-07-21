@@ -17,6 +17,7 @@ AppTest _$AppTestFromJson(Map<String, dynamic> json) => AppTest(
       (json['questions'] as List<dynamic>?)
           ?.map((e) => Question.fromJson(e as Map<String, dynamic>))
           .toList(),
+      json['status'] as String?,
     );
 
 Map<String, dynamic> _$AppTestToJson(AppTest instance) => <String, dynamic>{
@@ -26,4 +27,5 @@ Map<String, dynamic> _$AppTestToJson(AppTest instance) => <String, dynamic>{
       'description': instance.description,
       'deadline': instance.deadline,
       'questions': instance.questions,
+      'status': instance.status,
     };

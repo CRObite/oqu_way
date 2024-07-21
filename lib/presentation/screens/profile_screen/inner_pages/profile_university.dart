@@ -72,24 +72,24 @@ class _ProfileUniversityState extends State<ProfileUniversity> {
                   )
                 ),
                 padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 18),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Қаланы таңдаңыз', style: TextStyle(color: AppColors.greyColor),),
-                    GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          isOpened = true;
-                        });
-                      },
-                      child: Row(
+                child: GestureDetector(
+                  onTap: (){
+                    setState(() {
+                      isOpened = true;
+                    });
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Қаланы таңдаңыз', style: TextStyle(color: AppColors.greyColor),),
+                      Row(
                         children: [
                           Text(selectedCity!= null ? cities[selectedCity!].name : '',style: TextStyle(color: AppColors.greyColor),),
                           Icon(Icons.arrow_forward_ios_rounded, color:AppColors.greyColor,size: 12,)
                         ],
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
 

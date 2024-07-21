@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import '../../../../config/app_colors.dart';
 
 class QuestionNumberRow extends StatefulWidget {
-  const QuestionNumberRow({super.key, required this.currentQuestionIndex, required this.onSelectQuestion, required this.questionNumber});
+  const QuestionNumberRow({super.key, required this.currentQuestionIndex, required this.onSelectQuestion, required this.questionNumber, this.color});
 
   final int currentQuestionIndex;
   final int questionNumber;
   final Function(int) onSelectQuestion;
+  final Color? color;
 
   @override
   State<QuestionNumberRow> createState() => _QuestionNumberRowState();
@@ -57,11 +58,17 @@ class _QuestionNumberRowState extends State<QuestionNumberRow> {
                 margin: const EdgeInsets.only(right: 5),
                 height: 40,
                 width: 40,
-                decoration: BoxDecoration(
-                    color: index < widget.currentQuestionIndex ?
+                decoration:  widget.color == null?  BoxDecoration(
+                    color:  index < widget.currentQuestionIndex ?
                     AppColors.blueColor.withOpacity(0.5):
                     index > widget.currentQuestionIndex ? AppColors.greyColor.withOpacity(0.5):
                     AppColors.blueColor,
+                    shape: BoxShape.circle
+                ): BoxDecoration(
+                    color:  index < widget.currentQuestionIndex ?
+                    widget.color!.withOpacity(0.5):
+                    index > widget.currentQuestionIndex ?  widget.color!.withOpacity(0.5):
+                    widget.color,
                     shape: BoxShape.circle
                 ),
 

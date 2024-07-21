@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:oqu_way/domain/app_test.dart';
 import 'package:oqu_way/domain/pagination.dart';
+import 'package:oqu_way/domain/test_result.dart';
 
 import '../../../config/app_api_endpoints.dart';
 import '../../../domain/task.dart';
@@ -62,8 +63,35 @@ class TestRepository{
     }
   }
 
+  Future<bool> setUserAnswer(String accessToken, int questionId, int optionId, int? subOptionId ,bool value ) async {
+    dio.options.headers['Authorization'] = 'Bearer $accessToken';
 
-  Future<bool> getTestResult(String accessToken, int testId) async {
+    print(questionId);
+    print(optionId);
+
+    print(value);
+
+    final response = await dio.post(
+      AppApiEndpoints.userAnswer,
+      data: {
+        "questionId": questionId,
+        "optionId": optionId,
+        "subOptionId": subOptionId,
+        "value": value
+      }
+    );
+
+
+    if (response.statusCode! ~/ 100 == 2) {
+
+      print(response.data);
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<TestResult?> getTestResult(String accessToken, int testId) async {
     dio.options.headers['Authorization'] = 'Bearer $accessToken';
 
     final response = await dio.get(
@@ -72,9 +100,10 @@ class TestRepository{
 
     if (response.statusCode! ~/ 100 == 2) {
       print(response.data);
-      return true;
+      return TestResult.fromJson(response.data);
     } else {
-      return false;
+      return null;
     }
   }
+
 }

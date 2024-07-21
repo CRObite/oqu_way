@@ -17,7 +17,7 @@ class CustomNavBar extends StatefulWidget {
 class _CustomNavBarState extends State<CustomNavBar> {
 
   int selectedIndex = 0;
-  List<String> icons= ['assets/icons/ic_news.svg','assets/icons/ic_course.svg','assets/icons/ic_play.svg','assets/icons/ic_test.svg','assets/icons/ic_university.svg',];
+  List<String> icons= ['assets/icons/ic_news.svg','assets/icons/ic_course.svg','assets/icons/ic_analysis.svg','assets/icons/ic_test.svg','assets/icons/ic_university.svg',];
 
 
   @override

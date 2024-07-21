@@ -22,15 +22,14 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController middleNameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController iinController = TextEditingController();
 
   String phoneValidation = '';
   String nameValidation = '';
   String surnameValidation = '';
   String emailValidation = '';
-  String iinValidation = '';
 
   @override
   void dispose() {
@@ -73,7 +72,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
           AppFormatter.formatPhoneNumber(phoneController.text),
           nameController.text,
           surnameController.text,
-          iinController.text);
+          middleNameController.text
+      );
 
       if (value) {
         showPopUp();
@@ -89,7 +89,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
           surnameValidation = fieldErrors['lastName'] ?? '';
           phoneValidation = fieldErrors['phoneNumber'] ?? '';
           emailValidation = fieldErrors['email'] ?? '';
-          iinValidation = fieldErrors['iin'] ?? '';
+
         });
 
       }
@@ -167,6 +167,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   height: 20,
                 ),
                 CustomTextField(
+                  title: AppText.lastname,
+                  controller: middleNameController,
+                  type: TextInputType.text,
+                  hint: AppText.lastname,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+
+
+                CustomTextField(
                   title: AppText.enterPhone,
                   controller: phoneController,
                   type: TextInputType.phone,
@@ -176,13 +187,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 const SizedBox(
                   height: 20,
                 ),
-                CustomTextField(
-                  title: 'ЖСН',
-                  controller: iinController,
-                  type: TextInputType.number,
-                  hint: 'ЖСН',
-                ),
-                iinValidation.isNotEmpty? Text(iinValidation, style: const TextStyle(color: Colors.red),):const SizedBox(),
                 const SizedBox(
                   height: 20,
                 ),

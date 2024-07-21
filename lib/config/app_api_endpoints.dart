@@ -4,10 +4,11 @@ class AppApiEndpoints {
   static String api = '$url/api';
   static String userLogin = '$api/user-login';
   static String refresh = '$api/refresh-token';
-  static String getMe = '$api/universal-get-me';
+  static String getMe = '$api/me';
   static String registration = '$api/registration';
   static String login = '$api/login';
   static String recoverPassword = '$api/recover-password';
+  static String updateProfile = '$api/update-profile';
 
   // post endpoints
   static String getAllPost = '$api/post/get-all';
@@ -41,6 +42,8 @@ class AppApiEndpoints {
 
   //task endpoints
   static String getTaskById = '$api/task/get-by-id/'; // + TASK id
+  static String createAnswer = '$api/task-answer/create'; // + TASK id
+  static String getTaskAnswer = '$api/task-answer/get-by-task/'; // + TASK id
 
   //test endpoints
   static String getTestById = '$api/app-test/get-by-id/'; // + Test id
@@ -48,10 +51,24 @@ class AppApiEndpoints {
   static String endTest = '$api/app-test/ended/'; // + Test id
   static String getTestResult = '$api/app-test/get-result/'; // + Test id
 
-  //ent0-test endpoints
+  //ent-test endpoints
   static String getEntSubjects = '$api/ent-test/subjects';
   static String getEntSubjectByFirst = '$api/ent-test/subjects-in-mss';
 
+
+  //user-answer endpoints
+  static String userAnswer = '$api/option/user-answer'; // + question id
+
+  //analyze
+  static String analyzeResult = '$api/analyze/possibility-results';
+  static String getSpecializations = '$api/analyze/get-specializations';
+
+  //ent-test
+  static String generateEnt = '$api/ent-test/generate';
+  static String endEnt = '$api/ent-test/end/';// + testId
+  static String answerToTest = '$api/ent-test/answer';
+  static String testResult = '$api/ent-test/result/'; //+ testId
+  static String getMistakes = '$api/ent-test/get-mistakes/'; //+ testId
 
 }
 

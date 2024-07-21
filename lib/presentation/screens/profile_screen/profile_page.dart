@@ -3,18 +3,24 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oqu_way/data/repository/auth_reg_repository/authorization_repository.dart';
+import 'package:oqu_way/domain/media_file.dart';
 import 'package:oqu_way/presentation/common/confirm_dialog.dart';
 import 'package:oqu_way/presentation/screens/profile_screen/widgets/profile_part_card.dart';
+import 'package:oqu_way/util/custom_exeption.dart';
 
 import '../../../config/app_colors.dart';
 import '../../../config/app_shadow.dart';
 import '../../../config/app_text.dart';
 import '../../../data/local/shared_preferences_operator.dart';
+import '../../../data/repository/ent_test_repository/ent_test_repository.dart';
 import '../../../data/repository/media_file_repositry/media_file_repository.dart';
 import '../../../domain/app_user.dart';
+import '../../../domain/ent_test.dart';
 import '../../../util/image_picker_helper.dart';
 import '../../common/widgets/common_button.dart';
 import '../news_screen/widgets/news_card.dart';
@@ -38,15 +44,12 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   AppUser? user;
 
   Future<void> getUsername() async {
-    String? userJson = await SharedPreferencesOperator.getCurrentUser();
-    if(userJson!=null){
-      Map<String, dynamic> userMap = jsonDecode(userJson);
-      AppUser value = AppUser.fromJson(userMap);
+    String? token = await SharedPreferencesOperator.getAccessToken();
+    AppUser? value = await AuthorizationRepository().userGetMe(token!);
 
-      setState(() {
-        user = value;
-      });
-    }
+    setState(() {
+      user = value;
+    });
   }
 
   @override
@@ -93,7 +96,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
         return Padding(
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.28,
+            height: MediaQuery.of(context).size.height * 0.25,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -118,9 +121,17 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                     children: [
                       GestureDetector(
                         onTap: () async {
-                          Uint8List? image = await  ImagePickerHelper().pickImageBytesFromGallery();
+                          String? imagePath = await  ImagePickerHelper().pickImageBytesFromGallery();
 
-                          print(image);
+                          String? token = await SharedPreferencesOperator.getAccessToken();
+
+                          if(imagePath!= null){
+                            MediaFile? value = await MediaFileRepository().uploadFile(token!, imagePath, type: 'Avatar');
+
+                            getUsername();
+                          }
+
+                          context.pop();
                         },
                         child: Row(
                           children: [
@@ -133,11 +144,16 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                       const SizedBox(height: 10,),
                       GestureDetector(
                         onTap: () async {
-                          Uint8List? image = await  ImagePickerHelper().pickImageBytesFromCamera();
+                          String? imagePath = await  ImagePickerHelper().pickImageBytesFromCamera();
 
+                          String? token = await SharedPreferencesOperator.getAccessToken();
 
+                          if(imagePath!= null){
+                            MediaFile? value = await MediaFileRepository().uploadFile(token!, imagePath, type: 'Avatar');
 
-                          print(image);
+                            getUsername();
+                          }
+
                         },
                         child: Row(
                           children: [
@@ -147,17 +163,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                           ],
                         ),
                       ),
-                      const SizedBox(height: 10,),
-                      GestureDetector(
-                        onTap: (){},
-                        child: Row(
-                          children: [
-                            Icon(Icons.person_outline_rounded, color: AppColors.blueColor,size: 30,),
-                            const SizedBox(width: 25,),
-                            const Text('Аваны өшіру',style: TextStyle(fontSize: 16,color: Colors.red),)
-                          ],
-                        ),
-                      )
+
                     ],
                   ),
                 )
@@ -172,6 +178,15 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
     });
   }
 
+  Future<void> getEntMistake() async {
+
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    EntTest? value = await EntTestRepository().getMistakes(token!,'27aa30ec-b882-47f6-a473-d5e75b2f6e72');
+
+    context.push('/testResults/testMistakeWork',extra: {'test_mistake': value});
+  }
+
   @override
   void dispose() {
     animationController.dispose();
@@ -181,200 +196,219 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        // controller: scrollController,
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(
-          children: [
-            AnimatedBuilder(
-              animation: animationController,
-              builder: (context, child) {
-                return Container(
-                  height: animation.value,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: AppColors.blueColor,
-                    boxShadow: AppShadow.shadow,
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
+    return WillPopScope(
+      onWillPop: () async {
+        context.pop(true);
+        return true;
+      },
+      child: Scaffold(
+        body: SingleChildScrollView(
+          // controller: scrollController,
+          physics: const NeverScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              AnimatedBuilder(
+                animation: animationController,
+                builder: (context, child) {
+                  return Container(
+                    height: animation.value,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                      color: AppColors.blueColor,
+                      boxShadow: AppShadow.shadow,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(20),
+                        bottomRight: Radius.circular(20),
+                      ),
                     ),
-                  ),
-                  child: user!= null? Column(
-                    children: [
-                      const SizedBox(height: 60,),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child:  Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                color: Colors.white,
-                                size: 18,
+                    child: user!= null? Column(
+                      children: [
+                        const SizedBox(height: 60,),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child:  Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(onPressed: (){
+                                  context.pop(true);
+                                },
+                                icon: const Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
                               ),
-                            ),
-                            Stack(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(right: animation.isDismissed ? 8 : 0),
-                                  child: user!.avatar != null ? Container(
-                                    width: animation.isDismissed ? 100 : 40,
-                                    height: animation.isDismissed ? 100 : 40,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.all(Radius.circular(animation.isDismissed ? 20 : 5)),
-                                      child: FutureBuilder<Uint8List?>(
-                                        future: MediaFileRepository().downloadFile(user!.avatar!.split('/').last),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.connectionState == ConnectionState.waiting) {
-                                            return SizedBox(
-                                                height: animation.isDismissed ? 100 : 40, width: double.infinity,
-                                                child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
-                                          } else if (snapshot.hasError) {
-                                            return  NoImagePhoto(width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40,);
-                                          } else if (!snapshot.hasData) {
-                                            return  NoImagePhoto(width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40);
-                                          } else {
-                                            return Image.memory(snapshot.data!, fit: BoxFit.cover,width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40,);
-                                          }
-                                        },
+                              Stack(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: animation.isDismissed ? 8 : 0),
+                                    child: user!.avatar != null ? Container(
+                                      width: animation.isDismissed ? 100 : 40,
+                                      height: animation.isDismissed ? 100 : 40,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(Radius.circular(animation.isDismissed ? 20 : 5)),
+                                        child: FutureBuilder<Uint8List?>(
+                                          future: MediaFileRepository().downloadFile(user!.avatar!.split('/').last),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                              return SizedBox(
+                                                  height: animation.isDismissed ? 100 : 40, width: double.infinity,
+                                                  child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
+                                            } else if (snapshot.hasError) {
+                                              return  NoImagePhoto(width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40,);
+                                            } else if (!snapshot.hasData) {
+                                              return  NoImagePhoto(width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40);
+                                            } else {
+                                              return Image.memory(snapshot.data!, fit: BoxFit.cover,width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40,);
+                                            }
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                  ):Container(
-                                    width: animation.isDismissed ? 100 : 40,
-                                    height: animation.isDismissed ? 100 : 40,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(Radius.circular(animation.isDismissed ? 20 : 5)),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        user!.login!= null ? user!.login![0] : '?',
-                                        style: TextStyle(
-                                          color: AppColors.greenColor,
-                                          fontSize: animation.isDismissed ? 40 : 14,
-                                          fontWeight: FontWeight.bold,
+                                    ):Container(
+                                      width: animation.isDismissed ? 100 : 40,
+                                      height: animation.isDismissed ? 100 : 40,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(Radius.circular(animation.isDismissed ? 20 : 5)),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          user!.login!= null ? user!.login![0] : '?',
+                                          style: TextStyle(
+                                            color: AppColors.greenColor,
+                                            fontSize: animation.isDismissed ? 40 : 14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                animation.isDismissed
-                                    ? Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: GestureDetector(
-                                    onTap: (){
-                                      _displayImageSource();},
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: AppColors.greenColor,
-                                        shape: BoxShape.circle,
+                                  animation.isDismissed
+                                      ? Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: GestureDetector(
+                                      onTap: (){
+                                        _displayImageSource();},
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: AppColors.greenColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Center(child: Icon(Icons.add, color: Colors.white)),
                                       ),
-                                      child: const Center(child: Icon(Icons.add, color: Colors.white)),
                                     ),
-                                  ),
-                                )
-                                    : const SizedBox(),
-                              ],
-                            ),
-                            GestureDetector(
-                              onTap: (){
-                                context.push('/notificationPage');
-                              },
-                                child: SvgPicture.asset('assets/icons/ic_notification.svg', height: 18,)
-                            ),
-                          ],
+                                  )
+                                      : const SizedBox(),
+                                ],
+                              ),
+                              // GestureDetector(
+                              //   onTap: (){
+                              //     context.push('/notificationPage');
+                              //   },
+                              //     child: SvgPicture.asset('assets/icons/ic_notification.svg', height: 18,)
+                              // ),
+                              const SizedBox(width: 30,),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 7,),
-                      animation.isDismissed ? Text(user!.login ?? '?', style: const TextStyle(color: Colors.white, fontSize: 20),) : const SizedBox(),
-                      animation.isDismissed ? const Text('оқушы', style: TextStyle(color: Colors.white),) : const SizedBox(),
-                    ],
-                  ): const SizedBox() ,
-                );
-              },
-            ) ,
-            ListView(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              children: [
-
-                ProfilePartCard(title: AppText.data, onTaped: () { context.push('/profilePage/profileDetails'); },),
-                ProfilePartCard(title: AppText.rating, onTaped: () { context.push('/profilePage/profileRating'); },),
-                ProfilePartCard(title: AppText.attends, onTaped: () { context.push('/profilePage/profileAttends'); },),
-                // ProfilePartCard(title: AppText.universities, onTaped: () { context.push('/profilePage/profileUniversity'); },),
-                ProfilePartCard(title: AppText.analysis, onTaped: () { context.push('/profilePage/profileAnalysis'); },),
-                // ProfilePartCard(title: AppText.questions, onTaped: () { context.push('/profilePage/profileQuestions'); },),
-
-                GestureDetector(
-                  onTap: (){
-                    ConfirmDialog.showConfirmationDialog(
-                        context,
-                        'Сіз профиліңізді жоюға сенімдісізбе?',
-                        'Иә, жою',
-                        'Жоқ',
-                            (){
-                          context.go('/loginPage');
-                        }
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1,
-                        color: AppColors.blueColor
-                      ),
-                        color: AppColors.blueColor.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(5),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
-                    child: Row(
-                      children: [
-                        Text('Аккаунтты жою',style: TextStyle(fontSize: 14,color: AppColors.blueColor,fontWeight: FontWeight.bold),)
+                        const SizedBox(height: 7,),
+                        animation.isDismissed ? Text(user!.login ?? '?', style: const TextStyle(color: Colors.white, fontSize: 20),) : const SizedBox(),
+                        animation.isDismissed ? const Text('оқушы', style: TextStyle(color: Colors.white),) : const SizedBox(),
                       ],
+                    ): const SizedBox() ,
+                  );
+                },
+              ) ,
+              ListView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                children: [
+
+                  ProfilePartCard(title: AppText.data, onTaped: () async {
+                    var  value = await  context.push('/profilePage/profileDetails');
+                    if(value!= null){
+                      getUsername();
+                    }
+                  },),
+                  ProfilePartCard(title: AppText.rating, onTaped: () { context.push('/profilePage/profileRating'); },),
+                  // ProfilePartCard(title: AppText.attends, onTaped: () { context.push('/profilePage/profileAttends'); },),
+                  // ProfilePartCard(title: AppText.universities, onTaped: () { context.push('/profilePage/profileUniversity'); },),
+                  // ProfilePartCard(title: AppText.analysis, onTaped: () { context.push('/profilePage/profileAnalysis'); },),
+                  // ProfilePartCard(title: AppText.questions, onTaped: () { context.push('/profilePage/profileQuestions'); },),
+
+                  GestureDetector(
+                    onTap: (){
+
+                      // ConfirmDialog.showConfirmationDialog(
+                      //     context,
+                      //     'Сіз профиліңізді жоюға сенімдісізбе?',
+                      //     'Иә, жою',
+                      //     'Жоқ',
+                      //         (){
+                      //       context.go('/loginPage');
+                      //     }
+                      // );
+
+                      getEntMistake();
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 1,
+                          color: AppColors.blueColor
+                        ),
+                          color: AppColors.blueColor.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(5),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                      child: Row(
+                        children: [
+                          Text('Аккаунтты жою',style: TextStyle(fontSize: 14,color: AppColors.blueColor,fontWeight: FontWeight.bold),)
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                
-                GestureDetector(
-                  onTap: (){
-                    ConfirmDialog.showConfirmationDialog(
-                        context,
-                        'Сіз профиліңізден шығуға сенімдісізбе?',
-                        'Иә, шығу',
-                        'Жоқ',
-                        (){
-                          context.go('/loginPage');
-                        }
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    decoration: BoxDecoration(
-                        color: AppColors.blueColor,
-                        borderRadius: BorderRadius.circular(5),
-                        boxShadow: AppShadow.cardShadow
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
-                    child: const Row(
-                      children: [
-                        Text('Шығу',style: TextStyle(fontSize: 14,color: Colors.white),)
-                      ],
+
+                  GestureDetector(
+                    onTap: (){
+                      ConfirmDialog.showConfirmationDialog(
+                          context,
+                          'Сіз профиліңізден шығуға сенімдісізбе?',
+                          'Иә, шығу',
+                          'Жоқ',
+                          (){
+
+                            SharedPreferencesOperator.clearCurrentUser();
+                            SharedPreferencesOperator.clearAccessToken();
+                            SharedPreferencesOperator.clearRefreshToken();
+
+                            context.go('/loginPage');
+                          }
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      decoration: BoxDecoration(
+                          color: AppColors.blueColor,
+                          borderRadius: BorderRadius.circular(5),
+                          boxShadow: AppShadow.cardShadow
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 15,horizontal: 20),
+                      child: const Row(
+                        children: [
+                          Text('Шығу',style: TextStyle(fontSize: 14,color: Colors.white),)
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 48,),
-              ],
-            ),
-          ],
+                  const SizedBox(height: 48,),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

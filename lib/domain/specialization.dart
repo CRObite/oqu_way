@@ -16,6 +16,7 @@ class Specialization {
   String? description;
   List<Subject>? subjects;
   List<University>? universities;
+  double?  possibilityChance;
 
   Specialization(
       this.id,
@@ -27,7 +28,8 @@ class Specialization {
       this.code,
       this.description,
       this.subjects,
-      this.universities);
+      this.universities,
+      this.possibilityChance);
 
   factory Specialization.fromJson(Map<String, dynamic> json) => _$SpecializationFromJson(json);
   Map<String, dynamic> toJson() => _$SpecializationToJson(this);

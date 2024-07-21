@@ -2,13 +2,17 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oqu_way/config/app_toast.dart';
+import 'package:oqu_way/data/repository/analyze_repository/analyze_repository.dart';
 import 'package:oqu_way/presentation/common/card_container_decoration.dart';
+import 'package:oqu_way/presentation/screens/profile_screen/widgets/specilaization_card.dart';
 
 import '../../../../config/app_colors.dart';
 import '../../../../config/app_shadow.dart';
 import '../../../../config/app_text.dart';
 import '../../../../data/local/shared_preferences_operator.dart';
 import '../../../../data/repository/ent_test_repository/ent_test_repository.dart';
+import '../../../../domain/specialization.dart';
 import '../../../../domain/subject.dart';
 import '../../../common/widgets/common_button.dart';
 import '../../test_screen/widgets/subject_picker_drop_down.dart';
@@ -26,10 +30,10 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
   bool selected = false;
   double  sliderValue = 0;
 
-  String selectedSpec = '';
-  String selectedSpec2 = '';
-  String selectedSpec3 = '';
-  String selectedSpec4 = '';
+  Specialization? selectedSpec;
+  Specialization? selectedSpec2;
+  Specialization? selectedSpec3;
+  Specialization? selectedSpec4;
 
   List<String> valuesWithExtra = ['Предмет','Предмет2','Предмет3','Предмет4','Предмет5','Предмет6','Предмет7','Предмет8','Предмет9','Предмет10','Предмет11','Предмет12',];
 
@@ -63,48 +67,63 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
     });
   }
 
+  bool dataWasSet = false;
+
+
+  List<Specialization> specializations= [];
+
+  Future<void> getSpecialization() async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    List<Specialization> values = await AnalyzeRepository().getSpecialisations(token!,[selectedFirst!.id,selectedSecond!.id]);
+    setState(() {
+      specializations = values;
+    });
+  }
+
+
+  Future<void> getResult() async {
+    String? token = await SharedPreferencesOperator.getAccessToken();
+
+    List<Specialization> values = await AnalyzeRepository().getAnalyzeResult(token!,[selectedSpec!.id,selectedSpec2!.id, selectedSpec3!.id, selectedSpec4!.id], sliderValue.round());
+
+    context.push('/profileAnalysis/profileAnalysisResult', extra: {'listOfSpecialization': values});
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 70,
-        leading: GestureDetector(
-            onTap: (){
-              context.pop();
-            },
-            child: const Icon(Icons.arrow_back_ios_new_rounded,size: 18, )
-        ),
-        title: Text(AppText.analysis, style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-      ),
-      body: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
+          padding: const EdgeInsets.all(20),
+          child: !dataWasSet ? Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+            
+              
               Text(AppText.selectSubjects,style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-
+            
               const SizedBox(height: 20,),
-
+            
               SubjectPickerDropDown(
                 valuesWithExtra: firstList,
-
+            
                 onValueSelected: (Subject value) {
-
+            
                   setState(() {
                     selectedSecond = null;
                     selectedFirst = value;
                   });
-
+            
                   getSecondSubjects(value.id);
-
+            
                 },
                 hint: AppText.firstSubject,
               ),
-
+            
               const SizedBox(height: 10,),
-
+            
               IgnorePointer(
                 ignoring: selectedFirst == null,
                 child: SubjectPickerDropDown(
@@ -115,9 +134,9 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
                   hint: AppText.secondSubject,
                 ),
               ),
-
+            
               const SizedBox(height: 10,),
-
+            
               GestureDetector(
                 onTap:  (){
                   setState(() {
@@ -151,9 +170,9 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
                   ],
                 ),
               ),
-
+            
               const SizedBox(height: 20,),
-
+            
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -161,20 +180,49 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
                   Text('${sliderValue.round()}', style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
                 ],
               ),
-
+            
               Slider(
-                value: sliderValue,
-                min: 0,
-                max: 140,
-                onChanged: (double value) {
-                  setState(() {
-                    sliderValue = value;
-                  });
-                },
-                activeColor: AppColors.blueColor,
-                inactiveColor:AppColors.greyColor.withOpacity(0.5)
+                  value: sliderValue,
+                  min: 0,
+                  max: 140,
+                  onChanged: (double value) {
+                    setState(() {
+                      sliderValue = value;
+                    });
+                  },
+                  activeColor: AppColors.blueColor,
+                  inactiveColor:AppColors.greyColor.withOpacity(0.5)
               ),
+              
+              CommonButton(title: 'Келесі', onClick: (){
 
+                if(selectedFirst!= null && selectedSecond != null){
+
+                  getSpecialization();
+
+                  setState(() {
+                    dataWasSet = true;
+                  });
+                }else{
+                  AppToast.showToast('Пәндерді таңданыз');
+                }
+
+
+              })
+
+            ],
+          ): Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              TextButton(onPressed: (){
+                setState(() {
+                  selectedFirst = null;
+                  selectedSecond = null;
+                  sliderValue = 0;
+                  dataWasSet = false;
+                });
+              }, child: const Text('< Пәндерді таңдау')),
               const SizedBox(height: 10,),
               Text(AppText.selectSpecialization,style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
               const SizedBox(height: 10,),
@@ -190,9 +238,8 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
 
                     SpecializationDropDown(
                       title: '1',
-                      valuesWithExtra: valuesWithExtra,
-                      selectedValue: selectedSpec,
-                      onValueSelected: (String value) {
+                      valuesWithExtra: specializations,
+                      onValueSelected: (Specialization? value) {
                         selectedSpec = value;
                       },
                     ),
@@ -201,18 +248,16 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
 
                     SpecializationDropDown(
                       title: '2',
-                      valuesWithExtra: valuesWithExtra,
-                      selectedValue: selectedSpec2,
-                      onValueSelected: (String value) {
+                      valuesWithExtra: specializations,
+                      onValueSelected: (Specialization? value) {
                         selectedSpec2 = value;
                       },
                     ),
                     Divider(color: AppColors.greyColor,),
                     SpecializationDropDown(
                       title: '3',
-                      valuesWithExtra: valuesWithExtra,
-                      selectedValue: selectedSpec3,
-                      onValueSelected: (String value) {
+                      valuesWithExtra: specializations,
+                      onValueSelected: (Specialization? value) {
                         selectedSpec3 = value;
                       },
                     ),
@@ -221,29 +266,39 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
 
                     SpecializationDropDown(
                       title: '4',
-                      valuesWithExtra: valuesWithExtra,
-                      selectedValue: selectedSpec4,
-                      onValueSelected: (String value) {
+                      valuesWithExtra: specializations,
+                      onValueSelected: (Specialization? value) {
                         selectedSpec4 = value;
                       },
                     ),
 
-
                   ],
                 ),
-              )
+              ),
+              const SizedBox(height: 10,),
 
+              CommonButton(title: 'Анализ', onClick: (){
+                if(selectedSpec!= null && selectedSpec2!= null && selectedSpec3!=null && selectedSpec4!= null){
+                  getResult();
+                }else{
+                  AppToast.showToast('Мамандықты таңданыз');
+                }
+              })
             ],
           ),
         ),
       ),
-        bottomNavigationBar: BottomAppBar(
-            padding: const EdgeInsets.only(left: 20,right: 20, bottom: 42),
-            surfaceTintColor: Colors.transparent,
-            height: 95,
-            child: CommonButton(title: 'Мүмкіндікті анықтау', onClick: (){context.push('/profilePage/profileAnalysis/profileAnalysisResult');})
-        )
-
     );
+
+    //   Scaffold(
+    //   body:
+    //     bottomNavigationBar: BottomAppBar(
+    //         padding: const EdgeInsets.only(left: 20,right: 20, bottom: 42),
+    //         surfaceTintColor: Colors.transparent,
+    //         height: 95,
+    //         child: CommonButton(title: 'Мүмкіндікті анықтау', onClick: (){context.push('/profilePage/profileAnalysis/profileAnalysisResult');})
+    //     )
+    //
+    // );
   }
 }

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_image.dart';
 import 'package:oqu_way/config/app_text.dart';
@@ -63,6 +64,7 @@ class _NewsDetailsState extends State<NewsDetails> {
 
     final navigationPageCubit = BlocProvider.of<NavigationPageCubit>(context);
 
+
     return PopScope(
       onPopInvoked : (didPop){
         navigationPageCubit.closeComments();
@@ -120,15 +122,45 @@ class _NewsDetailsState extends State<NewsDetails> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CommentViewCheckRow(iconSize: 18, fontSize: 12,
-                        onCommentsTap: () {
+                      // CommentViewCheckRow(iconSize: 18, fontSize: 12,
+                      //   onCommentsTap: () {
+                      //     if(widget.newsId!= null){
+                      //       navigationPageCubit.openComments(widget.newsId!);
+                      //     }
+                      //   },
+                      // ),
+
+                      GestureDetector(
+                        onTap: (){
                           if(widget.newsId!= null){
                             navigationPageCubit.openComments(widget.newsId!);
                           }
                         },
-                      ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.blueColor,
+                            borderRadius: const BorderRadius.all(Radius.circular(5)),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 12),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset(
+                                'assets/icons/ic_comments.svg',
+                                height: 20,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
 
-                      const SizedBox(height: 10,),
+                              const SizedBox(width: 10,),
+
+                              const Text('пікірлерді ашу',style: TextStyle(color: Colors.white),),
+                            ],
+                          ),
+                        ),
+                      ),
 
                       Html(data: post!.description ?? '???',)
                     ],

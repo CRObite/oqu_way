@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:oqu_way/config/app_colors.dart';
 import 'package:oqu_way/data/local/shared_preferences_operator.dart';
 import 'package:oqu_way/data/repository/course_repository/course_repository.dart';
 import 'package:oqu_way/domain/face_subject.dart';
@@ -18,6 +19,7 @@ class CoursePage extends StatefulWidget {
 class _CoursePageState extends State<CoursePage> {
 
   List<Subject> subjects = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -26,13 +28,17 @@ class _CoursePageState extends State<CoursePage> {
   }
 
   Future<void> getAllCourses() async {
-
+    setState(() {
+      isLoading = true;
+    });
     String? token = await SharedPreferencesOperator.getAccessToken();
 
     List<Subject> value = await CourseRepository().getAllCourseSubjects(token!);
     setState(() {
       subjects = value;
+      isLoading = false;
     });
+
   }
 
   @override
@@ -49,7 +55,7 @@ class _CoursePageState extends State<CoursePage> {
               Text(AppText.myCourses, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
               const SizedBox(height: 20,),
 
-              subjects.isNotEmpty? ListView.builder(
+              isLoading ? Center(child: CircularProgressIndicator(color: AppColors.blueColor,),):subjects.isNotEmpty ? ListView.builder(
                   itemCount: subjects.length,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),

@@ -7,6 +7,7 @@ part 'app_user.g.dart';
 class AppUser{
   int id;
   String? firstName;
+  String? middleName;
   String? lastName;
   String? email;
   String? iin;
@@ -17,7 +18,7 @@ class AppUser{
 
 
 
-  AppUser(this.id, this.firstName, this.lastName, this.email, this.iin,
+  AppUser(this.id, this.firstName,this.middleName, this.lastName, this.email, this.iin,
       this.login, this.phoneNumber, this.coins, this.avatar);
 
   factory AppUser.fromJson(Map<String, dynamic> json) => _$AppUserFromJson(json);

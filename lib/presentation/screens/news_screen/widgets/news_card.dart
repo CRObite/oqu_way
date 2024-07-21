@@ -95,9 +95,9 @@ class _NewsCardState extends State<NewsCard> {
                       Expanded(child: Text(post!.title ?? '???', maxLines: 2,overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11,fontWeight: FontWeight.bold),)),
                       const SizedBox(width: 8,),
                       SizedBox(
-                          height: 20,
-                          width: 40,
-                          child: CommonButton(title: AppText.read,fontSize: 8,verticalPadding: 4,horizontalPadding: 8, onClick: () {  },)
+                          height: 30,
+                          width: 50,
+                          child: CommonButton(title: AppText.read,fontSize: 10,verticalPadding: 4,horizontalPadding: 8, onClick: () { context.goNamed('newsDetails', extra: {'newsId': post!.id}); },)
                       ),
                     ],
                   ),
@@ -108,13 +108,9 @@ class _NewsCardState extends State<NewsCard> {
                       alignment: Alignment.centerRight,
                       child: Text(
                         post!.dateTime!= null ? AppFormatter.getFormattedDate(post!.dateTime!) : '???',
-                        style: const TextStyle(fontSize: 8),
+                        style: const TextStyle(fontSize:10),
                       )
                   ),
-
-                  Divider(color: AppColors.greyColor,),
-
-                  CommentViewCheckRow(iconSize: 10, fontSize: 8, onCommentsTap: () {},),
                 ],
               ),
             ),

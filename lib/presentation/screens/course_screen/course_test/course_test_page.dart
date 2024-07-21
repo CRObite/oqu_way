@@ -11,10 +11,11 @@ import '../../../common/widgets/common_button.dart';
 import '../../test_screen/widgets/subject_picker_drop_down.dart';
 
 class CourseTestPage extends StatefulWidget {
-  const CourseTestPage({super.key, required this.subjectName, required this.testId});
+  const CourseTestPage({super.key, required this.subjectName, required this.testId, this.context});
 
   final String subjectName;
   final int? testId;
+  final BuildContext? context;
 
   @override
   State<CourseTestPage> createState() => _CourseTestPageState();
@@ -24,6 +25,8 @@ class _CourseTestPageState extends State<CourseTestPage> {
 
   AppTest? test;
 
+  bool isLoading = true;
+
   @override
   void initState() {
     getTestById();
@@ -32,12 +35,18 @@ class _CourseTestPageState extends State<CourseTestPage> {
 
 
   Future<void> getTestById() async {
+    setState(() {
+      isLoading = true;
+    });
+
     String? token = await SharedPreferencesOperator.getAccessToken();
 
     AppTest? value = await TestRepository().getTestById(token!, widget.testId!);
 
     setState(() {
       test = value;
+
+      isLoading = false;
     });
   }
 
@@ -54,7 +63,7 @@ class _CourseTestPageState extends State<CourseTestPage> {
         ),
         title: Text('${widget.subjectName} > Тест', style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
       ),
-      body: test!= null? Padding(
+      body: isLoading ? Center(child: CircularProgressIndicator(color: AppColors.blueColor,),) : Padding(
         padding: const EdgeInsets.all(20.0),
         child: SizedBox(
           height: double.infinity,
@@ -78,24 +87,34 @@ class _CourseTestPageState extends State<CourseTestPage> {
               const SizedBox(height: 20,),
 
               InfoBorderRow(label: 'Пән', value: widget.subjectName),
-              const InfoBorderRow(label: 'Уақыт', value: '40 мин'),
+              // const InfoBorderRow(label: 'Уақыт', value: '40 мин'),
               InfoBorderRow(label: 'Сұрақ саны', value: '${test!.questions!.length}'),
 
               const SizedBox(height: 80,),
             ],
           ),
         ),
-      ): const SizedBox(),
+      ),
 
         bottomNavigationBar: BottomAppBar(
             padding: const EdgeInsets.only(left: 20,right: 20, bottom: 42),
             surfaceTintColor: Colors.transparent,
             height: 95,
-            child: CommonButton(title:'Тестті бастау', onClick: (){
-              context.push(
-                '/testPassingPage',
-                extra: {'oneSubjectPage': true, 'app_test': test},);
-            }, )
+            child: CommonButton(title:'Тестті бастау', onClick: () async {
+
+              if(!isLoading){
+                String? token =  await SharedPreferencesOperator.getAccessToken();
+                bool value = await TestRepository().startTest(token!, widget.testId!);
+
+                if(value){
+                  context.pushReplacement(
+                    '/testPassingPage',
+                    extra: {'oneSubjectPage': true, 'app_test': test, 'context': widget.context},);
+                }
+              }
+
+              },
+            )
         )
 
     );

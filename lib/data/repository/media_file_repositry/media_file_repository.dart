@@ -7,6 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:oqu_way/config/app_toast.dart';
 import 'package:oqu_way/data/local/shared_preferences_operator.dart';
+import 'package:oqu_way/domain/media_file.dart';
 import 'package:path_provider/path_provider.dart';
 
 
@@ -52,7 +53,7 @@ class MediaFileRepository{
 
   }
 
-  Future<String> uploadFile(String accessToken, String filePath) async {
+  Future<MediaFile?> uploadFile(String accessToken, String filePath, {String? type}) async {
     dio.options.headers['Authorization'] = 'Bearer $accessToken';
 
     print(filePath);
@@ -61,6 +62,7 @@ class MediaFileRepository{
 
     FormData formData = FormData.fromMap({
       'file': await MultipartFile.fromFile(filePath, filename: fileName),
+      'type': type
     });
 
     print(formData);
@@ -73,12 +75,13 @@ class MediaFileRepository{
 
     if (response.statusCode == 200) {
       print(response.data);
-      String imageId = response.data['id'];
-      return imageId;
+
+      return MediaFile.fromJson(response.data);;
     }else{
-      return '';
+      return null;
     }
   }
+
 
 
   Future<String> pickFile() async {
