@@ -16,7 +16,9 @@ Topic _$TopicFromJson(Map<String, dynamic> json) => Topic(
       json['task'] == null
           ? null
           : Task.fromJson(json['task'] as Map<String, dynamic>),
-      json['videoUrl'] as String?,
+      json['video'] == null
+          ? null
+          : MediaFile.fromJson(json['video'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$TopicToJson(Topic instance) => <String, dynamic>{
@@ -25,5 +27,5 @@ Map<String, dynamic> _$TopicToJson(Topic instance) => <String, dynamic>{
       'description': instance.description,
       'appTest': instance.appTest,
       'task': instance.task,
-      'videoUrl': instance.videoUrl,
+      'video': instance.video,
     };

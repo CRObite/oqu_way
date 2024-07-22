@@ -70,5 +70,8 @@ class AppApiEndpoints {
   static String testResult = '$api/ent-test/result/'; //+ testId
   static String getMistakes = '$api/ent-test/get-mistakes/'; //+ testId
 
+
+  static String deleteEntTest = '$api/ent-test/delete/'; //+ testId
+
 }
 

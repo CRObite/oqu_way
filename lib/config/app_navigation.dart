@@ -6,6 +6,7 @@ import 'package:oqu_way/data/repository/comment_repository/comment_repository.da
 import 'package:oqu_way/domain/app_test.dart';
 import 'package:oqu_way/domain/comment.dart';
 import 'package:oqu_way/domain/ent_test.dart';
+import 'package:oqu_way/domain/media_file.dart';
 import 'package:oqu_way/domain/specialization.dart';
 import 'package:oqu_way/domain/subject.dart';
 import 'package:oqu_way/presentation/screens/course_screen/course_page.dart';
@@ -598,6 +599,35 @@ class AppNavigation{
         ),
 
 
+        GoRoute(
+          path: '/courseVideos',
+          name: 'courseVideos',
+          pageBuilder: (context, state) => SwipeablePage(
+            builder: (context){
+
+              String description = '';
+              MediaFile? file;
+
+              if(state.extra != null){
+                final extras = state.extra as Map<String, dynamic>;
+                if(extras.containsKey('description')){
+                  description = extras['description'] as String;
+                }
+                if(extras.containsKey('file')){
+                  file = extras['file'] as MediaFile;
+                }
+              }
+
+              return CourseVideos(
+                key: state.pageKey,
+                description: description,
+                file: file,
+              );
+            },
+
+          ),
+        ),
+
 
         StatefulShellRoute.indexedStack(
             builder: (context,state,navigationShell){
@@ -680,20 +710,6 @@ class AppNavigation{
                           },
 
                         ),
-                        routes: [
-                          GoRoute(
-                              path: 'courseVideos',
-                              name: 'courseVideos',
-                              pageBuilder: (context, state) => SwipeablePage(
-                                builder: (context){
-                                  return CourseVideos(
-                                    key: state.pageKey,
-                                  );
-                                },
-
-                              ),
-                          )
-                        ]
                       )
                     ]
                   )

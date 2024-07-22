@@ -178,14 +178,14 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
     });
   }
 
-  Future<void> getEntMistake() async {
-
-    String? token = await SharedPreferencesOperator.getAccessToken();
-
-    EntTest? value = await EntTestRepository().getMistakes(token!,'27aa30ec-b882-47f6-a473-d5e75b2f6e72');
-
-    context.push('/testResults/testMistakeWork',extra: {'test_mistake': value});
-  }
+  // Future<void> getEntMistake() async {
+  //
+  //   String? token = await SharedPreferencesOperator.getAccessToken();
+  //
+  //   EntTest? value = await EntTestRepository().getMistakes(token!,'27aa30ec-b882-47f6-a473-d5e75b2f6e72');
+  //
+  //   context.push('/testResults/testMistakeWork',extra: {'test_mistake': value});
+  // }
 
   @override
   void dispose() {
@@ -341,17 +341,16 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                   GestureDetector(
                     onTap: (){
 
-                      // ConfirmDialog.showConfirmationDialog(
-                      //     context,
-                      //     'Сіз профиліңізді жоюға сенімдісізбе?',
-                      //     'Иә, жою',
-                      //     'Жоқ',
-                      //         (){
-                      //       context.go('/loginPage');
-                      //     }
-                      // );
+                      ConfirmDialog.showConfirmationDialog(
+                          context,
+                          'Сіз профиліңізді жоюға сенімдісізбе?',
+                          'Иә, жою',
+                          'Жоқ',
+                              (){
+                            context.go('/loginPage');
+                          }
+                      );
 
-                      getEntMistake();
                     },
                     child: Container(
                       margin: const EdgeInsets.only(top: 20),

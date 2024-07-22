@@ -10,7 +10,6 @@ import 'package:oqu_way/data/repository/test_repository/test_repository.dart';
 import 'package:oqu_way/domain/test_result.dart';
 import 'package:oqu_way/util/custom_exeption.dart';
 
-import '../../../../domain/app_user.dart';
 import '../../../common/info_border_row.dart';
 import '../../../common/widgets/common_button.dart';
 import '../../../common/widgets/rounded_circular_progress_indicator.dart';

@@ -70,10 +70,10 @@ class _SubjectNestedListState extends State<SubjectNestedList> {
                   return Column(
                     children: [
                       SubjectNameCard(
-                        onButtonPressed: () { context.goNamed('courseVideos');},
+                        onButtonPressed: () { context.push('/courseVideos' , extra: {'description': widget.module.topics[index].description, 'file': widget.module.topics[index].video});},
                         name: widget.module.topics[index].name ?? '???',
                         description: widget.module.topics[index].description ?? '???',
-                        hasButton: widget.module.topics[index].videoUrl!= null && widget.module.topics[index].videoUrl!.isNotEmpty && widget.module.topics[index].videoUrl! != '/',
+                        hasButton: widget.module.topics[index].video!= null,
                       ),
 
                       const SizedBox(height: 17,),

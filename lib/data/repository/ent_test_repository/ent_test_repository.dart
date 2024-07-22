@@ -193,4 +193,20 @@ class EntTestRepository {
     }
   }
 
+
+
+  Future<bool> deleteTest(String accessToken, String testId) async {
+    dio.options.headers['Authorization'] = 'Bearer $accessToken';
+
+    final response = await dio.get(
+      '${AppApiEndpoints.deleteEntTest}$testId',
+    );
+
+    if (response.statusCode! ~/ 100 == 2) {
+      print(response.data);
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
