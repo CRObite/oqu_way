@@ -1,0 +1,10 @@
+<network-security-config xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <domain-config>
+        <domain includeSubdomains="true">edu.oquway.kz</domain>
+        <trust-anchors>
+            <certificates src="assets/certificates/oqutest_kz.cr" />
+            <certificates src="assets/certificates/_oquway_kz.cr" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>

@@ -4,10 +4,13 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
+
     <application
         android:label="OquWay"
         android:name="${applicationName}"
         android:icon="@mipmap/oqu_way">
+
+
 
         <activity
             android:name=".MainActivity"

@@ -547,6 +547,22 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_vlc_player:
+    dependency: "direct main"
+    description:
+      name: flutter_vlc_player
+      sha256: "5e846156687e5a3911355916dc06558e0e827a91ef245ac59993ed74bec3ec97"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.4.2"
+  flutter_vlc_player_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_vlc_player_platform_interface
+      sha256: b161dde841368d330be82c5ee6f40b29dadc4227167bf2770d949f576ae2d9b1
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.3"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -1261,30 +1277,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.3"
-  syncfusion_flutter_calendar:
-    dependency: "direct main"
-    description:
-      name: syncfusion_flutter_calendar
-      sha256: bdbd384ef67e4e4f05593bbe20424cc10c31f50da52d11c239e620ae937eec04
-      url: "https://pub.dev"
-    source: hosted
-    version: "26.1.41"
-  syncfusion_flutter_core:
-    dependency: transitive
-    description:
-      name: syncfusion_flutter_core
-      sha256: "78681c79fe14c338b2985c67ab2863df7cf11541fd6d347be3ba37bb0bcd7d81"
-      url: "https://pub.dev"
-    source: hosted
-    version: "26.1.41"
-  syncfusion_flutter_datepicker:
-    dependency: transitive
-    description:
-      name: syncfusion_flutter_datepicker
-      sha256: "288a62bf0428065897429bb937a154c5c0ab1e320707a11130698c93cb8fca84"
-      url: "https://pub.dev"
-    source: hosted
-    version: "26.1.41"
   synchronized:
     dependency: transitive
     description:
@@ -1309,14 +1301,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
-  timezone:
-    dependency: transitive
-    description:
-      name: timezone
-      sha256: a6ccda4a69a442098b602c44e61a1e2b4bf6f5516e875bbf0f427d5df14745d5
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.3"
   timing:
     dependency: transitive
     description:
