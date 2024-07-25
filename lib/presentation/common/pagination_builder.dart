@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../config/app_colors.dart';
+import '../../data/local/shared_preferences_operator.dart';
 import '../blocs/pagination_builder/pagination_builder_cubit/pagination_builder_cubit.dart';
 
 class PaginationBuilder extends StatefulWidget {
@@ -112,7 +113,13 @@ class _PaginationBuilderState extends State<PaginationBuilder> {
       create: (context) => paginationBuilderCubit,
       child: BlocListener<PaginationBuilderCubit, PaginationBuilderState>(
         listener: (context, state) {
-          if(state is PaginationBuilderPushLogin){context.go('/loginPage');}
+          if(state is PaginationBuilderPushLogin){
+            SharedPreferencesOperator.clearCurrentUser();
+            SharedPreferencesOperator.clearAccessToken();
+            SharedPreferencesOperator.clearRefreshToken();
+
+            context.go('/loginPage');
+          }
         },
         child: BlocBuilder<PaginationBuilderCubit, PaginationBuilderState>(
               builder: (context, state) {

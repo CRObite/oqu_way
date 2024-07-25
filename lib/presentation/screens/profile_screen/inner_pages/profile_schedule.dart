@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:syncfusion_flutter_calendar/calendar.dart';
+
 
 import '../../../../config/app_text.dart';
 
@@ -25,10 +25,8 @@ class _ProfileScheduleState extends State<ProfileSchedule> {
         ),
         title: Text(AppText.schedule, style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
       ),
-      body: SfCalendar(
-        view: CalendarView.week,
-
-      ),
+      body: Container(
+      )
     );
   }
 }
