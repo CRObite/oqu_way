@@ -78,6 +78,9 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: SizedBox(
@@ -114,13 +117,13 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
             ),
             Divider(color: AppColors.greyColor),
             Padding(
-              padding: const EdgeInsets.only(top: 18, left: 24, right: 24, bottom: 30),
+              padding: const EdgeInsets.all(20),
               child: Row(
                 children: [
 
                   user!= null && user!.avatar!=null ?  SizedBox(
-                    height: 45,
-                    width: 45,
+                    height: isTablet?  60: 45,
+                    width: isTablet?  60:45,
                     child: ClipRRect(
                       borderRadius: const BorderRadius.all(Radius.circular(5)),
                       child: FutureBuilder<Uint8List?>(
@@ -131,19 +134,19 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                                 height: 70, width: double.infinity,
                                 child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
                           } else if (snapshot.hasError) {
-                            return const NoImagePhoto(width: 35, height: 35,);
+                            return  NoImagePhoto(width: isTablet?  60:35, height: isTablet?  60:35,);
                           } else if (!snapshot.hasData) {
-                            return const NoImagePhoto(width: 35, height: 35);
+                            return  NoImagePhoto(width: isTablet?  60:35, height: isTablet?  60:35);
                           } else {
-                            return Image.memory(snapshot.data!, fit: BoxFit.cover,width: 35,);
+                            return Image.memory(snapshot.data!, fit: BoxFit.cover,width: isTablet?  60:35,);
                           }
                         },
                       ),
                     ),
                   ):
                   user!= null && user!.login!=null ? Container(
-                    height: 45,
-                    width: 45,
+                    height: isTablet?  60: 45,
+                    width: isTablet?  60:45,
                     decoration: BoxDecoration(
                       color: AppColors.greyColor.withOpacity(0.3),
                       borderRadius: const BorderRadius.all(Radius.circular(5)),
@@ -158,7 +161,7 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Container(
-                      height: 45,
+                      height: isTablet?  60:45,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: const BorderRadius.all(Radius.circular(5)),
@@ -195,17 +198,17 @@ class _CommentsBottomSheetState extends State<CommentsBottomSheet> {
                                 }
                               },
                               child: Container(
-                                height: 32,
-                                width: 32,
+                                height:isTablet?  50: 32,
+                                width:isTablet?  50: 32,
                                 decoration: BoxDecoration(
                                   color: AppColors.blueColor,
                                   borderRadius: const BorderRadius.all(Radius.circular(5)),
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Icon(
                                     Icons.arrow_upward_rounded,
                                     color: Colors.white,
-                                    size: 11,
+                                    size: isTablet?  20: 11,
                                   ),
                                 ),
                               ),

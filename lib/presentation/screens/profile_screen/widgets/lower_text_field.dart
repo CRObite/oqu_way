@@ -17,6 +17,8 @@ class LowerTextFiled extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isSmall = MediaQuery.of(context).size.width <= 360;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       child: Column(

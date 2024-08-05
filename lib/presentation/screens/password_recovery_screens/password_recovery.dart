@@ -63,6 +63,9 @@ class _PasswordRecoveryState extends State<PasswordRecovery> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 70,
@@ -92,7 +95,7 @@ class _PasswordRecoveryState extends State<PasswordRecovery> {
         child: // !isSent && !isCoded ?
         Column(
           children: [
-            CustomTextField(title: AppText.enterEmail, controller: emailController, type: TextInputType.emailAddress, hint: AppText.email,),
+            CustomTextField(title: AppText.enterEmail, controller: emailController, type: TextInputType.emailAddress, hint: AppText.email, isTabled: isTablet,),
             const SizedBox(height: 20,),
             CommonButton(title: 'Растау', onClick: (){
               setState(() {

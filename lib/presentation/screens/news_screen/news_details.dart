@@ -111,7 +111,7 @@ class _NewsDetailsState extends State<NewsDetails> {
                       } else if (!snapshot.hasData) {
                         return const NoImagePhoto(height: 250, width: double.infinity);
                       } else {
-                        return Image.memory(snapshot.data!, width: double.infinity,);
+                        return Image.memory(snapshot.data!, width: double.infinity,fit: BoxFit.cover,);
                       }
                     },
                   ),

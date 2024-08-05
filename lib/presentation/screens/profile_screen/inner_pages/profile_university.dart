@@ -142,7 +142,7 @@ class _ProfileUniversityState extends State<ProfileUniversity> {
                     type: PageableType.universities,
                     query: query,
                     cityId: selectedCity!= null ? cities[selectedCity!].id: null,
-                    child: (context, university) => UniversityCard(university: university),
+                    child: (context, university) =>  university != null ? UniversityCard(university: university): const SizedBox(),
                   ),
                 ),
               ),

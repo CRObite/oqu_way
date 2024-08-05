@@ -78,6 +78,8 @@ class _CourseTestResultState extends State<CourseTestResult> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
 
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isSmall = MediaQuery.of(context).size.width <= 360;
 
 
     return Scaffold(
@@ -133,10 +135,10 @@ class _CourseTestResultState extends State<CourseTestResult> with SingleTickerPr
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
+        padding: const EdgeInsets.only(bottom: 20,left: 20,right: 20),
         surfaceTintColor: Colors.transparent,
         color: Colors.transparent,
-        height: 100,
+        height: isSmall? 85: isTablet? 150: 100,
         child: Column(
           children: [
             // SizedBox(
@@ -172,6 +174,7 @@ class _CourseTestResultState extends State<CourseTestResult> with SingleTickerPr
                 }
                 context.pop();
               },
+              fontSize: isSmall? 12 : 16,
             ),
           ],
         ),

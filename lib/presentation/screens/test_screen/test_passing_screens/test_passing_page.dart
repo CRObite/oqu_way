@@ -274,6 +274,9 @@ class _TestPassingPageState extends State<TestPassingPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -319,7 +322,7 @@ class _TestPassingPageState extends State<TestPassingPage> {
                               angle: 180 * 3.1415926535/180,
                               child: SvgPicture.asset(
                                 'assets/icons/ic_arrow.svg',
-                                height: 11,
+                                height: isTablet? 20 : 11,
                               ),
                             ),
                         ),
@@ -713,7 +716,7 @@ class _TestPassingPageState extends State<TestPassingPage> {
           color: Colors.transparent,
             padding: const EdgeInsets.only(left: 20,right: 20, bottom: 42),
             surfaceTintColor: Colors.transparent,
-            height: 95,
+            height: isTablet? 110 : 95,
             child: subjectSelected ? Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

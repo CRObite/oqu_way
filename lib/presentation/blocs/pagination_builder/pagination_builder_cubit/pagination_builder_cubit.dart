@@ -74,6 +74,7 @@ class PaginationBuilderCubit extends Cubit<PaginationBuilderState> {
         }
       }
     }catch(error){
+
       if(error is DioException){
         CustomException exception = CustomException.fromDioException(error);
 

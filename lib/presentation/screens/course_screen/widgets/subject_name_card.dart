@@ -14,6 +14,9 @@ class SubjectNameCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -21,13 +24,13 @@ class SubjectNameCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgPicture.asset('assets/icons/ic_check.svg', height: 18,),
-            const SizedBox(height: 7,),
+            SvgPicture.asset('assets/icons/ic_check.svg', height:isTablet? 28 : 18,),
+            SizedBox(height: isTablet? 15 : 7,),
             Container(
               color: AppColors.greenColor,
               width: 1,
               constraints: BoxConstraints(
-                maxHeight: description.isNotEmpty ?  110: 40,
+                maxHeight: isTablet? 150 : description.isNotEmpty ?  110: 40,
               ),
             ),
             const SizedBox(height: 7,),
@@ -56,26 +59,23 @@ class SubjectNameCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
 
-                  SizedBox(
-                      height: 30,
-                      child:ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            side: BorderSide(color: AppColors.blueColor, width: 1),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 14),
-                        ),
-                        onPressed: onButtonPressed,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(AppText.video, style: TextStyle(color: AppColors.blueColor, fontSize: 8),),
-                          ],
-                        ),
-                      )
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                        side: BorderSide(color: AppColors.blueColor, width: 1),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 14),
+                    ),
+                    onPressed: onButtonPressed,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(AppText.video, style: TextStyle(color: AppColors.blueColor, fontSize: 8),),
+                      ],
+                    ),
                   ),
                 ],
               ): const SizedBox(),

@@ -53,6 +53,7 @@ class _NavigationPageState extends State<NavigationPage> {
         });
       }
     }catch(error){
+
       if(error is DioException){
         CustomException exception = CustomException.fromDioException(error);
 
@@ -72,7 +73,6 @@ class _NavigationPageState extends State<NavigationPage> {
         }
       }
     }
-
   }
 
 
@@ -119,6 +119,9 @@ class _NavigationPageState extends State<NavigationPage> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: CustomAppBar(

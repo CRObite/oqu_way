@@ -28,8 +28,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isSmall = MediaQuery.of(context).size.width <= 360;
+
+
     return Container(
-      height: 80,
+      height: isSmall? 60: isTablet ? 100 : 80,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         color: AppColors.blueColor,
@@ -53,8 +58,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       padding: const EdgeInsets.all(2),
                       child: avatarData != null
                           ? Container(
-                        width: 35,
-                        height: 35,
+                        width: isSmall? 30 : isTablet ? 55 : 35,
+                        height:  isSmall? 30: isTablet ? 55 : 35,
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(
@@ -67,8 +72,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       )
                           : Container(
-                        width: 35,
-                        height: 35,
+                        width: isTablet ? 55 : 35,
+                        height: isTablet ? 55 : 35,
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(

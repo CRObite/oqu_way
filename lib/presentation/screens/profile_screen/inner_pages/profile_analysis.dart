@@ -93,6 +93,7 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
 
   @override
   Widget build(BuildContext context) {
+    bool isTablet = MediaQuery.of(context).size.width > 600;
     return SingleChildScrollView(
       child: SafeArea(
         child: Padding(
@@ -146,9 +147,9 @@ class _ProfileAnalysisState extends State<ProfileAnalysis> {
                 child: Row(
                   children: [
                     Container(
-                      height: 16,
-                      width: 16,
-                      padding: const EdgeInsets.all(1),
+                      height: isTablet? 25: 16,
+                      width: isTablet? 25:16,
+                      padding: EdgeInsets.all(isTablet? 3:1),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,

@@ -52,6 +52,10 @@ class _CourseTestPageState extends State<CourseTestPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isSmall = MediaQuery.of(context).size.width <= 360;
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 70,
@@ -90,16 +94,17 @@ class _CourseTestPageState extends State<CourseTestPage> {
               // const InfoBorderRow(label: 'Уақыт', value: '40 мин'),
               InfoBorderRow(label: 'Сұрақ саны', value: '${test!.questions!.length}'),
 
-              const SizedBox(height: 80,),
+              isSmall? const SizedBox(): const SizedBox(height: 80,),
             ],
           ),
         ),
       ),
 
         bottomNavigationBar: BottomAppBar(
-            padding: const EdgeInsets.only(left: 20,right: 20, bottom: 42),
+            padding: const EdgeInsets.all(20),
             surfaceTintColor: Colors.transparent,
-            height: 95,
+            height: isTablet? 110: 95,
+            color: Colors.transparent,
             child: CommonButton(title:'Тестті бастау', onClick: () async {
 
               if(!isLoading){
@@ -114,6 +119,7 @@ class _CourseTestPageState extends State<CourseTestPage> {
               }
 
               },
+              fontSize: isSmall? 12: 16,
             )
         )
 

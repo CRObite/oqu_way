@@ -69,6 +69,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
+
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: Padding(
@@ -91,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: emailController,
                 type: TextInputType.emailAddress,
                 hint: AppText.email,
+                isTabled: isTablet,
               ),
               const SizedBox(
                 height: 20,
@@ -99,7 +104,8 @@ class _LoginPageState extends State<LoginPage> {
                   title: AppText.enterPassword,
                   controller: passwordController,
                   type: TextInputType.visiblePassword,
-                  hint: AppText.password),
+                  hint: AppText.password,
+                  isTabled: isTablet,),
               TextButton(
                   onPressed: () {
                     context.goNamed('passwordRecovery');
@@ -129,9 +135,10 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 42),
+            padding: const EdgeInsets.all(20),
+            color: Colors.transparent,
             surfaceTintColor: Colors.transparent,
-            height: 95,
+            height: isTablet ? 110: 95,
             child: CommonButton(
                 title: AppText.register,
                 onClick: () {

@@ -17,6 +17,10 @@ class NewsPage extends StatefulWidget {
 class _NewsPageState extends State<NewsPage> {
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
+
     return Padding(
       padding: const EdgeInsets.all(20),
       child: SafeArea(
@@ -32,7 +36,7 @@ class _NewsPageState extends State<NewsPage> {
             Expanded(
               child: PaginationBuilder(
                 size: 10,
-                bottomSize: 96,
+                bottomSize:  isTablet ? 110 : 96,
                 type: PageableType.news,
                 child: (context, post) => NewsCard(post: post),
               ),

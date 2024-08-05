@@ -41,8 +41,11 @@ class _QuestionNumberRowState extends State<QuestionNumberRow> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return SizedBox(
-      height: 40,
+      height: isTablet? 60 : 40,
       child: ListView.builder(
           controller: _scrollController,
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -56,8 +59,8 @@ class _QuestionNumberRowState extends State<QuestionNumberRow> {
               },
               child: Container(
                 margin: const EdgeInsets.only(right: 5),
-                height: 40,
-                width: 40,
+                height: isTablet? 60 : 40,
+                width: isTablet? 60 : 40,
                 decoration:  widget.color == null?  BoxDecoration(
                     color:  index < widget.currentQuestionIndex ?
                     AppColors.blueColor.withOpacity(0.5):

@@ -196,6 +196,10 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isSmall = MediaQuery.of(context).size.width <= 360;
+
     return WillPopScope(
       onWillPop: () async {
         context.pop(true);
@@ -211,7 +215,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                 animation: animationController,
                 builder: (context, child) {
                   return Container(
-                    height: animation.value,
+                    height: isSmall? 220: isTablet ?  300 : animation.value,
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
                       color: AppColors.blueColor,
@@ -232,10 +236,10 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                               IconButton(onPressed: (){
                                   context.pop(true);
                                 },
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.arrow_back_ios_new_rounded,
                                   color: Colors.white,
-                                  size: 18,
+                                  size: isTablet ? 28 : 18,
                                 ),
                               ),
                               Stack(
@@ -243,8 +247,8 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                   Padding(
                                     padding: EdgeInsets.only(right: animation.isDismissed ? 8 : 0),
                                     child: user!.avatar != null ? Container(
-                                      width: animation.isDismissed ? 100 : 40,
-                                      height: animation.isDismissed ? 100 : 40,
+                                      width: isSmall? 70: animation.isDismissed ? 100 : 40,
+                                      height: isSmall? 70: animation.isDismissed ? 100 : 40,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.all(Radius.circular(animation.isDismissed ? 20 : 5)),
                                         child: FutureBuilder<Uint8List?>(
@@ -252,14 +256,14 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState == ConnectionState.waiting) {
                                               return SizedBox(
-                                                  height: animation.isDismissed ? 100 : 40, width: double.infinity,
+                                                  height: isSmall? 70: animation.isDismissed ? 100 : 40, width: double.infinity,
                                                   child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
                                             } else if (snapshot.hasError) {
-                                              return  NoImagePhoto(width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40,);
+                                              return  NoImagePhoto(width: isSmall? 70:animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40,);
                                             } else if (!snapshot.hasData) {
-                                              return  NoImagePhoto(width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40);
+                                              return  NoImagePhoto(width: isSmall? 70:animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40);
                                             } else {
-                                              return Image.memory(snapshot.data!, fit: BoxFit.cover,width: animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40,);
+                                              return Image.memory(snapshot.data!, fit: BoxFit.cover,width: isSmall? 70:animation.isDismissed ? 100 : 40, height: animation.isDismissed ? 100 : 40,);
                                             }
                                           },
                                         ),

@@ -16,9 +16,12 @@ class TestDeadlineInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Container(
       margin:const EdgeInsets.only(left: 40),
-      height: 100,
+      height: description.isNotEmpty ? isTablet ? 160 : 100 : 100,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -26,7 +29,7 @@ class TestDeadlineInfoCard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SvgPicture.asset('assets/icons/ic_red_mark.svg', height: 18,),
+              SvgPicture.asset('assets/icons/ic_red_mark.svg', height: isTablet? 28: 18,),
               const SizedBox(height: 7,),
               Expanded(
                 child: Container(
@@ -54,26 +57,23 @@ class TestDeadlineInfoCard extends StatelessWidget {
 
                     const SizedBox(width: 10,),
 
-                    SizedBox(
-                        height: 30,
-                        child:ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5),
-                              side: BorderSide(color: AppColors.blueColor , width: 1),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 14),
-                          ),
-                          onPressed: onPressed,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(isActive ? AppText.doIt : 'Нәтижені көру', style: TextStyle(color: AppColors.blueColor, fontSize: 8),),
-                            ],
-                          ),
-                        )
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                          side: BorderSide(color: AppColors.blueColor , width: 1),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 4,horizontal: 14),
+                      ),
+                      onPressed: onPressed,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(isActive ? AppText.doIt : 'Нәтижені көру', style: TextStyle(color: AppColors.blueColor, fontSize: 8),),
+                        ],
+                      ),
                     ),
                   ],
                 ),

@@ -45,6 +45,10 @@ class _NewsCardState extends State<NewsCard> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+    bool isSmall = MediaQuery.of(context).size.width <= 360;
+
     return GestureDetector(
       onTap: (){
         context.goNamed('newsDetails', extra: {'newsId': post!.id});
@@ -55,7 +59,7 @@ class _NewsCardState extends State<NewsCard> {
         child: Column(
           children: [
             Container(
-              height: 70,
+              height: isSmall? 50:isTablet ? 120 : 70,
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(topRight: Radius.circular(10), topLeft: Radius.circular(10),),
                 color: Colors.white,
@@ -72,12 +76,12 @@ class _NewsCardState extends State<NewsCard> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return SizedBox(
-                          height: 70, width: double.infinity,
+                          height: isTablet ? 120 : 70, width: double.infinity,
                           child: Center(child: CircularProgressIndicator(color: AppColors.blueColor,)));
                     } else if (snapshot.hasError) {
-                      return const NoImagePhoto(height: 70, width: double.infinity);
+                      return  NoImagePhoto(height: isTablet ? 120 : 70, width: double.infinity);
                     } else if (!snapshot.hasData) {
-                      return const NoImagePhoto(height: 70, width: double.infinity);
+                      return  NoImagePhoto(height: isTablet ? 120 : 70, width: double.infinity);
                     } else {
                       return Image.memory(snapshot.data!, fit: BoxFit.cover,width: double.infinity,);
                     }
@@ -94,11 +98,7 @@ class _NewsCardState extends State<NewsCard> {
                     children: [
                       Expanded(child: Text(post!.title ?? '???', maxLines: 2,overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 11,fontWeight: FontWeight.bold),)),
                       const SizedBox(width: 8,),
-                      SizedBox(
-                          height: 30,
-                          width: 50,
-                          child: CommonButton(title: AppText.read,fontSize: 10,verticalPadding: 4,horizontalPadding: 8, onClick: () { context.goNamed('newsDetails', extra: {'newsId': post!.id}); },)
-                      ),
+                      CommonButton(title: AppText.read,fontSize: 10,verticalPadding: 4,horizontalPadding: 8, onClick: () { context.goNamed('newsDetails', extra: {'newsId': post!.id}); },),
                     ],
                   ),
 

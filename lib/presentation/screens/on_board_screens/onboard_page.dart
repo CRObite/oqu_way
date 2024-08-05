@@ -89,11 +89,12 @@ class _OnboardPageState extends State<OnboardPage>
 
   @override
   Widget build(BuildContext context) {
+
+    bool isSmall = MediaQuery.of(context).size.width <= 360;
+
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        toolbarHeight: 20,
-      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -117,7 +118,7 @@ class _OnboardPageState extends State<OnboardPage>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(_getImage(currentPage)),
+                  !isSmall ? Image.asset(_getImage(currentPage)): Image.asset(_getImage(currentPage,),width: MediaQuery.of(context).size.width * 0.5,),
                   Text(
                     AppText.preparingToExam,
                     style: const TextStyle(

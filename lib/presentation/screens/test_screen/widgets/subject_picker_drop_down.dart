@@ -39,6 +39,9 @@ class _SubjectPickerDropDownState extends State<SubjectPickerDropDown> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -72,13 +75,13 @@ class _SubjectPickerDropDownState extends State<SubjectPickerDropDown> {
                   angle: 90 * 3.1415926535/180,
                   child: SvgPicture.asset(
                     'assets/icons/ic_arrow.svg',
-                    height: 11,
+                    height: isTablet? 15:11,
                     width: 5,
                   ),
                 )
             ),
             dropdownStyleData: DropdownStyleData(
-              maxHeight: 200,
+              maxHeight: isTablet? 300:200,
               width: MediaQuery.of(context).size.width - 40,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
@@ -92,8 +95,8 @@ class _SubjectPickerDropDownState extends State<SubjectPickerDropDown> {
             ),
             isExpanded: true,
             underline: Container(),
-            menuItemStyleData: const MenuItemStyleData(
-              height: 40,
+            menuItemStyleData: MenuItemStyleData(
+              height: isTablet? 50:40,
             ),
           ),
         ),

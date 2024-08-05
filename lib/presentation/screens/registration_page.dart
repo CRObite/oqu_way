@@ -98,6 +98,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Scaffold(
         resizeToAvoidBottomInset: true,
         body: SingleChildScrollView(
@@ -141,7 +144,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     title: AppText.email,
                     controller: emailController,
                     type: TextInputType.emailAddress,
-                    hint: AppText.email),
+                    hint: AppText.email, isTabled: isTablet,),
                 emailValidation.isNotEmpty ? Text(emailValidation, style: const TextStyle(color: Colors.red),):const SizedBox(),
                 const SizedBox(
                   height: 20,
@@ -150,7 +153,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   title: AppText.name,
                   controller: nameController,
                   type: TextInputType.text,
-                  hint: AppText.name,
+                  hint: AppText.name,isTabled: isTablet,
                 ),
                 nameValidation.isNotEmpty? Text(nameValidation, style: const TextStyle(color: Colors.red),):const SizedBox(),
                 const SizedBox(
@@ -160,7 +163,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   title: AppText.surname,
                   controller: surnameController,
                   type: TextInputType.text,
-                  hint: AppText.surname,
+                  hint: AppText.surname,isTabled: isTablet,
                 ),
                 surnameValidation.isNotEmpty? Text(surnameValidation, style: const TextStyle(color: Colors.red),):const SizedBox(),
                 const SizedBox(
@@ -170,7 +173,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   title: AppText.lastname,
                   controller: middleNameController,
                   type: TextInputType.text,
-                  hint: AppText.lastname,
+                  hint: AppText.lastname,isTabled: isTablet,
                 ),
                 const SizedBox(
                   height: 20,
@@ -181,7 +184,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   title: AppText.enterPhone,
                   controller: phoneController,
                   type: TextInputType.phone,
-                  hint: AppText.number,
+                  hint: AppText.number,isTabled: isTablet,
                 ),
                 phoneValidation.isNotEmpty? Text(phoneValidation, style: const TextStyle(color: Colors.red),):const SizedBox(),
                 const SizedBox(
@@ -195,9 +198,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
-            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 42),
+            padding: const EdgeInsets.all(20),
+            color: Colors.transparent,
             surfaceTintColor: Colors.transparent,
-            height: 95,
+            height: isTablet ? 110: 95,
             child: CommonButton(
                 title: AppText.register,
                 onClick: () {

@@ -104,6 +104,9 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isSmall = MediaQuery.of(context).size.width <= 360;
+
     return SingleChildScrollView(
       child: Container(
         height: MediaQuery.of(context).size.height,
@@ -130,9 +133,9 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 138,
-                      height: 138,
-                      padding: const EdgeInsets.all(20),
+                      width: isSmall? 100: 138,
+                      height: isSmall? 100: 138,
+                      padding: EdgeInsets.all( isSmall? 10:20),
                       decoration: BoxDecoration(
                           color: AppColors.testCircleGreenColor,
                           shape: BoxShape.circle,
@@ -180,16 +183,16 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
 
 
                     SizedBox(
-                        width: 140,
-                        child: CommonButton(
-                          title: AppText.startTest,
-                          onClick: (){
-                            startTest();
-                          },
-                          radius: 10,
-                          fontSize: 13,
-                          horizontalPadding: 24,
-                        )
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: CommonButton(
+                        title: AppText.startTest,
+                        onClick: (){
+                          startTest();
+                        },
+                        radius: 10,
+                        fontSize: 13,
+                        horizontalPadding: 24,
+                      ),
                     )
 
 
@@ -198,7 +201,7 @@ class _TestSubjectSelectPageState extends State<TestSubjectSelectPage> {
 
 
 
-                const SizedBox(height: 90,),
+                SizedBox(height: isSmall? 0: 90,),
               ],
             ),
           ),

@@ -101,10 +101,10 @@ class AuthorizationRepository {
     );
 
     if (response.statusCode! ~/ 100 == 2) {
-
-
-      TempToken.token = response.data['accessToken'];
-      TempToken.token = response.data['refreshToken'];
+      AppUser user = AppUser.fromJson(response.data['user']);
+      await SharedPreferencesOperator.saveAccessToken(response.data['accessToken']);
+      await SharedPreferencesOperator.saveRefreshToken(response.data['refreshToken']);
+      await SharedPreferencesOperator.saveCurrentUser(jsonEncode(user.toJson()));
 
       return true;
     } else {

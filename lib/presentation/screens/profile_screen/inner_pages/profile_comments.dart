@@ -104,6 +104,9 @@ class _ProfileCommentsState extends State<ProfileComments> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -161,8 +164,8 @@ class _ProfileCommentsState extends State<ProfileComments> {
                     ),
                   ):
                   user!= null && user!.login!=null ? Container(
-                    height: 45,
-                    width: 45,
+                    height: isTablet?  60: 45,
+                    width: isTablet?  60: 45,
                     decoration: BoxDecoration(
                       color: AppColors.greyColor.withOpacity(0.3),
                       borderRadius: const BorderRadius.all(Radius.circular(5)),
@@ -177,19 +180,17 @@ class _ProfileCommentsState extends State<ProfileComments> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Container(
-                      height: 45,
+                      height: isTablet?  60:45,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(5),
-                        ),
+                        borderRadius: const BorderRadius.all(Radius.circular(5)),
                         border: Border.all(
                           width: 1,
                           color: AppColors.greyColor.withOpacity(0.5),
                         ),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric( horizontal: 10),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -210,22 +211,23 @@ class _ProfileCommentsState extends State<ProfileComments> {
                               ),
                             ),
                             InkWell(
-                              onTap: (){
-                                addComment();
-
+                              onTap: () {
+                                if (commentController.text.isNotEmpty) {
+                                  addComment();
+                                }
                               },
                               child: Container(
-                                height: 32,
-                                width: 32,
+                                height:isTablet?  50: 32,
+                                width:isTablet?  50: 32,
                                 decoration: BoxDecoration(
                                   color: AppColors.blueColor,
                                   borderRadius: const BorderRadius.all(Radius.circular(5)),
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Icon(
                                     Icons.arrow_upward_rounded,
                                     color: Colors.white,
-                                    size: 11,
+                                    size: isTablet?  20: 11,
                                   ),
                                 ),
                               ),

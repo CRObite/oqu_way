@@ -14,6 +14,9 @@ class CoursesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 15),
       decoration: CardContainerDecoration.decoration,
@@ -27,8 +30,8 @@ class CoursesCard extends StatelessWidget {
                   color: AppColors.blueColor,
                   borderRadius: const BorderRadius.all(Radius.circular(5)),
                 ),
-                height: 58,
-                width: 58,
+                height: isTablet ? 70 : 58,
+                width: isTablet ? 70 : 58,
                 child: Center(
                   child: Text(courseName[0],style: const TextStyle(color: Colors.white, fontSize: 20),),
                 )
@@ -48,7 +51,7 @@ class CoursesCard extends StatelessWidget {
             ),
             const SizedBox(width: 20),
 
-            SvgPicture.asset('assets/icons/ic_arrow.svg' , height: 17,),
+            SvgPicture.asset('assets/icons/ic_arrow.svg' , height: isTablet ? 20 : 17,),
           ],
         ),
       ),

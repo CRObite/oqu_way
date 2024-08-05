@@ -11,12 +11,15 @@ class ProgressButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    bool isSmall = MediaQuery.of(context).size.width <= 360;
+
     return Stack(
       children: [
 
         Center(
           child: CustomPaint(
-            size: const Size(90, 90),
+            size: Size(isSmall? 65: 90, isSmall? 65: 90),
             painter: RoundedCircularProgressIndicator(
               value: animation.value,
               color: AppColors.blueColor.withOpacity(0.5),
@@ -28,19 +31,20 @@ class ProgressButton extends StatelessWidget {
 
         Center(
           child: Container(
-            margin: const EdgeInsets.only(top: 12),
+            width: isSmall? 45 : null,
+            margin: EdgeInsets.only(top: isSmall? 8 : 12),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(100),
                   ),
                   backgroundColor:AppColors.blueColor,
-                  padding: const EdgeInsets.all(23)
+                  padding: EdgeInsets.all( isSmall? 15 : 23)
               ),
               onPressed: (){
                 onPressed();
               },
-              child: const Icon(Icons.arrow_forward_rounded,size: 20, color: Colors.white,),
+              child: Icon(Icons.arrow_forward_rounded, size: isSmall? 15: 20, color: Colors.white,),
             ),
           ),
         )

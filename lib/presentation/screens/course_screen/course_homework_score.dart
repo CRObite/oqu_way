@@ -63,6 +63,9 @@ class _CourseHomeworkScoreState extends State<CourseHomeworkScore> with SingleTi
 
   @override
   Widget build(BuildContext context) {
+
+    bool isTablet = MediaQuery.of(context).size.width > 600;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -95,14 +98,14 @@ class _CourseHomeworkScoreState extends State<CourseHomeworkScore> with SingleTi
                   Align(
                     alignment: Alignment.center,
                     child: SizedBox(
-                      height: 75,
-                      width: 75,
+                      height: isTablet? 100:75,
+                      width: isTablet? 100:75,
                       child: Stack(
                         children: [
                           Align(
                             alignment: Alignment.center,
                             child: CustomPaint(
-                              size: const Size(75, 75),
+                              size: Size(isTablet? 100:75, isTablet? 100:75),
                               painter: RoundedCircularProgressIndicator(
                                 value: _animation.value,
                                 color: AppColors.greenColor,

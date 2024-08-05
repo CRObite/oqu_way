@@ -68,7 +68,7 @@ class _UniversityCardState extends State<UniversityCard> {
                 borderRadius: const BorderRadius.all(Radius.circular(5))
               ),
               padding: const EdgeInsets.all(5),
-              child: FutureBuilder<Uint8List?>(
+              child: university!.mediaFiles!= null?   FutureBuilder<Uint8List?>(
                 future: MediaFileRepository().downloadFile(university!.mediaFiles!.id),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -85,7 +85,7 @@ class _UniversityCardState extends State<UniversityCard> {
                     return Image.memory(snapshot.data!);
                   }
                 },
-              ),
+              ): const SizedBox(),
             ),
             const SizedBox(width: 17,),
 
