@@ -70,12 +70,8 @@ class _CourseHomeworkState extends State<CourseHomework> {
         appBar: AppBar(
           forceMaterialTransparency: true,
           toolbarHeight: 70,
-          leading: GestureDetector(
-              onTap: (){
-                context.pop();
-              },
-              child: const Icon(Icons.arrow_back_ios_new_rounded,size: 18, )
-          ),
+          leading:
+          IconButton(onPressed: () { context.pop(); }, icon: const Icon(Icons.arrow_back_ios_new_rounded,size: 18, ),),
           title: Text(AppText.homeworks, style: const TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
         ),
         body: task!= null ? SingleChildScrollView(

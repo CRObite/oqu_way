@@ -24,6 +24,19 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   bool _obscureText = true;
 
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_checkMaskCompletion);
+  }
+
+  void _checkMaskCompletion() {
+    if (widget.type == TextInputType.phone && maskFormatter.isFill()) {
+      FocusScope.of(context).unfocus();
+    }
+  }
+
+
   static MaskTextInputFormatter maskFormatter = MaskTextInputFormatter(
     mask: '+7 (###) ### - ## - ##',
     filter: { "#": RegExp(r'[0-9]') },

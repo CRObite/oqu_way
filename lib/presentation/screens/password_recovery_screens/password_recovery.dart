@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:oqu_way/config/app_colors.dart';
@@ -9,6 +10,7 @@ import 'package:oqu_way/presentation/common/widgets/common_button.dart';
 import 'package:oqu_way/presentation/common/widgets/custom_text_field.dart';
 
 import '../../../config/app_text.dart';
+import '../../../util/custom_exeption.dart';
 import '../../common/widgets/otp_form.dart';
 
 class PasswordRecovery extends StatefulWidget {
@@ -23,6 +25,8 @@ class _PasswordRecoveryState extends State<PasswordRecovery> {
   TextEditingController emailController = TextEditingController();
   // TextEditingController passwordController = TextEditingController();
   // TextEditingController confirmPasswordController = TextEditingController();
+
+  String errorText = '';
 
   @override
   void dispose() {
@@ -54,10 +58,20 @@ class _PasswordRecoveryState extends State<PasswordRecovery> {
   // }
 
   Future<void> sendNewPassword() async {
-    bool value = await AuthorizationRepository().sendCodeToEmail(emailController.text);
+    try{
+      bool value = await AuthorizationRepository().sendCodeToEmail(emailController.text);
 
-    if(value){
-      AppToast.showToast('Сіздің поштаңызға жаңа құпия сөз жіберілді');
+      if(value){
+        AppToast.showToast('Сіздің поштаңызға жаңа құпия сөз жіберілді');
+      }
+    }catch(e){
+      if(e is DioException){
+        CustomException.fromDioException(e);
+
+        setState(() {
+          errorText = e.response?.data['detail'] ?? '';
+        });
+      }
     }
   }
 
@@ -96,6 +110,13 @@ class _PasswordRecoveryState extends State<PasswordRecovery> {
         Column(
           children: [
             CustomTextField(title: AppText.enterEmail, controller: emailController, type: TextInputType.emailAddress, hint: AppText.email, isTabled: isTablet,),
+            errorText.isNotEmpty
+                ? Text(
+              errorText,
+              style: const TextStyle(color: Colors.red),
+            )
+                : const SizedBox(),
+
             const SizedBox(height: 20,),
             CommonButton(title: 'Растау', onClick: (){
               setState(() {
